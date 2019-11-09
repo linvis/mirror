@@ -11,5 +11,9 @@ func main() {
 
 	router.InitRouter(engine)
 
+	engine.Static("/static", "./templates/static")
+	engine.StaticFile("/favicon.ico", "./templates/favicon.ico")
+	engine.LoadHTMLGlob("templates/*.html")
+
 	engine.Run("localhost:5000")
 }
