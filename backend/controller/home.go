@@ -6,6 +6,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func HomePage(c *gin.Context) {
+func home(c *gin.Context) {
 	c.HTML(http.StatusOK, "index.html", nil)
+}
+
+func InitHomeRouter(engine *gin.Engine) {
+	engine.GET("/", home)
 }

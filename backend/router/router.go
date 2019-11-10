@@ -7,6 +7,6 @@ import (
 )
 
 func InitRouter(engine *gin.Engine) {
-
-	engine.GET("/", controller.HomePage)
+	controller.InitHomeRouter(engine)
+	controller.InitUserRouter(engine)
 }
