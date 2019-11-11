@@ -2,6 +2,7 @@ package controller
 
 import (
 	"fmt"
+	"mirror/model"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -29,6 +30,9 @@ func loginIn(c *gin.Context) {
 	}
 
 	fmt.Println(info)
+
+	user := model.QueryUserByName("admin")
+	fmt.Println(user)
 
 	token := gin.H{"token": "admin-token"}
 
