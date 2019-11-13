@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"mirror/model"
 	"net/http"
+	"regexp"
 
 	"github.com/gin-gonic/gin"
 )
@@ -13,7 +14,7 @@ type LoginInfo struct {
 	Password string `json:"password"`
 }
 
-type mockUser struct {
+type UserInfo struct {
 	Role   string `json:"role"`
 	Avatar string `json:"avatar"`
 	Name   string `json:"name"`
@@ -31,8 +32,11 @@ func loginIn(c *gin.Context) {
 
 	fmt.Println(info)
 
-	user := model.QueryUserByName("admin")
-	fmt.Println(user)
+	user := model.QueryUserByName(info.Username)
+	if user.Password != info.Password {
+		c.JSON(http.StatusOK, gin.H{"code": 60204, "message": "Account and password are incorrect."})
+		return
+	}
 
 	token := gin.H{"token": "admin-token"}
 
@@ -41,16 +45,21 @@ func loginIn(c *gin.Context) {
 }
 
 func userInfo(c *gin.Context) {
-	token := c.PostForm("token")
-	fmt.Println(token)
+	token := c.Query("token")
 
-	user := mockUser{
-		"admin",
-		"https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif",
-		"Super Admin",
+	re := regexp.MustCompile(`(.*)-token`)
+	name := re.FindStringSubmatch(token)
+	fmt.Println(token, name)
+
+	user := model.QueryUserByName(name[1])
+
+	userInfo := UserInfo{
+		user.Name,
+		user.Avatar,
+		user.Role,
 	}
 
-	c.JSON(http.StatusOK, gin.H{"code": 20000, "data": &user})
+	c.JSON(http.StatusOK, gin.H{"code": 20000, "data": &userInfo})
 }
 
 func InitUserRouter(engine *gin.Engine) {

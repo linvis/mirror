@@ -18,6 +18,7 @@ type User struct {
 	Age      int    `gorm:"column:age"`
 	Location string `gorm:"column:location"`
 	Role     string `gorm:"column:role"`
+	Avatar   string `gorm:"column:avatar"`
 }
 
 func (u User) TableName() string {
@@ -39,8 +40,9 @@ func init() {
 		db.Create(&User{
 			Email:    "admin@test.com",
 			Name:     "admin",
-			Password: "admin",
+			Password: "admin123",
 			Role:     "admin",
+			Avatar:   "https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif",
 		})
 	}
 
