@@ -62,7 +62,12 @@ func userInfo(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"code": 20000, "data": &userInfo})
 }
 
+func logout(c *gin.Context) {
+	c.JSON(http.StatusOK, gin.H{"code": 20000, "data": "success"})
+}
+
 func InitUserRouter(engine *gin.Engine) {
 	engine.POST("user/login", loginIn)
 	engine.GET("user/info", userInfo)
+	engine.POST("user/logout", logout)
 }
