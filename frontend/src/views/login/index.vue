@@ -107,19 +107,16 @@ export default {
     },
     handleLogin() {
       // eslint-disable-next-line
-      console.log("fuckyou")
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true
           this.$store.dispatch('user/login', this.loginForm).then(() => {
             this.$router.push({ path: this.redirect || '/' })
             this.loading = false
-            console.log('beego')
           }).catch(() => {
             this.loading = false
           })
         } else {
-          console.log('error submit!!')
           return false
         }
       })

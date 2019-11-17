@@ -58,15 +58,15 @@ export const constantRoutes = [
   {
     path: '/activity',
     component: Layout,
-    redirect: '/activity/table',
-    name: 'Activity',
+    redirect: '/activity/show',
+    name: 'activity',
     meta: { title: 'Activity', icon: 'example' },
     children: [
       {
-        path: 'table',
-        name: 'Table',
-        component: () => import('@/views/table/index'),
-        meta: { title: 'Table', icon: 'table' }
+        path: 'new',
+        name: 'new',
+        component: () => import('@/views/activity/new'),
+        meta: { title: 'New', icon: 'table' }
       },
       {
         path: 'tree',
