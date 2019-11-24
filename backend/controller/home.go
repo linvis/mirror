@@ -10,6 +10,6 @@ func home(c *gin.Context) {
 	c.HTML(http.StatusOK, "index.html", nil)
 }
 
-func InitHomeRouter(engine *gin.Engine) {
-	engine.GET("/", home)
+func init() {
+	RegisterURL("/", "GET", home)
 }

@@ -8,6 +8,8 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
+var dbConfig string = "root:ironman.abc@/mirrors?charset=utf8&parseTime=True&loc=Local"
+
 var mirrorDB *gorm.DB = nil
 
 func init() {

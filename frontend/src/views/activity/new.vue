@@ -6,24 +6,34 @@
         <div slot="header" class="clearfix">
           <span>日常活动</span>
         </div>
-        <div style="margin-bottom:50px;">
+        <div style="margin-bottom:80px;">
           <el-col :span="4" class="text-center">
-            <el-select v-model="value" placeholder="活动类型">
+            <el-select v-model="type" placeholder="活动类型">
               <el-option
                 v-for="item in options"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
-              ></el-option>
+              />
             </el-select>
           </el-col>
 
           <el-col :span="4" class="text-center">
-            <el-time-picker v-model="start_time" format="HH:mm" placeholder="开始时间"></el-time-picker>
+            <el-time-picker
+              v-model="start_time"
+              format="HH:mm"
+              value-format="timestamp"
+              placeholder="开始时间"
+            />
           </el-col>
 
           <el-col :span="4" class="text-center">
-            <el-time-picker v-model="end_time" format="HH:mm" placeholder="结束时间"></el-time-picker>
+            <el-time-picker
+              v-model="end_time"
+              format="HH:mm"
+              value-format="timestamp"
+              placeholder="结束时间"
+            />
           </el-col>
 
           <el-col :span="4" class="text-center">
@@ -33,15 +43,25 @@
                 start: '00:00',
                 step: '00:10',
                 end: '04:00'
-            }"
+              }"
               placeholder="持续时间"
-            ></el-time-select>
+            />
           </el-col>
 
           <el-col :span="4" class="text-center">
-            <el-input-number v-model="num" @change="handleChange" :min="1" :max="10" label="数量"></el-input-number>
+            <el-input-number v-model="num" :min="1" :max="10" label="数量" @change="handleChange" />
           </el-col>
         </div>
+
+        <el-row :gutter="20" style="margin-top:50px;">
+          <el-col :span="4" class="text-center">
+            <el-input v-model="comment" placeholder="请输入内容" />
+          </el-col>
+
+          <el-col :span="4" class="text-center">
+            <el-button type="primary" @click="handleSubmit">提交</el-button>
+          </el-col>
+        </el-row>
       </el-card>
     </el-row>
 
@@ -62,40 +82,57 @@
 </template>
 
 <script>
+
+import { submit } from '@/api/activity'
+
 export default {
   data() {
     return {
       options: [
         {
-          value: "选项1",
-          label: "睡眠"
+          value: 'sleep',
+          label: '睡眠'
         },
         {
-          value: "选项2",
-          label: "阅读"
+          value: 'read',
+          label: '阅读'
         },
         {
-          value: "选项3",
-          label: "健身"
+          value: 'fitness',
+          label: '健身'
         },
         {
-          value: "选项4",
-          label: "娱乐"
+          value: 'entertainment',
+          label: '娱乐'
         }
       ],
-      value: "",
-      start_time: "",
-      end_time: "",
-      duration: "",
-      num: 1
-    };
+      type: '',
+      start_time: new Date(),
+      end_time: new Date(),
+      duration: '',
+      num: 1,
+      comment: ''
+    }
   },
   methods: {
-    handleChange(value) {
-      console.log(value);
+    handleChange(type) {
+      console.log(type)
+    },
+    handleSubmit: function(event) {
+      var activity = {
+        'type': this.type,
+        'start_time': this.start_time,
+        'end_time': this.end_time,
+        'duration': this.duration,
+        'num': this.num,
+        'comment': this.comment
+      }
+      submit(activity).then(response => {
+        alert('submit OK')
+      })
     }
   }
-};
+}
 </script>
 
 <style scoped>

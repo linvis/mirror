@@ -26,7 +26,7 @@ func loginIn(c *gin.Context) {
 	var info LoginInfo
 
 	if err := c.BindJSON(&info); err != nil {
-		c.JSON(http.StatusOK, gin.H{"code": 60204, "message": "Account and password are incorrect."})
+		c.JSON(http.StatusOK, gin.H{"code": 60204, "message": "Invalid Account"})
 		return
 	}
 
@@ -66,8 +66,8 @@ func logout(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"code": 20000, "data": "success"})
 }
 
-func InitUserRouter(engine *gin.Engine) {
-	engine.POST("user/login", loginIn)
-	engine.GET("user/info", userInfo)
-	engine.POST("user/logout", logout)
+func init() {
+	RegisterURL("user/login", "POST", loginIn)
+	RegisterURL("user/info", "GET", userInfo)
+	RegisterURL("user/logout", "POST", logout)
 }

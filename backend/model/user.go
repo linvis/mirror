@@ -5,8 +5,6 @@ import (
 	"mirror/database"
 )
 
-var dbConfig string = "root:ironman.abc@/mirrors?charset=utf8&parseTime=True&loc=Local"
-
 type User struct {
 	UserID   int    `gorm:"column:user_id"`
 	Email    string `gorm:"column:email"`
