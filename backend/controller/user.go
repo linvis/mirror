@@ -2,7 +2,7 @@ package controller
 
 import (
 	"fmt"
-	"mirror/model"
+	"mirror/db"
 	"net/http"
 	"regexp"
 
@@ -32,7 +32,11 @@ func loginIn(c *gin.Context) {
 
 	fmt.Println(info)
 
-	user := model.QueryUserByName(info.Username)
+	user, err := db.GetUserByName(info.Username)
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{"code": 60204, "message": "internal errro"})
+		return
+	}
 	if user.Password != info.Password {
 		c.JSON(http.StatusOK, gin.H{"code": 60204, "message": "Account and password are incorrect."})
 		return
@@ -51,7 +55,7 @@ func userInfo(c *gin.Context) {
 	name := re.FindStringSubmatch(token)
 	fmt.Println(token, name)
 
-	user := model.QueryUserByName(name[1])
+	user, _ := db.GetUserByName(name[1])
 
 	userInfo := UserInfo{
 		user.Name,

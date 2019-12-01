@@ -2,47 +2,51 @@ package controller
 
 import (
 	"fmt"
-	"mirror/model"
+	"mirror/db"
 	"net/http"
-	"time"
 
 	"github.com/gin-gonic/gin"
 )
 
-type ActivityInfo struct {
-	Type      string `json:"type"`
-	StartTime int64  `json:"start_time"`
-	EndTime   int64  `json:"end_time"`
-	Duration  string `json:"duration"`
-	Num       int    `json:"num"`
-	Comment   string `json:"comment"`
-}
-
+// {"act_type":"read","start_time":1575207586000,"end_time":1575207588000,"duration":"","num":1,"comment":"zzz"}
 func newActivity(c *gin.Context) {
 
 	// body, _ := ioutil.ReadAll(c.Request.Body)
-
-	var activity ActivityInfo
+	var activity db.DailyAct
 
 	if err := c.BindJSON(&activity); err != nil {
+		fmt.Println(err)
 		c.JSON(http.StatusOK, gin.H{"code": 60204, "message": "Invalid Account"})
 		return
 	}
 
 	fmt.Println(activity)
-	model.ActivityInsert(model.Activity{
-		UserID:    3,
-		EventType: 1,
-		StartTime: time.Unix(activity.StartTime/1000, 0),
-		EndTime:   time.Unix(activity.EndTime/1000, 0),
-		Duration:  activity.Duration,
-		Num:       activity.Num,
-		Comment:   activity.Comment,
+	db.CreateNewActivity(&db.DailyAct{
+		UserID:  3,
+		ActType: 1,
+		// StartTime: time.Unix(activity.StartTimeUnix/1000, 0),
+		// EndTime:   time.Unix(activity.EndTimeUnix/1000, 0),
+		StartTimeUnix: activity.StartTimeUnix / 1000,
+		EndTimeUnix:   activity.EndTimeUnix / 1000,
+		Duration:      activity.Duration,
+		Num:           activity.Num,
+		Comment:       activity.Comment,
 	})
 
 	c.JSON(http.StatusOK, gin.H{"code": 20000, "data": ""})
 }
 
+func getActType(c *gin.Context) {
+	types, err := db.GetUserActType(3)
+	if err != nil {
+		fmt.Println(err)
+		c.JSON(http.StatusOK, gin.H{"code": 60204, "message": "internal error"})
+	}
+
+	c.JSON(http.StatusOK, gin.H{"code": 20000, "data": types})
+}
+
 func init() {
 	RegisterURL("activity/new", "POST", newActivity)
+	RegisterURL("activity/type", "GET", getActType)
 }

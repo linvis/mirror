@@ -7,3 +7,11 @@ export function submit(data) {
     data
   })
 }
+
+export function getActType(token) {
+  return request({
+    url: '/activity/type',
+    method: 'get',
+    params: { token }
+  })
+}

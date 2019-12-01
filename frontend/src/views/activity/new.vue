@@ -11,9 +11,9 @@
             <el-select v-model="type" placeholder="活动类型">
               <el-option
                 v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
+                :key="item.act_id"
+                :label="item.act_name"
+                :value="item.act_id"
               />
             </el-select>
           </el-col>
@@ -83,44 +83,39 @@
 
 <script>
 
-import { submit } from '@/api/activity'
+import { submit, getActType } from '@/api/activity'
 
 export default {
   data() {
     return {
-      options: [
-        {
-          value: 'sleep',
-          label: '睡眠'
-        },
-        {
-          value: 'read',
-          label: '阅读'
-        },
-        {
-          value: 'fitness',
-          label: '健身'
-        },
-        {
-          value: 'entertainment',
-          label: '娱乐'
-        }
-      ],
-      type: '',
-      start_time: new Date(),
-      end_time: new Date(),
+      options: null,
+      type: 1,
+      start_time: '',
+      end_time: '',
       duration: '',
       num: 1,
       comment: ''
     }
   },
+  created() {
+    this.featchData()
+  },
   methods: {
+    featchData() {
+    // this.loading = true
+      getActType().then(response => {
+      // this.options = response.data.items
+        console.log(response.data)
+        this.options = response.data
+      // this.loading = false
+      })
+    },
     handleChange(type) {
       console.log(type)
     },
     handleSubmit: function(event) {
       var activity = {
-        'type': this.type,
+        'act_type': this.type,
         'start_time': this.start_time,
         'end_time': this.end_time,
         'duration': this.duration,
