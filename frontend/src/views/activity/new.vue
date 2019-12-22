@@ -33,6 +33,7 @@
               format="HH:mm"
               value-format="timestamp"
               placeholder="结束时间"
+              @change="handleEndTimeChange"
             />
           </el-col>
 
@@ -44,6 +45,7 @@
                 step: '00:10',
                 end: '04:00'
               }"
+              value-format="timestamp"
               placeholder="持续时间"
             />
           </el-col>
@@ -112,6 +114,23 @@ export default {
     },
     handleChange(type) {
       console.log(type)
+    },
+    handleEndTimeChange(time) {
+      var removeSec = function(time) {
+        return time - (time % (60 * 1000))
+      }
+
+      if (this.end_time > this.start_time) {
+        this.duration = removeSec(this.end_time) - removeSec(this.start_time)
+      } else {
+        this.duration = removeSec(this.end_time) + 24 * 60 * 60 * 1000 - removeSec(this.start_time)
+      }
+      this.duration = this.duration / 1000
+
+      var hour = parseInt(this.duration / 3600)
+      var min = parseInt(this.duration % 3600)
+
+      this.duration = parseInt(hour / 10).toString() + (hour % 10).toString() + ':' + parseInt(min / 10).toString() + (min % 10).toString()
     },
     handleSubmit: function(event) {
       var activity = {
