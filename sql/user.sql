@@ -8,5 +8,6 @@ CREATE TABLE user (
 	male TINYINT,
 	age TINYINT,
 	location CHAR(32),
-	role CHAR(32)
+	role CHAR(32),
+    avatar CHAR(255)
 );

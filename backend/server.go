@@ -4,6 +4,7 @@ import (
 	"mirror/router"
 	"os"
 
+	"fmt"
 	"github.com/gin-gonic/gin"
 )
 
@@ -15,6 +16,7 @@ func main() {
 
 	} else {
 		if os.Args[1] == "dev" {
+			fmt.Println("ssssss")
 			environment = DEV_URL
 		}
 	}
