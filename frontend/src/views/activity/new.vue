@@ -120,19 +120,34 @@ export default {
         return time - (time % (60 * 1000))
       }
 
-      if (this.end_time > this.start_time) {
-        this.duration = removeSec(this.end_time) - removeSec(this.start_time)
-      } else {
-        this.duration = removeSec(this.end_time) + 24 * 60 * 60 * 1000 - removeSec(this.start_time)
+      var timeToString = function(hour, min) {
+        return parseInt(hour / 10).toString() + (hour % 10).toString() + ':' + parseInt(min / 10).toString() + (min % 10).toString()
       }
-      this.duration = this.duration / 1000
 
-      var hour = parseInt(this.duration / 3600)
-      var min = parseInt(this.duration % 3600)
+      var duration = 0
 
-      this.duration = parseInt(hour / 10).toString() + (hour % 10).toString() + ':' + parseInt(min / 10).toString() + (min % 10).toString()
+      if (this.end_time > this.start_time) {
+        duration = removeSec(this.end_time) - removeSec(this.start_time)
+      } else {
+        duration = removeSec(this.end_time) + 24 * 60 * 60 * 1000 - removeSec(this.start_time)
+      }
+
+      var date = new Date(duration)
+      var hour = date.getHours() - 8
+      var min = date.getMinutes()
+
+      this.duration = timeToString(hour, min)
     },
     handleSubmit: function(event) {
+      if (this.start_time === '') {
+        this.start_time = 0
+      }
+      if (this.end_time === '') {
+        this.end_time = 0
+      }
+      if (this.start_time > this.end_time) {
+        this.start_time = this.start_time - 24 * 60 * 60 * 1000
+      }
       var activity = {
         'act_type': this.type,
         'start_time': this.start_time,
@@ -142,7 +157,7 @@ export default {
         'comment': this.comment
       }
       submit(activity).then(response => {
-        alert('submit OK')
+        // alert('submit OK')
       })
     }
   }

@@ -22,5 +22,5 @@ CREATE TABLE daily_act_type
 
 
 INSERT INTO daily_act_type(act_name, user_id)
-value ('睡眠', 0), ('阅读',0), ('健身',0 ), ('娱乐',0);
+value ('睡眠', 0), ('工作', 0), ('阅读',0), ('刷题'，0), ('健身',0 ), ('娱乐',0);
 
