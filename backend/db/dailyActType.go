@@ -6,7 +6,7 @@ import "fmt"
 
 type DailyActType struct {
 	ActID   int    `xorm:"not null 'act_id'" json:"act_id"`
-	ActName string `xorm:"act_name" json:"act_name"`
+	ActName string `xorm:"char(64) not null act_name" json:"act_name"`
 	UserID  int    `xorm:"user_id" json:"user_id"`
 }
 
@@ -26,6 +26,10 @@ func GetUserActType(id int) (*[]DailyActType, error) {
 	}
 
 	err = x.Table("daily_act_type").Where("user_id = ?", id).Find(&customTypes)
+	if err != nil {
+		fmt.Println(err)
+		return nil, errors.New("no custom type")
+	}
 
 	baseTypes = append(baseTypes, customTypes...)
 	fmt.Println(baseTypes)
