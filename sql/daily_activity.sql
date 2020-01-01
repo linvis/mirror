@@ -15,7 +15,7 @@ CREATE TABLE daily_act
 DROP TABLE IF EXISTS daily_act_type;
 CREATE TABLE daily_act_type
 (
-  act_id int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  act_type int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
   act_name char(64) NOT NULL,
   user_id int(11) DEFAULT NULL
 );

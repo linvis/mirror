@@ -11,9 +11,9 @@
             <el-select v-model="type" placeholder="活动类型">
               <el-option
                 v-for="item in options"
-                :key="item.act_id"
+                :key="item.act_type"
                 :label="item.act_name"
-                :value="item.act_id"
+                :value="item.act_type"
               />
             </el-select>
           </el-col>

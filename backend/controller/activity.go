@@ -23,7 +23,7 @@ func newActivity(c *gin.Context) {
 	fmt.Println(activity)
 	db.CreateNewActivity(&db.DailyAct{
 		UserID:  3,
-		ActType: 1,
+		ActType: activity.ActType,
 		// StartTime: time.Unix(activity.StartTimeUnix/1000, 0),
 		// EndTime:   time.Unix(activity.EndTimeUnix/1000, 0),
 		StartTimeUnix: activity.StartTimeUnix / 1000,

@@ -5,7 +5,7 @@ import "errors"
 import "fmt"
 
 type DailyActType struct {
-	ActID   int    `xorm:"not null 'act_id'" json:"act_id"`
+	ActType int    `xorm:"not null 'act_type'" json:"act_type"`
 	ActName string `xorm:"char(64) not null act_name" json:"act_name"`
 	UserID  int    `xorm:"user_id" json:"user_id"`
 }
