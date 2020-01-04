@@ -56,17 +56,17 @@ export const constantRoutes = [
   },
 
   {
-    path: '/activity',
+    path: '/evt',
     component: Layout,
-    redirect: '/activity/show',
-    name: 'activity',
-    meta: { title: 'Activity', icon: 'example' },
+    redirect: '/evt/show',
+    name: 'evt',
+    meta: { title: 'Daily Event', icon: 'example' },
     children: [
       {
-        path: 'new',
-        name: 'new',
-        component: () => import('@/views/activity/new'),
-        meta: { title: 'New', icon: 'table' }
+        path: 'evt',
+        name: 'evt',
+        component: () => import('@/views/evt/new'),
+        meta: { title: 'new', icon: 'table' }
       },
       {
         path: 'tree',

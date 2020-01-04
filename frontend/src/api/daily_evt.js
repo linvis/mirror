@@ -2,15 +2,15 @@ import request from '@/utils/request'
 
 export function submit(data) {
   return request({
-    url: '/activity/new',
+    url: '/evt/new',
     method: 'post',
     data
   })
 }
 
-export function getActType(token) {
+export function getEvtType(token) {
   return request({
-    url: '/activity/type',
+    url: '/evt/type',
     method: 'get',
     params: { token }
   })

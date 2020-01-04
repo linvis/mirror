@@ -8,30 +8,30 @@
         </div>
         <div style="margin-bottom:80px;">
           <el-col :span="4" class="text-center">
-            <el-select v-model="type" placeholder="活动类型">
-              <el-option
-                v-for="item in options"
-                :key="item.act_type"
-                :label="item.act_name"
-                :value="item.act_type"
-              />
-            </el-select>
-          </el-col>
-
-          <el-col :span="4" class="text-center">
-            <el-time-picker
-              v-model="start_time"
-              format="HH:mm"
-              value-format="timestamp"
-              placeholder="开始时间"
+            <el-cascader
+              v-model="evt_type"
+              placeholder="活动类型"
+              :options="options"
+              :props="{ expandTrigger: 'hover' }"
+              filterable
+              clearable
+              @change="handleChange"
             />
           </el-col>
 
           <el-col :span="4" class="text-center">
             <el-time-picker
-              v-model="end_time"
+              v-model="start_utc"
               format="HH:mm"
-              value-format="timestamp"
+              placeholder="开始时间"
+              @change="handleStartTimeChange"
+            />
+          </el-col>
+
+          <el-col :span="4" class="text-center">
+            <el-time-picker
+              v-model="end_utc"
+              format="HH:mm"
               placeholder="结束时间"
               @change="handleEndTimeChange"
             />
@@ -39,13 +39,12 @@
 
           <el-col :span="4" class="text-center">
             <el-time-select
-              v-model="duration"
+              v-model="duration_utc"
               :picker-options="{
                 start: '00:00',
                 step: '00:10',
                 end: '04:00'
               }"
-              value-format="timestamp"
               placeholder="持续时间"
             />
           </el-col>
@@ -66,97 +65,102 @@
         </el-row>
       </el-card>
     </el-row>
-
-    <!-- <el-row> -->
-    <el-row :gutter="20" style="margin-top:50px;">
-      <el-card class="box-card">
-        <div slot="header" class="clearfix">
-          <span>Buttons</span>
-        </div>
-        <div style="margin-bottom:50px;">
-          <el-col :span="4" class="text-center">
-            <router-link class="pan-btn blue-btn" to="/documentation/index">Documentation</router-link>
-          </el-col>
-        </div>
-      </el-card>
-    </el-row>
   </div>
 </template>
 
 <script>
 
-import { submit, getActType } from '@/api/activity'
+import { submit, getEvtType } from '@/api/daily_evt'
+import { parse } from 'path'
 
 export default {
   data() {
     return {
-      options: null,
-      type: 1,
-      start_time: '',
-      end_time: '',
-      duration: '',
+      evt_type: [],
+      options: [],
+      evt_date: 0,
+      start_time: 0,
+      end_time: 0,
+      duration: 0,
       num: 1,
-      comment: ''
+      comment: '',
+
+      start_utc: 0,
+      end_utc: 0,
+      duration_utc: 0
+
     }
   },
   created() {
     this.featchData()
+    this.evt_date = Date.UTC(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()) / 1000
+    this.options = []
   },
   methods: {
     featchData() {
     // this.loading = true
-      getActType().then(response => {
+      getEvtType().then(response => {
       // this.options = response.data.items
         console.log(response.data)
         this.options = response.data
-      // this.loading = false
       })
     },
     handleChange(type) {
-      console.log(type)
+      // console.log(type)
     },
-    handleEndTimeChange(time) {
-      var removeSec = function(time) {
-        return time - (time % (60 * 1000))
+    handleStartTimeChange(time) {
+      this.start_time = this.start_utc.getHours() * 60 + this.start_utc.getMinutes()
+
+      if (this.end_time === 0) {
+        return
       }
 
-      var timeToString = function(hour, min) {
+      var timeToString = function(time) {
+        var hour = parseInt(time / 60)
+        var min = parseInt(time % 60)
         return parseInt(hour / 10).toString() + (hour % 10).toString() + ':' + parseInt(min / 10).toString() + (min % 10).toString()
       }
 
-      var duration = 0
-
-      if (this.end_time > this.start_time) {
-        duration = removeSec(this.end_time) - removeSec(this.start_time)
-      } else {
-        duration = removeSec(this.end_time) + 24 * 60 * 60 * 1000 - removeSec(this.start_time)
+      if (this.start_time > this.end_time) {
+        this.start_time = 24 * 60 - this.start_time
       }
 
-      var date = new Date(duration)
-      var hour = date.getHours() - 8
-      var min = date.getMinutes()
+      this.duration = this.end_time - this.start_time
+      this.duration_utc = timeToString(this.duration)
+    },
+    handleEndTimeChange(time) {
+      this.end_time = this.end_utc.getHours() * 60 + this.end_utc.getMinutes()
 
-      this.duration = timeToString(hour, min)
+      var timeToString = function(time) {
+        var hour = parseInt(time / 60)
+        var min = parseInt(time % 60)
+        return parseInt(hour / 10).toString() + (hour % 10).toString() + ':' + parseInt(min / 10).toString() + (min % 10).toString()
+      }
+
+      if (this.start_time === 0) {
+        return
+      }
+
+      if (this.start_time > this.end_time) {
+        this.start_time = 24 * 60 - this.start_time
+      }
+
+      this.duration = this.end_time - this.start_time
+      this.duration_utc = timeToString(this.duration)
     },
     handleSubmit: function(event) {
-      if (this.start_time === '') {
-        this.start_time = 0
-      }
-      if (this.end_time === '') {
-        this.end_time = 0
-      }
-      if (this.start_time > this.end_time) {
-        this.start_time = this.start_time - 24 * 60 * 60 * 1000
-      }
-      var activity = {
-        'act_type': this.type,
+      console.log(this.value)
+      var evt = {
+        'evt_type': this.evt_type[0],
+        'evt_item': this.evt_type[1],
+        'evt_date': this.evt_date,
         'start_time': this.start_time,
         'end_time': this.end_time,
         'duration': this.duration,
         'num': this.num,
         'comment': this.comment
       }
-      submit(activity).then(response => {
+      submit(evt).then(response => {
         // alert('submit OK')
       })
     }

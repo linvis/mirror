@@ -57,11 +57,12 @@ func GetEngine() (*xorm.Engine, error) {
 	return x, nil
 }
 
-func init() {
+func InitDB(path string) {
 
-	tables = append(tables, new(User), new(DailyAct), new(DailyActType))
+	tables = append(tables, new(User), new(DailyEvt), new(DailyEvtType))
 
-	config, err := loadDBConfig("db/db.config")
+	config, err := loadDBConfig(path)
+	// config, err := loadDBConfig("db.config")
 	if err != nil {
 		return
 	}
