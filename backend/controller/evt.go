@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"mirror/db"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -120,7 +121,35 @@ func getEvtType(c *gin.Context) {
 	}
 }
 
+func buildSleepDataMsg(evts []db.DailyEvt) string {
+	date := []string{}
+	duration := []int{}
+
+	for _, e := range evts {
+		date = append(date, time.Unix(e.EvtDate, 0).Format("2006-1-2"))
+		duration = append(duration, e.Duration)
+	}
+
+	b, _ := json.Marshal(gin.H{"code": 20000, "data": gin.H{"date": date, "duration": duration}})
+
+	return string(b)
+}
+
+func getSleepData(c *gin.Context) {
+	evts, err := db.GetDailyEvt(3, 1, 0)
+	fmt.Println(evts)
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{"code": 60204, "message": "Invalid Account"})
+		return
+	}
+
+	msg := buildSleepDataMsg(evts)
+
+	c.String(http.StatusOK, msg)
+}
+
 func init() {
 	RegisterURL("evt/new", "POST", newEvt)
 	RegisterURL("evt/type", "GET", getEvtType)
+	RegisterURL("evt/sleep", "GET", getSleepData)
 }

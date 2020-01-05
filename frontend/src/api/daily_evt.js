@@ -15,3 +15,11 @@ export function getEvtType(token) {
     params: { token }
   })
 }
+
+export function getSleepData(token) {
+  return request({
+    url: '/evt/sleep',
+    method: 'get',
+    params: { token }
+  })
+}

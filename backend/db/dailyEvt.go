@@ -54,3 +54,15 @@ func DelDailyEvt(evt_id int) error {
 
 	return nil
 }
+
+func GetDailyEvt(user_id int, evt_id int, item_id int) ([]DailyEvt, error) {
+	evts := []DailyEvt{}
+
+	err := x.Where("user_id = ?", user_id).And("evt_type= ?", evt_id).And("evt_item = ?", item_id).Find(&evts)
+	if err != nil {
+		fmt.Println(err)
+		return nil, errors.New("no user daily evts")
+	}
+
+	return evts, nil
+}
