@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"encoding/json"
 	"fmt"
 	"mirror/db"
 	"net/http"
@@ -44,7 +45,7 @@ func newEvt(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"code": 20000, "data": ""})
 }
 
-func formatEvtItems(types []db.DailyEvtType, items []db.DailyEvtItem) []EvtItems {
+func formatEvtItemMsg(types []db.DailyEvtType, items []db.DailyEvtItem) []EvtItems {
 	evtItems := []EvtItems{}
 
 	for _, t := range types {
@@ -76,29 +77,47 @@ func formatEvtItems(types []db.DailyEvtType, items []db.DailyEvtItem) []EvtItems
 	return evtItems
 }
 
-func getEvtType(c *gin.Context) {
-	var err error
+func buildDailyEvtItemMsg(user_id int) (string, error) {
+
+	b, _ := json.Marshal(gin.H{"code": 60204, "message": "internal error"})
+	msg := string(b)
 
 	types, err := db.GetDailyEvtType(3)
+
 	if err != nil {
-		fmt.Println(err)
-		c.JSON(http.StatusOK, gin.H{"code": 60204, "message": "internal error"})
-		return
+		return msg, err
 	}
 
 	items, err := db.GetDailyEvtItem(3)
 	if err != nil {
-		fmt.Println(err)
-		c.JSON(http.StatusOK, gin.H{"code": 60204, "message": "internal error"})
-		return
+		return msg, err
 	}
-	fmt.Println(items)
 
-	evtItems := formatEvtItems(types, items)
-	fmt.Println(gin.H{"data": evtItems})
+	evtItems := formatEvtItemMsg(types, items)
 
-	// c.JSON(http.StatusOK, gin.H{"code": 20000, "data": evtItems})
-	c.JSON(http.StatusOK, gin.H{"code": 20000, "data": evtItems})
+	b, _ = json.Marshal(gin.H{"code": 20000, "data": evtItems})
+
+	return string(b), nil
+}
+
+func getEvtType(c *gin.Context) {
+	msg, found := db.GetDailyEvtItemFromRedis(3)
+	if found {
+		fmt.Println("get from redis")
+		c.String(http.StatusOK, msg)
+	} else {
+		// query from database
+
+		msg, err := buildDailyEvtItemMsg(3)
+
+		if err == nil {
+			// put it in redis
+			err = db.SetDailyEvtItemToRedis(3, msg)
+			fmt.Println(err)
+		}
+
+		c.String(http.StatusOK, msg)
+	}
 }
 
 func init() {

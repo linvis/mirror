@@ -13,7 +13,8 @@ const DEV_URL = "dev-api/"
 func main() {
 	environment := ""
 	dbPath := ""
-	if len(os.Args) <= 2 {
+	redisPath := ""
+	if len(os.Args) <= 3 {
 
 	} else {
 		if os.Args[1] == "dev" {
@@ -21,12 +22,15 @@ func main() {
 		}
 
 		dbPath = os.Args[2]
+		redisPath = os.Args[3]
 	}
 
 	engine := gin.Default()
 
 	router.InitRouter(engine, environment)
+
 	db.InitDB(dbPath)
+	db.InitRedis(redisPath)
 
 	engine.Static("/static", "./templates/static")
 	engine.StaticFile("/favicon.ico", "./templates/favicon.ico")

@@ -6,7 +6,7 @@
         <div slot="header" class="clearfix">
           <span>日常活动</span>
         </div>
-        <div style="margin-bottom:80px;">
+        <el-row>
           <el-col :span="4" class="text-center">
             <el-cascader
               v-model="evt_type"
@@ -52,16 +52,17 @@
           <el-col :span="4" class="text-center">
             <el-input-number v-model="num" :min="1" :max="10" label="数量" @change="handleChange" />
           </el-col>
-        </div>
+          <el-row>
+            <el-row :gutter="20" style="margin-top:50px;">
+              <el-col :span="4" class="text-center">
+                <el-input v-model="comment" placeholder="请输入内容" />
+              </el-col>
 
-        <el-row :gutter="20" style="margin-top:50px;">
-          <el-col :span="4" class="text-center">
-            <el-input v-model="comment" placeholder="请输入内容" />
-          </el-col>
-
-          <el-col :span="4" class="text-center">
-            <el-button type="primary" @click="handleSubmit">提交</el-button>
-          </el-col>
+              <el-col :span="4" class="text-center">
+                <el-button type="primary" @click="handleSubmit">提交</el-button>
+              </el-col>
+            </el-row>
+          </el-row>
         </el-row>
       </el-card>
     </el-row>
@@ -71,7 +72,7 @@
 <script>
 
 import { submit, getEvtType } from '@/api/daily_evt'
-import { parse } from 'path'
+// import { parse } from 'path'
 
 export default {
   data() {

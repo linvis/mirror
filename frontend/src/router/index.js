@@ -69,12 +69,34 @@ export const constantRoutes = [
         meta: { title: 'new', icon: 'table' }
       },
       {
-        path: 'tree',
-        name: 'Tree',
-        component: () => import('@/views/tree/index'),
-        meta: { title: 'Tree', icon: 'tree' }
+        path: 'show',
+        name: 'Show',
+        component: () => import('@/views/evt/show'),
+        meta: { title: 'Show', icon: 'tree' }
       }
     ]
+  },
+
+  // finance
+  {
+    path: '/finance',
+    component: Layout,
+    redirect: '/finance/show',
+    meta: { title: 'Finance Event', icon: 'example' }
+  },
+
+  // library
+  {
+    path: '/library',
+    component: Layout,
+    redirect: '/library/show',
+    meta: { title: 'Memory Library', icon: 'example' },
+    children: [{
+      path: 'articles',
+      name: 'Articles',
+      component: () => import('@/views/library/articles'),
+      meta: { title: 'Articles', icon: 'example' }
+    }]
   },
 
   // 404 page must be placed at the end !!!
