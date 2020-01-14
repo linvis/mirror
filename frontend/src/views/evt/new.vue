@@ -1,69 +1,71 @@
 <template>
   <div class="mixin-components-container">
     <!-- <el-row> -->
-    <el-row :gutter="20">
+    <el-row :gutter="10">
       <el-card class="box-card">
         <div slot="header" class="clearfix">
           <span>日常活动</span>
         </div>
-        <div style="margin-bottom:80px;">
-          <el-row>
-            <el-col :span="4" class="text-center">
-              <el-cascader
-                v-model="evt_type"
-                placeholder="活动类型"
-                :options="options"
-                :props="{ expandTrigger: 'hover' }"
-                filterable
-                clearable
-                @change="handleChange"
-              />
-            </el-col>
+        <!-- <div style="margin-bottom:80px;"> -->
+        <el-row>
+          <el-col span="6">
+            <el-cascader
+              v-model="evt_type"
+              placeholder="活动类型"
+              :options="options"
+              :props="{ expandTrigger: 'hover' }"
+              filterable
+              clearable
+              @change="handleChange"
+            />
+          </el-col>
+          <el-col :span="6">
+            <el-input-number v-model="num" :min="1" :max="10" label="数量" @change="handleChange" />
+          </el-col>
+        </el-row>
+        <el-row :gutter="10" style="margin-top:10px;">
+          <el-col :span="4">
+            <el-time-picker
+              v-model="start_utc"
+              format="HH:mm"
+              placeholder="开始时间"
+              @change="handleStartTimeChange"
+            />
+          </el-col>
 
-            <el-col :span="4" class="text-center">
-              <el-time-picker
-                v-model="start_utc"
-                format="HH:mm"
-                placeholder="开始时间"
-                @change="handleStartTimeChange"
-              />
-            </el-col>
+          <el-col :span="4" :offset="4">
+            <el-time-picker
+              v-model="end_utc"
+              format="HH:mm"
+              placeholder="结束时间"
+              @change="handleEndTimeChange"
+            />
+          </el-col>
 
-            <el-col :span="4" class="text-center">
-              <el-time-picker
-                v-model="end_utc"
-                format="HH:mm"
-                placeholder="结束时间"
-                @change="handleEndTimeChange"
-              />
-            </el-col>
+          <el-col :span="4" :offset="4">
+            <el-time-select
+              v-model="duration_utc"
+              :picker-options="{
+                start: '00:00',
+                step: '00:10',
+                end: '04:00'
+              }"
+              placeholder="持续时间"
+            />
+          </el-col>
+        </el-row>
 
-            <el-col :span="4" class="text-center">
-              <el-time-select
-                v-model="duration_utc"
-                :picker-options="{
-                  start: '00:00',
-                  step: '00:10',
-                  end: '04:00'
-                }"
-                placeholder="持续时间"
-              />
-            </el-col>
+        <el-row :gutter="20" style="margin-top:10px;">
+          <el-col :span="6" class="text-center">
+            <el-input v-model="comment" placeholder="请输入内容" />
+          </el-col>
 
-            <el-col :span="4" class="text-center">
-              <el-input-number v-model="num" :min="1" :max="10" label="数量" @change="handleChange" />
-            </el-col>
-          </el-row>
-          <el-row :gutter="20" style="margin-top:50px;">
-            <el-col :span="4" class="text-center">
-              <el-input v-model="comment" placeholder="请输入内容" />
-            </el-col>
+          <el-col :span="6" class="text-center">
+            <el-button type="primary" @click="handleSubmit">提交</el-button>
+          </el-col>
+        </el-row>
 
-            <el-col :span="4" class="text-center">
-              <el-button type="primary" @click="handleSubmit">提交</el-button>
-            </el-col>
-          </el-row>
-        </div>
+        <!-- </div> -->
       </el-card>
     </el-row>
   </div>
