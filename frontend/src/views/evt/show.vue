@@ -33,6 +33,7 @@ export default {
 
         this.initChart()
       })
+      this.initChart()
     },
     timeToString(time) {
       var hour = parseInt(time / 60)
@@ -79,13 +80,14 @@ export default {
         },
 
         xAxis: {
-          categories: this.sleep_duration_x
+        //   categories: this.sleep_duration_x
+          categories: ['2019-12-31', '2020-1-1', '2020-1-2', '2020-1-3', '2020-1-4', '2020-1-5']
         },
 
         series: [{
           name: 'sleep time',
-          data: this.sleep_duration_y
-        //   data: [540, 478, 464, 449, 531, 502]
+          //   data: this.sleep_duration_y
+          data: [540, 478, 464, 449, 531, 502]
         }],
 
         responsive: {

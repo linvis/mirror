@@ -55,6 +55,29 @@ export const constantRoutes = [
     }]
   },
 
+  // health
+  {
+    path: '/health',
+    component: Layout,
+    redirect: '/health/show',
+    name: 'health',
+    meta: { title: 'Health', icon: 'example' },
+    children: [
+      {
+        path: 'sleep',
+        name: 'sleep',
+        component: () => import('@/views/health/sleep'),
+        meta: { title: 'Sleep', icon: 'table' }
+      },
+      {
+        path: 'weight',
+        name: 'weight',
+        component: () => import('@/views/health/weight'),
+        meta: { title: 'weight', icon: 'tree' }
+      }
+    ]
+  },
+
   {
     path: '/evt',
     component: Layout,
