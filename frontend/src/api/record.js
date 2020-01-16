@@ -16,9 +16,17 @@ export function getEvtType(token) {
   })
 }
 
-export function getSleepData(token) {
+export function submitRec(evt, data) {
   return request({
-    url: '/evt/sleep',
+    url: '/record/submit/' + evt,
+    method: 'post',
+    data
+  })
+}
+
+export function queryRec(evt, token) {
+  return request({
+    url: '/record/query/' + evt,
     method: 'get',
     params: { token }
   })

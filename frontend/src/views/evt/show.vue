@@ -7,7 +7,7 @@
 <script>
 import Highcharts from 'highcharts'
 
-import { getSleepData } from '@/api/daily_evt'
+import { getSleepData } from '@/api/record'
 
 export default {
   data() {

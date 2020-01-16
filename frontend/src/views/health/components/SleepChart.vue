@@ -1,5 +1,5 @@
 <template>
-  <el-card class="box-card">
+  <el-card class="box-card" shadow="hover">
     <div slot="header" class="clearfix">
       <span>睡眠时长</span>
     </div>
@@ -10,7 +10,7 @@
 <script>
 
 import Highcharts from 'highcharts'
-import { getSleepData } from '@/api/daily_evt'
+import { getSleepRec } from '@/api/sleep'
 
 export default {
   data() {
@@ -25,7 +25,7 @@ export default {
   },
   methods: {
     featchData() {
-      getSleepData().then(response => {
+      getSleepRec().then(response => {
         this.options = response.data
         this.sleep_duration_x = response.data.date
         this.sleep_duration_y = response.data.duration

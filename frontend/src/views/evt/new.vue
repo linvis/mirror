@@ -73,7 +73,7 @@
 
 <script>
 
-import { submit, getEvtType } from '@/api/daily_evt'
+import { submit, getEvtType } from '@/api/record'
 // import { parse } from 'path'
 
 export default {

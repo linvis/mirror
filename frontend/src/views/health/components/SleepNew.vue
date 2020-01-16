@@ -1,5 +1,5 @@
 <template>
-  <el-card class="box-card">
+  <el-card class="box-card" shadow="hover">
     <div slot="header" class="clearfix">
       <span>日常活动</span>
       <!-- <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button> -->
@@ -41,43 +41,26 @@
 
 <script>
 
-import { submit, getEvtType } from '@/api/daily_evt'
+import { submitSleepRec } from '@/api/sleep'
 // import { parse } from 'path'
 
 export default {
   data() {
     return {
-      evt_type: [],
-      options: [],
       evt_date: 0,
       start_time: 0,
       end_time: 0,
       duration: 0,
-      num: 1,
-      comment: '',
-
       start_utc: 0,
       end_utc: 0,
       duration_utc: 0
     }
   },
   created() {
-    this.featchData()
     this.evt_date = Date.UTC(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()) / 1000
     this.evt_date = this.evt_date + (new Date().getTimezoneOffset() * 60)
-    this.options = []
   },
   methods: {
-    featchData() {
-      getEvtType().then(response => {
-      // this.options = response.data.items
-        console.log(response.data)
-        this.options = response.data
-      })
-    },
-    handleChange(type) {
-      // console.log(type)
-    },
     handleStartTimeChange(time) {
       this.start_time = this.start_utc.getHours() * 60 + this.start_utc.getMinutes()
 
@@ -119,18 +102,13 @@ export default {
       this.duration_utc = timeToString(this.duration)
     },
     handleSubmit: function(event) {
-      console.log(this.value)
       var evt = {
-        'evt_type': this.evt_type[0],
-        'evt_item': this.evt_type[1],
         'evt_date': this.evt_date,
         'start_time': this.start_time,
         'end_time': this.end_time,
-        'duration': this.duration,
-        'num': this.num,
-        'comment': this.comment
+        'duration': this.duration
       }
-      submit(evt).then(response => {
+      submitSleepRec(evt).then(response => {
         // alert('submit OK')
       })
     }
