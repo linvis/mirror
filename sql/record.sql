@@ -5,35 +5,35 @@ CREATE TABLE sleep_record
   UNSIGNED ZEROFILL NOT NULL PRIMARY KEY AUTO_INCREMENT,
   user_id INT
   (11) NOT NULL,
-	evt_date INT NOT NULL,
-  start_time MEDIUMINT DEFAULT NULL,
-  end_time MEDIUMINT DEFAULT NULL,
-	duration MEDIUMINT NOT NULL
+	record_date INT NOT NULL,
+  start_time INT DEFAULT NULL,
+  end_time INT DEFAULT NULL,
+	duration INT NOT NULL
 );
 
 # demo data
   INSERT INTO sleep_record
-    (user_id, evt_date, start_time, end_time, duration)
+    (user_id, record_date, start_time, end_time, duration)
   VALUES
     (3, 1577721600, -13, 527, 540);
   INSERT INTO sleep_record
-    (user_id, evt_date, start_time, end_time, duration)
+    (user_id, record_date, start_time, end_time, duration)
   VALUES
     (3, 1577808000, -11, 467, 478);
   INSERT INTO sleep_record
-    (user_id, evt_date, start_time, end_time, duration)
+    (user_id, record_date, start_time, end_time, duration)
   VALUES
     (3, 1577894400, 40, 504, 464);
   INSERT INTO sleep_record
-    (user_id, evt_date, start_time, end_time, duration)
+    (user_id, record_date, start_time, end_time, duration)
   VALUES
     (3, 1577980800, 93, 542, 449);
   INSERT INTO sleep_record
-    (user_id, evt_date, start_time, end_time, duration)
+    (user_id, record_date, start_time, end_time, duration)
   VALUES
     (3, 1578067200, -2, 529, 531);
   INSERT INTO sleep_record
-    (user_id, evt_date, start_time, end_time, duration)
+    (user_id, record_date, start_time, end_time, duration)
   VALUES
     (3, 1578153600, 27, 529, 502);
 
