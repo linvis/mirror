@@ -6,19 +6,28 @@ import (
 	"time"
 )
 
-type DailyEvt struct {
-	EvtID         int       `xorm:"not null 'evt_id'" json:"-"`
+CREATE TABLE sleep_record
+(
+  record_id INT(11)
+  UNSIGNED ZEROFILL NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  user_id INT
+  (11) NOT NULL,
+	record_date INT NOT NULL,
+  start_time MEDIUMINT DEFAULT NULL,
+  end_time MEDIUMINT DEFAULT NULL,
+	duration MEDIUMINT NOT NULL
+);
+
+
+type SleepRecord struct {
+	RecordID         int       `xorm:"unsigned zerofill not null 'record_id'" json:"-"`
 	UserID        int       `xorm:"not null 'user_id'" json:"-"`
-	EvtType       int       `xorm:"not null evt_type" json:"evt_type"`
-	EvtItem       int       `xorm:"not null evt_item" json:"evt_item"`
-	EvtDate       int64     `xorm:"bigint not null 'evt_date'" json:"evt_date"`
+	EvtDate       int     `xorm:"not null 'record_date'" json:"record_date"`
 	StartTime     time.Time `xorm:"-" json:"-"`
 	StartTimeUnix int       `xorm:"int 'start_time'" json:"start_time"`
 	EndTime       time.Time `xorm:"-" json:"-"`
 	EndTimeUnix   int       `xorm:"'end_time'" json:"end_time"`
 	Duration      int
-	Num           int
-	Comment       string
 }
 
 // TableName return table name
