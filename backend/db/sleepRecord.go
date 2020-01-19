@@ -6,6 +6,12 @@ import (
 	"time"
 )
 
+const (
+	LastWeek = iota
+	LastTwoWeek
+	LastMonth
+)
+
 type SleepRecord struct {
 	RecordID      int       `xorm:"unsigned zerofill not null 'record_id'" json:"-"`
 	UserID        int       `xorm:"not null 'user_id'" json:"-"`
@@ -27,10 +33,11 @@ func NewSleepRecord(rec *SleepRecord) error {
 	return err
 }
 
-func GetSleepRecord(user_id int) (*[]SleepRecord, error) {
+func GetSleepRecord(user_id int, days int) (*[]SleepRecord, error) {
 	rec := &[]SleepRecord{}
 
-	err := x.Where("user_id = ?", user_id).Find(rec)
+	err := x.Where("user_id = ? AND FROM_UNIXTIME(record_date) >= DATE(NOW()) - INTERVAL ? DAY", user_id, days).Find(rec)
+	// err := x.Where("user_id = ?", user_id).Find(rec)
 	if err != nil {
 		fmt.Println(err)
 		return nil, errors.New("no user daily evts")

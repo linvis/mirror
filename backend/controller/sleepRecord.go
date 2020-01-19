@@ -48,7 +48,21 @@ func buildSleepDataMsg(evts *[]db.SleepRecord) string {
 }
 
 func getSleepRecords(c *gin.Context) {
-	evts, err := db.GetSleepRecord(3)
+	time := c.Param("time")
+	days := 7
+
+	fmt.Println(time)
+	switch time {
+	case "week":
+	case "twoweek":
+		days = 14
+	case "month":
+		days = 30
+	default:
+		days = 7
+	}
+
+	evts, err := db.GetSleepRecord(3, days)
 	fmt.Println(evts)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{"code": 60204, "message": "Invalid Account"})
@@ -61,6 +75,6 @@ func getSleepRecords(c *gin.Context) {
 }
 
 func init() {
-	RegisterURL("record/sleep/new", "POST", NewSleepRecord)
-	RegisterURL("record/sleep/get", "GET", getSleepRecords)
+	RegisterURL("record/submit/sleep", "POST", NewSleepRecord)
+	RegisterURL("record/query/sleep/:time", "GET", getSleepRecords)
 }

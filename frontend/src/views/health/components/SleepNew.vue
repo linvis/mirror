@@ -102,14 +102,14 @@ export default {
       this.duration_utc = timeToString(this.duration)
     },
     handleSubmit: function(event) {
-      var evt = {
-        'evt_date': this.evt_date,
+      var record = {
+        'record_date': this.evt_date,
         'start_time': this.start_time,
         'end_time': this.end_time,
         'duration': this.duration
       }
-      submitSleepRec(evt).then(response => {
-        // alert('submit OK')
+      submitSleepRec(record).then(response => {
+        alert('submit OK')
       })
     }
   }
