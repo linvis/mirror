@@ -17,6 +17,9 @@
 <script>
 
 import Highcharts from 'highcharts'
+import stockInit from 'highcharts/modules/stock'
+stockInit(Highcharts)
+
 import { querySleepRec } from '@/api/sleep'
 
 export default {
@@ -27,30 +30,72 @@ export default {
       sleep_duration_y: [],
       sleep_x: [],
       sleep_y: [],
-      sleep_record_week: {
-        'time': [],
-        'start': [],
-        'end': []
-      },
-      sleep_record_twoweek: {
-        'time': [],
-        'start': [],
-        'end': []
-      }
+      xydata: [
+        [
+          1516631400000,
+          177
+        ],
+        [
+          1516717800000,
+          177
+        ],
+        [
+          1516804200000,
+          174
+        ],
+        [
+          1516890600000,
+          171
+        ],
+        [
+          1516977000000,
+          171
+        ],
+        [
+          1517236200000,
+          167
+        ],
+        [
+          1517322600000,
+          166
+        ],
+        [
+          1517409000000,
+          167
+        ],
+        [
+          1517495400000,
+          167
+        ],
+        [
+          1517581800000,
+          160
+        ],
+        [
+          1517841000000,
+          156
+        ],
+        [
+          1517927400000,
+          163
+        ]]
     }
   },
   created() {
-    this.featchData('week')
+  },
+  mounted() {
+    this.featchData('month')
   },
   methods: {
     featchData(time) {
-      querySleepRec(time).then(response => {
-        this.options = response.data
-        this.sleep_duration_x = response.data.date
-        this.sleep_duration_y = response.data.duration
+      // querySleepRec(time).then(response => {
+      //   this.options = response.data
+      //   this.sleep_duration_x = response.data.date
+      //   this.sleep_duration_y = response.data.duration
 
-        this.initChart()
-      })
+      //   this.initChart()
+      // })
+      this.initChart()
     },
     handleTabClick(tab, event) {
       console.log(tab.name)
@@ -80,15 +125,31 @@ export default {
       return parseInt(hour / 10).toString() + (hour % 10).toString() + ':' + parseInt(min / 10).toString() + (min % 10).toString()
     },
     initChart() {
-      this.sleep_chart = Highcharts.chart('sleep_chart', {
+      this.sleep_chart = Highcharts.stockChart('sleep_chart', {
+        rangeSelector: {
+          enabled: true,
+          allButtonsEnabled: true,
+          buttons: [{
+            type: 'week',
+            count: 1,
+            text: 'Week'
+          }, {
+            type: 'week',
+            count: 2,
+            text: '2Week'
+          }, {
+            type: 'month',
+            text: 'Month'
+          }],
+          buttonTheme: {
+            width: 60
+          },
+          selected: 0
+        },
 
         title: {
           text: 'Sleep Analysis'
         },
-
-        // subtitle: {
-        //   text: 'Source: thesolarfoundation.com'
-        // },
 
         yAxis: {
           labels: {
@@ -103,11 +164,6 @@ export default {
             text: 'Hours'
           }
         },
-        legend: {
-          layout: 'vertical',
-          align: 'right',
-          verticalAlign: 'middle'
-        },
 
         tooltip: {
           formatter: function() {
@@ -118,32 +174,11 @@ export default {
           }
         },
 
-        xAxis: {
-          categories: this.sleep_duration_x
-        //   categories: ['2019-12-31', '2020-1-1', '2020-1-2', '2020-1-3', '2020-1-4', '2020-1-5']
-        },
-
         series: [{
           name: 'sleep time',
-          data: this.sleep_duration_y
-        //   data: [540, 478, 464, 449, 531, 502]
-        }],
-
-        responsive: {
-          rules: [{
-            condition: {
-              maxWidth: 500
-            },
-            chartOptions: {
-              legend: {
-                layout: 'horizontal',
-                align: 'center',
-                verticalAlign: 'bottom'
-              }
-            }
-          }]
+          data: this.xydata
         }
-
+        ]
       })
     }
 
