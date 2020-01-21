@@ -5,8 +5,16 @@
       <!-- <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button> -->
       <el-button style="float: right;" type="primary" @click="handleSubmit">提交</el-button>
     </div>
-    <el-row style="margin-top:10px;">
-      <el-col :span="4">
+    <el-row style="margin-top:10px;margin-bottom:20px;">
+      <el-col :span="3">
+         <el-date-picker
+          v-model="record_date"
+          type="date"
+          placeholder="选择日期"
+          :picker-options="pickerOptions">
+      </el-date-picker>
+      </el-col>
+      <el-col :span="3" :offset="3">
         <el-time-picker
           v-model="start_utc"
           format="HH:mm"
@@ -15,7 +23,7 @@
         />
       </el-col>
 
-      <el-col :span="4" :offset="4">
+      <el-col :span="3" :offset="3">
         <el-time-picker
           v-model="end_utc"
           format="HH:mm"
@@ -24,7 +32,7 @@
         />
       </el-col>
 
-      <el-col :span="4" :offset="4">
+      <el-col :span="3" :offset="3">
         <el-time-select
           v-model="duration_utc"
           :picker-options="{
@@ -47,18 +55,23 @@ import { submitSleepRec } from '@/api/sleep'
 export default {
   data() {
     return {
-      evt_date: 0,
       start_time: 0,
       end_time: 0,
       duration: 0,
       start_utc: 0,
       end_utc: 0,
-      duration_utc: 0
+      duration_utc: 0,
+      pickerOptions: {
+        disabledDate(time) {
+          return time.getTime() > Date.now();
+        },
+      },
+      record_date : new Date()
     }
   },
   created() {
-    this.evt_date = Date.UTC(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()) / 1000
-    this.evt_date = this.evt_date + (new Date().getTimezoneOffset() * 60)
+    // this.evt_date = Date.UTC(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()) / 1000
+    // this.evt_date = this.evt_date + (new Date().getTimezoneOffset() * 60)
   },
   methods: {
     handleStartTimeChange(time) {
@@ -103,7 +116,7 @@ export default {
     },
     handleSubmit: function(event) {
       var record = {
-        'record_date': this.evt_date,
+        'record_date': Date.UTC(this.record_date.getFullYear(), this.record_date.getMonth(), this.record_date.getDate()),
         'start_time': this.start_time,
         'end_time': this.end_time,
         'duration': this.duration

@@ -1,14 +1,14 @@
 <template>
   <el-card class="box-card" shadow="hover">
     <div slot="header" class="clearfix">
-      <span>睡眠时长</span>
+      <span>睡眠统计</span>
     </div>
     <!-- <el-row id="sleep_chart" /> -->
     <el-tabs @tab-click="handleTabClick">
       <!-- <el-tabs> -->
-      <el-tab-pane label="最近1周" name="first" />
-      <el-tab-pane label="最近2周" name="second" />
-      <el-tab-pane label="最近1月" name="third" />
+      <el-tab-pane label="睡眠时长" name="first" />
+      <el-tab-pane label="入睡时间" name="second" />
+      <el-tab-pane label="苏醒时间" name="third" />
     </el-tabs>
     <el-row id="sleep_chart" />
   </el-card>

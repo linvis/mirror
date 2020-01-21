@@ -25,6 +25,8 @@ func main() {
 		redisPath = os.Args[3]
 	}
 
+	gin.SetMode(gin.DebugMode)
+
 	engine := gin.Default()
 
 	router.InitRouter(engine, environment)
