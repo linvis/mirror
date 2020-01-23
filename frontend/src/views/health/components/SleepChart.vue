@@ -84,18 +84,17 @@ export default {
   created() {
   },
   mounted() {
-    this.featchData('month')
+    this.featchData()
   },
   methods: {
-    featchData(time) {
-      // querySleepRec(time).then(response => {
-      //   this.options = response.data
-      //   this.sleep_duration_x = response.data.date
-      //   this.sleep_duration_y = response.data.duration
+    featchData() {
+      querySleepRec().then(response => {
+        this.xydata = response.data
 
-      //   this.initChart()
-      // })
-      this.initChart()
+        this.initChart()
+      })
+      console.log('ff')
+      // this.initChart()
     },
     handleTabClick(tab, event) {
       console.log(tab.name)

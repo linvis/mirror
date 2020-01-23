@@ -1,14 +1,14 @@
 package router
 
 import (
-	"mirror/controller"
+	"mirror/api"
 
 	"github.com/gin-gonic/gin"
 )
 
 func InitRouter(engine *gin.Engine, env string) {
 
-	for _, url := range controller.URLHandle {
+	for _, url := range api.URLHandle {
 		info := url
 
 		if info.Method == "POST" {
@@ -21,5 +21,20 @@ func InitRouter(engine *gin.Engine, env string) {
 			continue
 		}
 
+	}
+}
+
+func InitRouterGroup(engine *gin.Engine) {
+	// home
+	engine.GET("/", api.Home)
+
+	sub := engine.Group("/dev-api/record/submit")
+	{
+		sub.POST("sleep", api.NewSleepRecord)
+	}
+
+	query := engine.Group("/dev-api/record/query")
+	{
+		query.GET("sleep", api.GetSleepRecord)
 	}
 }

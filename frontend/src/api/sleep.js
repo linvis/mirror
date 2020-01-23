@@ -16,9 +16,9 @@ export function submitSleepRec(data) {
 //     })
 // }
 
-export function querySleepRec(time, token) {
+export function querySleepRec(token) {
   return request({
-    url: '/record/query/sleep/' + time,
+    url: '/record/query/sleep/',
     method: 'get',
     params: { token }
   })

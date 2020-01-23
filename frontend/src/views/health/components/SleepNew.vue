@@ -5,34 +5,38 @@
       <!-- <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button> -->
       <el-button style="float: right;" type="primary" @click="handleSubmit">提交</el-button>
     </div>
-    <el-row style="margin-top:10px;margin-bottom:20px;">
-      <el-col :span="3">
-         <el-date-picker
+    <!-- <el-row style="margin-top:10px;margin-bottom:20px;" :gutter="40"> -->
+    <el-row :gutter="60">
+      <el-col :span="6" class="text-center">
+        <el-date-picker
           v-model="record_date"
           type="date"
           placeholder="选择日期"
-          :picker-options="pickerOptions">
-      </el-date-picker>
+          :picker-options="pickerOptions"
+          style="width: 100%;"
+        />
       </el-col>
-      <el-col :span="3" :offset="3">
+      <el-col :span="6" class="text-center">
         <el-time-picker
           v-model="start_utc"
           format="HH:mm"
           placeholder="开始时间"
+          style="width: 100%;"
           @change="handleStartTimeChange"
         />
       </el-col>
 
-      <el-col :span="3" :offset="3">
+      <el-col :span="6" class="text-center">
         <el-time-picker
           v-model="end_utc"
           format="HH:mm"
           placeholder="结束时间"
+          style="width: 100%;"
           @change="handleEndTimeChange"
         />
       </el-col>
 
-      <el-col :span="3" :offset="3">
+      <el-col :span="6" class="text-center">
         <el-time-select
           v-model="duration_utc"
           :picker-options="{
@@ -41,6 +45,7 @@
             end: '04:00'
           }"
           placeholder="持续时间"
+          style="width: 100%;"
         />
       </el-col>
     </el-row>
@@ -63,10 +68,10 @@ export default {
       duration_utc: 0,
       pickerOptions: {
         disabledDate(time) {
-          return time.getTime() > Date.now();
-        },
+          return time.getTime() > Date.now()
+        }
       },
-      record_date : new Date()
+      record_date: new Date()
     }
   },
   created() {
@@ -128,3 +133,9 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.el-col {
+  border-radius: 4px;
+}
+</style>

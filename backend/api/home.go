@@ -1,4 +1,4 @@
-package controller
+package api
 
 import (
 	"net/http"
@@ -6,10 +6,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func home(c *gin.Context) {
+func Home(c *gin.Context) {
 	c.HTML(http.StatusOK, "index.html", nil)
-}
-
-func init() {
-	RegisterURL("/", "GET", home)
 }

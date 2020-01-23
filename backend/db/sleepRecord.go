@@ -3,7 +3,10 @@ package db
 import (
 	"errors"
 	"fmt"
+	"strconv"
 	"time"
+
+	"github.com/go-redis/redis/v7"
 )
 
 const (
@@ -15,7 +18,7 @@ const (
 type SleepRecord struct {
 	RecordID      int       `xorm:"unsigned zerofill not null 'record_id'" json:"-"`
 	UserID        int       `xorm:"not null 'user_id'" json:"-"`
-	Date          int       `xorm:"not null 'record_date'" json:"record_date"`
+	Date          int64     `xorm:"bigint not null 'record_date'" json:"record_date"`
 	StartTime     time.Time `xorm:"-" json:"-"`
 	StartTimeUnix int       `xorm:"'start_time'" json:"start_time"`
 	EndTime       time.Time `xorm:"-" json:"-"`
@@ -33,10 +36,34 @@ func NewSleepRecord(rec *SleepRecord) error {
 	return err
 }
 
+func SetSleepRecordToRedis(user_id int, val interface{}) error {
+	err := r.Set(strconv.Itoa(user_id), val, time.Hour*24).Err()
+
+	return err
+}
+
+func GetSleepRecordFromRedis(user_id int) (string, bool) {
+	found := false
+	id := strconv.Itoa(user_id)
+
+	val, err := r.Get(id).Result()
+
+	if err == redis.Nil {
+		// not found
+	} else if err != nil {
+		// error
+		fmt.Println(err)
+	} else {
+		found = true
+	}
+
+	return val, found
+}
+
 func GetSleepRecord(user_id int, days int) (*[]SleepRecord, error) {
 	rec := &[]SleepRecord{}
 
-	err := x.Where("user_id = ? AND FROM_UNIXTIME(record_date) >= DATE(NOW()) - INTERVAL ? DAY", user_id, days).Find(rec)
+	err := x.Where("user_id = ? AND FROM_UNIXTIME(record_date/1000) >= DATE(NOW()) - INTERVAL ? DAY", user_id, days).Find(rec)
 	// err := x.Where("user_id = ?", user_id).Find(rec)
 	if err != nil {
 		fmt.Println(err)
