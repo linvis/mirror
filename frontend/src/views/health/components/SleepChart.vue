@@ -25,12 +25,12 @@ import { querySleepRec } from '@/api/sleep'
 export default {
   data() {
     return {
+      activeTab: 'first',
       sleep_chart: null,
-      sleep_duration_x: [],
-      sleep_duration_y: [],
-      sleep_x: [],
-      sleep_y: [],
-      xydata: [
+      dur_data: [],
+      start_time_data: [],
+      end_time_data: [],
+      chart_data: [
         [
           1516631400000,
           177
@@ -89,34 +89,52 @@ export default {
   methods: {
     featchData() {
       querySleepRec().then(response => {
-        this.xydata = response.data
+        console.log(response.data)
+
+        for (var i = 0; i < response.data.date.length; i++) {
+          this.dur_data.push([response.data.date[i], response.data.duration[i]])
+          this.start_time_data.push([response.data.date[i], response.data.start_time[i]])
+          this.end_time_data.push([response.data.date[i], response.data.end_time[i]])
+        }
+
+        this.chart_data = this.dur_data.slice(0, this.dur_data.length - 1)
+        console.log('fd', this.dur_data)
+        console.log('ff', this.start_time_data)
+        console.log('fz', this.end_time_data)
 
         this.initChart()
       })
-      console.log('ff')
       // this.initChart()
     },
     handleTabClick(tab, event) {
-      console.log(tab.name)
-      var time = ''
-      if (tab.name === 'first') {
-        time = 'week'
+      console.log(tab.name, this.activeTab)
+      if (this.activeTab === tab.name) {
+        // do nothing
+        return
+      } else if (tab.name === 'first') {
+        this.chart_data = this.dur_data.slice(0, this.dur_data.length - 1)
       } else if (tab.name === 'second') {
-        time = 'twoweek'
+        this.chart_data = this.start_time_data.slice(0, this.start_time_data.length - 1)
       } else if (tab.name === 'third') {
-        time = 'month'
+        this.chart_data = this.end_time_data.slice(0, this.end_time_data.length - 1)
       }
-      querySleepRec(time).then(response => {
-        this.options = response.data
-        this.sleep_duration_x = response.data.date
-        this.sleep_duration_y = response.data.duration
+      this.activeTab = tab.name
+      this.sleep_chart.series[0].update({
+        data: this.chart_data
+      }, false)
+      console.log(this.chart_data, this.dur_data)
+      this.sleep_chart.redraw()
+      // querySleepRec(time).then(response => {
+      //   this.options = response.data
+      //   this.sleep_duration_x = response.data.date
+      //   this.sleep_duration_y = response.data.duration
 
-        this.sleep_chart.series[0].update({
-          x: this.sleep_duration_x,
-          data: this.sleep_duration_y
-        }, false)
-        this.sleep_chart.redraw()
-      })
+      //   this.sleep_chart.series[0].update({
+      //     x: this.sleep_duration_x,
+      //     data: this.sleep_duration_y
+      //   }, false)
+      //   this.sleep_chart.redraw()
+      // })
     },
     timeToString(time) {
       var hour = parseInt(time / 60)
@@ -175,7 +193,7 @@ export default {
 
         series: [{
           name: 'sleep time',
-          data: this.xydata
+          data: this.chart_data
         }
         ]
       })

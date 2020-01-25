@@ -19,10 +19,10 @@ type SleepRecord struct {
 	RecordID      int       `xorm:"unsigned zerofill not null 'record_id'" json:"-"`
 	UserID        int       `xorm:"not null 'user_id'" json:"-"`
 	Date          int64     `xorm:"bigint not null 'record_date'" json:"record_date"`
-	StartTime     time.Time `xorm:"-" json:"-"`
-	StartTimeUnix int       `xorm:"'start_time'" json:"start_time"`
-	EndTime       time.Time `xorm:"-" json:"-"`
-	EndTimeUnix   int       `xorm:"'end_time'" json:"end_time"`
+	StartTimeUnix time.Time `xorm:"-" json:"-"`
+	StartTime     int       `xorm:"'start_time'" json:"start_time"`
+	EndTimeUnix   time.Time `xorm:"-" json:"-"`
+	EndTime       int       `xorm:"'end_time'" json:"end_time"`
 	Duration      int       `xorm:"not null"`
 }
 

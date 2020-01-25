@@ -6,6 +6,9 @@
     <el-row style="margin-top:10px;">
       <sleep-chart />
     </el-row>
+    <el-row style="margin-top:10px;">
+      <sleep-analysis />
+    </el-row>
   </div>
 </template>
 
@@ -13,11 +16,13 @@
 
 import SleepChart from './components/SleepChart'
 import SleepNew from './components/SleepNew'
+import SleepAnalysis from './components/SleepAnalysis'
 
 export default {
   components: {
     SleepNew,
-    SleepChart
+    SleepChart,
+    SleepAnalysis
   }
 }
 </script>

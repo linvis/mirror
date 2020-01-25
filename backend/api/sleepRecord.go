@@ -37,16 +37,22 @@ func NewSleepRecord(c *gin.Context) {
 
 // {"act_type":"read","start_time":1575207586000,"end_time":1575207588000,"duration":"","num":1,"comment":"zzz"}
 
-func buildSleepDataMsg(records *[]db.SleepRecord) string {
-	msg := [][]int64{}
-
-	for _, rec := range *records {
-		msg = append(msg, []int64{rec.Date, (int64)(rec.Duration)})
+func buildSleepRecordMsg(records *[]db.SleepRecord) *map[string][]int64 {
+	msg := map[string][]int64{
+		"date":       []int64{},
+		"duration":   []int64{},
+		"start_time": []int64{},
+		"end_time":   []int64{},
 	}
 
-	b, _ := json.Marshal(gin.H{"code": 20000, "data": msg})
+	for _, rec := range *records {
+		msg["date"] = append(msg["date"], rec.Date)
+		msg["duration"] = append(msg["duration"], int64(rec.Duration))
+		msg["start_time"] = append(msg["start_time"], int64(rec.StartTime))
+		msg["end_time"] = append(msg["end_time"], int64(rec.EndTime))
+	}
 
-	return string(b)
+	return &msg
 }
 
 func GetSleepRecord(c *gin.Context) {
@@ -55,10 +61,8 @@ func GetSleepRecord(c *gin.Context) {
 	msg, found := db.GetSleepRecordFromRedis(3)
 	if found {
 		fmt.Println("fetch sleep records from redis", msg)
-		c.JSON(http.StatusOK, gin.H{"code": 20000, "data": msg})
+		c.String(http.StatusOK, msg)
 	} else {
-		msg := [][]int64{}
-
 		records, err := db.GetSleepRecord(3, 30)
 		fmt.Println("fetch sleep records from db", records)
 
@@ -67,16 +71,14 @@ func GetSleepRecord(c *gin.Context) {
 			return
 		}
 
-		for _, rec := range *records {
-			msg = append(msg, []int64{rec.Date, (int64)(rec.Duration)})
-		}
+		msg := buildSleepRecordMsg(records)
 
-		b, _ := json.Marshal(msg)
+		b, _ := json.Marshal(gin.H{"code": 20000, "data": *msg})
 
 		err = db.SetSleepRecordToRedis(3, string(b))
 		fmt.Println(err)
 
-		c.JSON(http.StatusOK, gin.H{"code": 20000, "data": msg})
+		c.String(http.StatusOK, string(b))
 	}
 }
 
