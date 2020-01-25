@@ -23,3 +23,11 @@ export function querySleepRec(token) {
     params: { token }
   })
 }
+
+export function querySleepRecAnalysis(token) {
+  return request({
+    url: '/record/analysis/sleep/',
+    method: 'get',
+    params: { token }
+  })
+}

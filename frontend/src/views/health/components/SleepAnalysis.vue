@@ -11,80 +11,34 @@
 
 import Highcharts from 'highcharts'
 import stockInit from 'highcharts/modules/stock'
+import { querySleepRecAnalysis } from '@/api/sleep'
 stockInit(Highcharts)
 
 export default {
   data() {
     return {
       sleep_analysis_chart: null,
-      sleep_duration_x: [],
-      sleep_duration_y: [],
-      sleep_x: [],
-      sleep_y: [],
-      xydata: [
-        [
-          1516631400000,
-          177
-        ],
-        [
-          1516717800000,
-          177
-        ],
-        [
-          1516804200000,
-          174
-        ],
-        [
-          1516890600000,
-          171
-        ],
-        [
-          1516977000000,
-          171
-        ],
-        [
-          1517236200000,
-          167
-        ],
-        [
-          1517322600000,
-          166
-        ],
-        [
-          1517409000000,
-          167
-        ],
-        [
-          1517495400000,
-          167
-        ],
-        [
-          1517581800000,
-          160
-        ],
-        [
-          1517841000000,
-          156
-        ],
-        [
-          1517927400000,
-          163
-        ]]
+      avgLastWeek: null,
+      avgLastTwoWeek: null,
+      avgLastMonth: null
     }
   },
   created() {
   },
   mounted() {
-    this.featchData()
+    this.featchDataj()
   },
   methods: {
-    featchData() {
-      // querySleepRec().then(response => {
-      //   this.xydata = response.data
-
-      //   this.initChart()
-      // })
-      this.initChart()
+    featchDataj() {
+      querySleepRecAnalysis().then(response => {
+        this.avgLastWeek = [response.data.duration[0], response.data.start_time[0], response.data.end_time[0]]
+        this.avgLastTwoWeek = [response.data.duration[1], response.data.start_time[1], response.data.end_time[1]]
+        this.avgLastMonth = [response.data.duration[2], response.data.start_time[2], response.data.end_time[2]]
+        console.log(this.avgLastWeek)
+        console.log(this.avgLastTwoWeek)
+        console.log(this.avgLastMonth)
+        this.initChart()
+      })
     },
     timeToString(time) {
       var hour = parseInt(time / 60)
@@ -142,10 +96,13 @@ export default {
         },
         series: [{
           name: 'This Week',
-          data: [107, 31, 635]
+          data: this.avgLastWeek
         }, {
-          name: 'Last Week',
-          data: [133, 156, 947]
+          name: 'Last Two Week',
+          data: this.avgLastTwoWeek
+        }, {
+          name: 'Last Month',
+          data: this.avgLastMonth
         }]
       })
     }

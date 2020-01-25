@@ -37,4 +37,9 @@ func InitRouterGroup(engine *gin.Engine) {
 	{
 		query.GET("sleep", api.GetSleepRecord)
 	}
+
+	analysis := engine.Group("/dev-api/record/analysis")
+	{
+		analysis.GET("sleep", api.GetSleepRecordAnalysis)
+	}
 }

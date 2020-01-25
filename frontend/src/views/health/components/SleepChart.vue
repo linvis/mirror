@@ -149,11 +149,11 @@ export default {
           buttons: [{
             type: 'week',
             count: 1,
-            text: 'Week'
+            text: 'last 7 days'
           }, {
             type: 'week',
             count: 2,
-            text: '2Week'
+            text: 'last 14 days'
           }, {
             type: 'month',
             text: 'Month'

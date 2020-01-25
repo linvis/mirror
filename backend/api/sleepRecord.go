@@ -82,6 +82,92 @@ func GetSleepRecord(c *gin.Context) {
 	}
 }
 
+type SleepRecordMsg struct {
+	Code int
+	Data struct {
+		Date      []int64
+		Duration  []int
+		StartTime []int `json:"start_time"`
+		EndTime   []int `json:"end_time"`
+	}
+}
+
+func GetSleepRecordAnalysis(c *gin.Context) {
+	msgCache, found := db.GetSleepRecordFromRedis(3)
+	if found {
+		var msg SleepRecordMsg
+
+		err := json.Unmarshal([]byte(msgCache), &msg)
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		avgDuration := make([]int, 3)
+		avgStartTime := make([]int, 3)
+		avgEndTime := make([]int, 3)
+		count := make([]int, 3)
+
+		for i := 0; i < len(msg.Data.Date); i++ {
+			if i < 7 {
+				avgDuration[0] += msg.Data.Duration[i]
+				avgStartTime[0] += msg.Data.StartTime[i]
+				avgEndTime[0] += msg.Data.EndTime[i]
+				count[0]++
+			} else if i < 14 {
+				avgDuration[1] += msg.Data.Duration[i]
+				avgStartTime[1] += msg.Data.StartTime[i]
+				avgEndTime[1] += msg.Data.EndTime[i]
+				count[1]++
+			} else {
+				avgDuration[2] += msg.Data.Duration[i]
+				avgStartTime[2] += msg.Data.StartTime[i]
+				avgEndTime[2] += msg.Data.EndTime[i]
+				count[2]++
+			}
+		}
+
+		if count[0] <= 0 {
+			c.JSON(http.StatusOK, gin.H{"code": 60204, "message": "no data"})
+			return
+		} else {
+			avgDuration[0] /= count[0]
+			avgStartTime[0] /= count[0]
+			avgEndTime[0] /= count[0]
+		}
+		if count[1] <= 0 {
+			avgDuration[1] = avgDuration[0]
+			avgDuration[2] = avgDuration[1]
+
+			avgStartTime[1] = avgStartTime[0]
+			avgStartTime[2] = avgStartTime[1]
+
+			avgEndTime[1] = avgEndTime[0]
+			avgEndTime[2] = avgEndTime[1]
+		} else {
+			avgDuration[1] /= count[1]
+			avgStartTime[1] /= count[1]
+			avgEndTime[1] /= count[1]
+		}
+		if count[2] <= 0 {
+			avgDuration[2] = avgDuration[1]
+			avgStartTime[2] = avgStartTime[1]
+			avgEndTime[2] = avgEndTime[1]
+		} else {
+			avgDuration[2] = avgDuration[1]
+			avgStartTime[2] = avgStartTime[1]
+			avgEndTime[2] = avgEndTime[1]
+		}
+
+		c.JSON(http.StatusOK, gin.H{"code": 20000, "data": map[string][]int{
+			"duration":   avgDuration,
+			"start_time": avgStartTime,
+			"end_time":   avgEndTime,
+		}})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"code": 60204, "message": "no data"})
+}
+
 func init() {
 	// RegisterURL("record/submit/sleep", "POST", NewSleepRecord)
 	// RegisterURL("record/query/sleep/:time", "GET", getSleepRecords)
