@@ -93,8 +93,8 @@ export default {
 
         for (var i = 0; i < response.data.date.length; i++) {
           this.dur_data.push([response.data.date[i], response.data.duration[i]])
-          this.start_time_data.push([response.data.date[i], response.data.start_time[i]])
-          this.end_time_data.push([response.data.date[i], response.data.end_time[i]])
+          this.start_time_data.push([response.data.date[i], response.data.start_time[i] + 24 * 60])
+          this.end_time_data.push([response.data.date[i], response.data.end_time[i] + 24 * 60])
         }
 
         this.chart_data = this.dur_data.slice(0, this.dur_data.length - 1)
@@ -171,7 +171,7 @@ export default {
         yAxis: {
           labels: {
             formatter: function() {
-            //   return this.timeToString(this.value)
+              this.value = this.value % (24 * 60)
               var hour = parseInt(this.value / 60)
               var min = parseInt(this.value % 60)
               return parseInt(hour / 10).toString() + (hour % 10).toString() + ':' + parseInt(min / 10).toString() + (min % 10).toString()
@@ -184,8 +184,10 @@ export default {
 
         tooltip: {
           formatter: function() {
-            var hour = parseInt(this.y / 60)
-            var min = parseInt(this.y % 60)
+            // yesterday
+            var tmpY = this.y % (24 * 60)
+            var hour = parseInt(tmpY / 60)
+            var min = parseInt(tmpY % 60)
             var time = parseInt(hour / 10).toString() + (hour % 10).toString() + ':' + parseInt(min / 10).toString() + (min % 10).toString()
             return 'Sleep about ' + time
           }
