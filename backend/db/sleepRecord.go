@@ -32,7 +32,19 @@ func (r SleepRecord) TableName() string {
 }
 
 func NewSleepRecord(rec *SleepRecord) error {
-	_, err := x.Insert(rec)
+	oldRec := SleepRecord{}
+	has, err := x.Where("user_id = ? AND record_date = ?", rec.UserID, rec.Date).Get(&oldRec)
+	if err != nil {
+		return err
+	}
+	if has {
+		// update record
+		fmt.Println("update old rec", oldRec)
+		DeleteSleepRecordFromRedis(rec.UserID)
+		x.Update(rec, &SleepRecord{RecordID: oldRec.RecordID})
+	} else {
+		_, err = x.Insert(rec)
+	}
 	return err
 }
 
@@ -58,6 +70,11 @@ func GetSleepRecordFromRedis(user_id int) (string, bool) {
 	}
 
 	return val, found
+}
+
+func DeleteSleepRecordFromRedis(user_id int) {
+	id := strconv.Itoa(user_id)
+	r.Del(id)
 }
 
 func GetSleepRecord(user_id int, days int) (*[]SleepRecord, error) {

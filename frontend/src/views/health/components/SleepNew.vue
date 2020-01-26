@@ -120,14 +120,23 @@ export default {
       this.duration_utc = timeToString(this.duration)
     },
     handleSubmit: function(event) {
+      // var utcDate = Date.UTC(this.record_date.getFullYear(), this.record_date.getMonth(), this.record_date.getDate()) +
+      // this.record_date.getTimezoneOffset() * 60 * 1000
+      var utcDate = Date.UTC(this.record_date.getFullYear(), this.record_date.getMonth(), this.record_date.getDate())
+      console.log(this.record_date.getTimezoneOffset())
       var record = {
-        'record_date': Date.UTC(this.record_date.getFullYear(), this.record_date.getMonth(), this.record_date.getDate()),
+        'record_date': utcDate,
         'start_time': this.start_time,
         'end_time': this.end_time,
         'duration': this.duration
       }
       submitSleepRec(record).then(response => {
-        alert('submit OK')
+        this.$notify({
+          title: '成功',
+          message: '',
+          type: 'success',
+          duration: 800
+        })
       })
     }
   }
