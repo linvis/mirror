@@ -21,7 +21,7 @@ type UserInfo struct {
 }
 
 // /user/login
-func loginIn(c *gin.Context) {
+func LoginIn(c *gin.Context) {
 
 	var info LoginInfo
 
@@ -48,7 +48,7 @@ func loginIn(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"code": 20000, "data": &token})
 }
 
-func userInfo(c *gin.Context) {
+func GetUserInfo(c *gin.Context) {
 	token := c.Query("token")
 
 	re := regexp.MustCompile(`(.*)-token`)
@@ -66,12 +66,6 @@ func userInfo(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"code": 20000, "data": &userInfo})
 }
 
-func logout(c *gin.Context) {
+func Logout(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"code": 20000, "data": "success"})
-}
-
-func init() {
-	RegisterURL("user/login", "POST", loginIn)
-	RegisterURL("user/info", "GET", userInfo)
-	RegisterURL("user/logout", "POST", logout)
 }

@@ -29,8 +29,7 @@ func main() {
 
 	engine := gin.Default()
 
-	router.InitRouter(engine, environment)
-	router.InitRouterGroup(engine)
+	router.InitRouterGroup(engine, environment)
 
 	db.InitDB(dbPath)
 	db.InitRedis(redisPath)

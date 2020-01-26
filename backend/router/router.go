@@ -6,39 +6,28 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func InitRouter(engine *gin.Engine, env string) {
-
-	for _, url := range api.URLHandle {
-		info := url
-
-		if info.Method == "POST" {
-			engine.POST(env+info.URL, info.Handlers...)
-			continue
-		}
-
-		if info.Method == "GET" {
-			engine.GET(env+info.URL, info.Handlers...)
-			continue
-		}
-
-	}
-}
-
-func InitRouterGroup(engine *gin.Engine) {
+func InitRouterGroup(engine *gin.Engine, env string) {
 	// home
 	engine.GET("/", api.Home)
 
-	sub := engine.Group("/dev-api/record/submit")
+	user := engine.Group(env + "/user")
+	{
+		user.POST("/login", api.LoginIn)
+		user.POST("/logout", api.Logout)
+		user.GET("/info", api.GetUserInfo)
+	}
+
+	sub := engine.Group(env + "/record/submit")
 	{
 		sub.POST("sleep", api.NewSleepRecord)
 	}
 
-	query := engine.Group("/dev-api/record/query")
+	query := engine.Group(env + "/record/query")
 	{
 		query.GET("sleep", api.GetSleepRecord)
 	}
 
-	analysis := engine.Group("/dev-api/record/analysis")
+	analysis := engine.Group(env + "/record/analysis")
 	{
 		analysis.GET("sleep", api.GetSleepRecordAnalysis)
 	}
