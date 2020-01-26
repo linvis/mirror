@@ -60,18 +60,42 @@ export default {
           }
         },
         yAxis: {
-          min: 0,
-          title: {
-            text: 'Population (millions)',
-            align: 'high'
-          },
           labels: {
-            overflow: 'justify'
+            formatter: function() {
+              this.value = this.value % (24 * 60)
+              var hour = parseInt(this.value / 60)
+              var min = parseInt(this.value % 60)
+              return parseInt(hour / 10).toString() + (hour % 10).toString() + ':' + parseInt(min / 10).toString() + (min % 10).toString()
+            }
+          },
+          title: {
+            text: 'Hours'
           }
         },
+
         tooltip: {
-          valueSuffix: ' millions'
+          formatter: function() {
+            // yesterday
+            var tmpY = this.y % (24 * 60)
+            var hour = parseInt(tmpY / 60)
+            var min = parseInt(tmpY % 60)
+            var time = parseInt(hour / 10).toString() + (hour % 10).toString() + ':' + parseInt(min / 10).toString() + (min % 10).toString()
+            return 'Sleep about ' + time
+          }
         },
+        // yAxis: {
+        //   min: 0,
+        //   title: {
+        //     text: 'Population (millions)',
+        //     align: 'high'
+        //   },
+        //   labels: {
+        //     overflow: 'justify'
+        //   }
+        // },
+        // tooltip: {
+        //   valueSuffix: ' millions'
+        // },
         plotOptions: {
           bar: {
             dataLabels: {
