@@ -2,41 +2,33 @@
   <el-card class="box-card" shadow="hover">
     <div slot="header" class="clearfix">
       <span>日常活动</span>
-      <!-- <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button> -->
-      <el-button style="float: right;" type="primary" @click="handleSubmit">提交</el-button>
     </div>
-    <!-- <el-row style="margin-top:10px;margin-bottom:20px;" :gutter="40"> -->
-    <el-row :gutter="60">
-      <el-col :span="6" class="text-center">
+    <el-form ref="form" label-position="left" :model="form" label-width="80px">
+      <el-form-item label="日期">
         <el-date-picker
           v-model="record_date"
           type="date"
           placeholder="选择日期"
           :picker-options="pickerOptions"
-          style="width: 100%;"
         />
-      </el-col>
-      <el-col :span="6" class="text-center">
+      </el-form-item>
+      <el-form-item label="开始时间">
         <el-time-picker
           v-model="start_utc"
           format="HH:mm"
           placeholder="开始时间"
-          style="width: 100%;"
           @change="handleStartTimeChange"
         />
-      </el-col>
-
-      <el-col :span="6" class="text-center">
+      </el-form-item>
+      <el-form-item label="结束时间">
         <el-time-picker
           v-model="end_utc"
           format="HH:mm"
           placeholder="结束时间"
-          style="width: 100%;"
           @change="handleEndTimeChange"
         />
-      </el-col>
-
-      <el-col :span="6" class="text-center">
+      </el-form-item>
+      <el-form-item label="持续时间">
         <el-time-select
           v-model="duration_utc"
           :picker-options="{
@@ -45,10 +37,13 @@
             end: '04:00'
           }"
           placeholder="持续时间"
-          style="width: 100%;"
         />
-      </el-col>
-    </el-row>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" @click="handleSubmit">立即创建</el-button>
+        <el-button>取消</el-button>
+      </el-form-item>
+    </el-form>
   </el-card>
 </template>
 
