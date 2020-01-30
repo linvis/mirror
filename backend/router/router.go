@@ -20,7 +20,6 @@ func InitRouterGroup(engine *gin.Engine, env string) {
 	sub := engine.Group(env + "/record/submit")
 	{
 		sub.POST("sleep", api.NewSleepRecord)
-		sub.POST("leetcode", api.NewLeetcodeRecord)
 	}
 
 	query := engine.Group(env + "/record/query")

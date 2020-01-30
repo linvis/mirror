@@ -3,6 +3,7 @@ package spider
 import (
 	"bufio"
 	"fmt"
+	"github.com/gocolly/colly"
 	"io/ioutil"
 	"net/http"
 	"os"
@@ -12,6 +13,7 @@ type Spider struct {
 	userAgent string
 	url       string
 	cookies   string
+	colly     *colly.Collector
 }
 
 func NewSpider(url string, cookies string) *Spider {
@@ -19,10 +21,19 @@ func NewSpider(url string, cookies string) *Spider {
 		userAgent: "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)",
 		url:       url,
 		cookies:   cookies,
+		colly:     colly.NewCollector(),
 	}
 }
 
 func (spider *Spider) DoSpider() (string, error) {
+	spider.colly.OnHTML("rect", func(e *colly.HTMLElement) {
+		fmt.Println(e.Text)
+	})
+
+	spider.colly.Visit(spider.url)
+}
+
+func (spider *Spider) DoRequest() (string, error) {
 	client := &http.Client{}
 
 	req, _ := http.NewRequest("GET", spider.url, nil)
