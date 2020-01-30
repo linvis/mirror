@@ -29,7 +29,7 @@
           <leetcode />
         </div>
         <el-form-item>
-          <el-button type="primary" @click="onSubmit">立即创建</el-button>
+          <el-button type="primary" @click="handleSubmit">立即创建</el-button>
           <el-button>取消</el-button>
         </el-form-item>
       </el-form>
@@ -64,7 +64,7 @@ export default {
     }
   },
   methods: {
-    onSubmit() {
+    handleSubmit() {
       console.log('submit!')
     },
     handleChange(value) {

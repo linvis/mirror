@@ -1,6 +1,7 @@
 package main
 
 import (
+	_ "mirror/spider"
 	"mirror/db"
 	"mirror/router"
 	"os"

@@ -1,2 +1,4 @@
 db/db.config
 db/redis.config
+spider/leetcode.cookie
+test

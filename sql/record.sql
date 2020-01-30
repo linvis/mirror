@@ -1,5 +1,5 @@
-DROP TABLE IF EXISTS sleep_record;
-CREATE TABLE sleep_record
+DROP TABLE IF EXISTS sleep_records;
+CREATE TABLE sleep_records
 (
   record_id INT(11)
   UNSIGNED ZEROFILL NOT NULL PRIMARY KEY AUTO_INCREMENT,
@@ -8,36 +8,32 @@ CREATE TABLE sleep_record
 	record_date BIGINT NOT NULL,
   start_time INT DEFAULT NULL,
   end_time INT DEFAULT NULL,
-	duration INT NOT NULL,
+	duration INT DEFAULT NULL,
 	INDEX
   (record_date)
 );
 
+  DROP TABLE IF EXISTS leetcode_records;
+  CREATE TABLE leetcode_records
+  (
+    record_id INT(11)
+    UNSIGNED ZEROFILL NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  user_id INT
+    (11) NOT NULL,
+	record_date BIGINT NOT NULL,
+	num INT NOT NULL
+);
+
 # demo data
-  INSERT INTO sleep_record
-    (user_id, record_date, start_time, end_time, duration)
-  VALUES
-    (3, 1577750400000, -13, 527, 540);
-  INSERT INTO sleep_record
-    (user_id, record_date, start_time, end_time, duration)
-  VALUES
-    (3, 1577836800000, -11, 467, 478);
-  INSERT INTO sleep_record
-    (user_id, record_date, start_time, end_time, duration)
-  VALUES
-    (3, 1577923200000, 40, 504, 464);
-  INSERT INTO sleep_record
-    (user_id, record_date, start_time, end_time, duration)
-  VALUES
-    (3, 1578009600000, 93, 542, 449);
-  INSERT INTO sleep_record
-    (user_id, record_date, start_time, end_time, duration)
-  VALUES
-    (3, 1578096000000, -2, 529, 531);
-  INSERT INTO sleep_record
-    (user_id, record_date, start_time, end_time, duration)
-  VALUES
-    (3, 1578182400000, 27, 529, 502);
+    INSERT INTO sleep_records
+      (user_id, record_date, start_time, end_time, duration)
+    VALUES
+      (3, 1577750400000, -13, 527, 540),
+      (3, 1577836800000, -11, 467, 478),
+      (3, 1577923200000, 40, 504, 464),
+      (3, 1578009600000, 93, 542, 449),
+      (3, 1578096000000, -2, 529, 531),
+      (3, 1578182400000, 27, 529, 502);
 
 -- DROP TABLE IF EXISTS record_type;
 -- CREATE TABLE record_type

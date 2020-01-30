@@ -90,6 +90,12 @@ export const constantRoutes = [
         name: 'evt',
         component: () => import('@/views/evt/evt'),
         meta: { title: 'Daily Event', icon: 'table' }
+      },
+      {
+        path: 'program',
+        name: 'program',
+        component: () => import('@/views/evt/program'),
+        meta: { title: 'Program', icon: 'table' }
       }
     ]
   },
