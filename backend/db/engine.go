@@ -59,7 +59,7 @@ func GetEngine() (*xorm.Engine, error) {
 
 func InitDB(path string) {
 
-	tables = append(tables, new(User), new(SleepRecord))
+	tables = append(tables, new(User), new(SleepRecord), new(LeetcodeSetting), new(GithubSetting))
 
 	config, err := loadDBConfig(path)
 	// config, err := loadDBConfig("db.config")

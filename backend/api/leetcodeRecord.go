@@ -13,16 +13,17 @@ func GetLeetcodeRecord(c *gin.Context) {
 	if found {
 		c.String(http.StatusOK, val)
 	} else {
-		leetcodeCookies, err := spider.LoadCookies("spider/leetcode.cookie")
-		if err != nil {
-			c.JSON(http.StatusOK, gin.H{"code": 60204, "message": "Invalid Leetcode Cookies"})
+		setting, has := db.GetLeetcodeSetting(3)
+		if has == false {
+			c.JSON(http.StatusOK, gin.H{"code": 60204, "message": "Invalid Leetcode Setting"})
+			return
 		}
 
-		leetcodeSpider := spider.NewSpider("https://leetcode.com/api/user_submission_calendar/slinz/", leetcodeCookies)
+		leetcodeSpider := spider.NewSpider("https://leetcode.com/api/user_submission_calendar/"+setting.UserName1, setting.Cookie)
 
 		heatMap, err := leetcodeSpider.DoRequest()
 		if err != nil {
-			c.JSON(http.StatusOK, gin.H{"code": 60204, "message": "Invalid Leetcode Cookies"})
+			c.JSON(http.StatusOK, gin.H{"code": 60204, "message": "Invalid Leetcode Account"})
 		}
 
 		db.SetLeetcodeRecordToRedis(3, heatMap)

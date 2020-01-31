@@ -19,17 +19,24 @@ func InitRouterGroup(engine *gin.Engine, env string) {
 
 	sub := engine.Group(env + "/record/submit")
 	{
-		sub.POST("sleep", api.NewSleepRecord)
+		sub.POST("/sleep", api.NewSleepRecord)
 	}
 
 	query := engine.Group(env + "/record/query")
 	{
-		query.GET("sleep", api.GetSleepRecord)
-		query.GET("leetcode", api.GetLeetcodeRecord)
+		query.GET("/sleep", api.GetSleepRecord)
+		query.GET("/leetcode", api.GetLeetcodeRecord)
+		query.GET("/github", api.GetGithubRecord)
 	}
 
 	analysis := engine.Group(env + "/record/analysis")
 	{
-		analysis.GET("sleep", api.GetSleepRecordAnalysis)
+		analysis.GET("/sleep", api.GetSleepRecordAnalysis)
+	}
+
+	settings := engine.Group(env + "setting")
+	{
+		settings.GET("/program", api.GetProgramSetting)
+		settings.POST("/program", api.SetProgramSetting)
 	}
 }

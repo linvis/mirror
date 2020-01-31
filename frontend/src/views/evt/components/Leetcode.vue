@@ -4,13 +4,13 @@
       <span>Leetcode统计</span>
     </div>
     <!-- <el-row id="sleep_chart" /> -->
-    <el-row id="cal-heatmap" style="margin-top:10px;margin-left:10px" />
+    <el-row id="cal-heatmap" style="margin-top:10px;margin-left:30px" />
   </el-card>
 </template>
 
 <script>
 
-import { queryLeetcodeRec } from '@/api/leetcode'
+import { queryLeetcodeRec } from '@/api/program'
 import CalHeatMap from 'cal-heatmap'
 import 'cal-heatmap/cal-heatmap.css'
 import moment from 'moment'

@@ -25,13 +25,13 @@ func NewSpider(url string, cookies string) *Spider {
 	}
 }
 
-func (spider *Spider) DoSpider() (string, error) {
-	spider.colly.OnHTML("rect", func(e *colly.HTMLElement) {
-		fmt.Println(e.Text)
-	})
+// func (spider *Spider) DoSpider() (string, error) {
+// 	spider.colly.OnHTML("rect", func(e *colly.HTMLElement) {
+// 		fmt.Println(e.Text)
+// 	})
 
-	spider.colly.Visit(spider.url)
-}
+// 	spider.colly.Visit(spider.url)
+// }
 
 func (spider *Spider) DoRequest() (string, error) {
 	client := &http.Client{}

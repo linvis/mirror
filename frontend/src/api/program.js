@@ -8,3 +8,11 @@ export function queryLeetcodeRec(token) {
     params: { token }
   })
 }
+
+export function queryGithubRec(token) {
+  return request({
+    url: '/record/query/github/',
+    method: 'get',
+    params: { token }
+  })
+}

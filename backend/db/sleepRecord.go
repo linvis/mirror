@@ -28,7 +28,7 @@ type SleepRecord struct {
 
 // TableName return table name
 func (r SleepRecord) TableName() string {
-	return "sleep_records"
+	return "sleep_record"
 }
 
 func NewSleepRecord(rec *SleepRecord) error {

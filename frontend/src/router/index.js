@@ -121,6 +121,19 @@ export const constantRoutes = [
       meta: { title: 'Articles', icon: 'example' }
     }]
   },
+  // settings
+  {
+    path: '/settings',
+    component: Layout,
+    redirect: '/settings/show',
+    meta: { title: 'Settings', icon: 'example' },
+    children: [{
+      path: 'settings',
+      name: 'Settingss',
+      component: () => import('@/views/settings/index'),
+      meta: { title: 'Settings', icon: 'example' }
+    }]
+  },
 
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }

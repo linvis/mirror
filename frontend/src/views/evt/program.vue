@@ -1,16 +1,23 @@
 <template>
   <div class="mixin-components-container">
-    <leetcode />
+    <el-row>
+      <leetcode />
+    </el-row>
+    <el-row style="margin-top:10px;">
+      <github />
+    </el-row>
   </div>
 </template>
 
 <script>
 
 import Leetcode from './components/Leetcode'
+import Github from './components/Github'
 
 export default {
   components: {
-    Leetcode
+    Leetcode,
+    Github
   }
 }
 </script>
