@@ -4,7 +4,11 @@
       <span>Github统计</span>
     </div>
     <!-- <el-row id="sleep_chart" /> -->
-    <el-row id="cal-heatmap-github" style="margin-top:10px;margin-left:30px" />
+    <el-row
+      id="cal-heatmap-github"
+      v-loading="githubLoading"
+      style="margin-top:10px;margin-left:30px"
+    />
   </el-card>
 </template>
 
@@ -19,7 +23,8 @@ export default {
   data() {
     return {
       calHeatmap: null,
-      calData: { '2020-01-27': 7, '2020-01-28': 1 }
+      calData: { '2020-01-27': 7, '2020-01-28': 1 },
+      githubLoading: true
       // calData: {}
     }
   },
@@ -36,9 +41,11 @@ export default {
           var obj = JSON.parse(response)
           console.log(typeof (obj))
           this.calData = obj
+          this.githubLoading = false
           this.initHeatMap()
         },
         error => {
+          this.githubLoading = false
           this.initHeatMap()
         }
       )
@@ -82,3 +89,9 @@ export default {
   }
 }
 </script>
+
+<style>
+body {
+  margin: 0;
+}
+</style>
