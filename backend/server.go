@@ -1,9 +1,10 @@
 package main
 
 import (
-	_ "mirror/spider"
 	"mirror/db"
+	"mirror/middleware"
 	"mirror/router"
+	_ "mirror/spider"
 	"os"
 
 	"github.com/gin-gonic/gin"
@@ -28,7 +29,11 @@ func main() {
 
 	gin.SetMode(gin.DebugMode)
 
-	engine := gin.Default()
+	middleware.InitLogger(environment)
+
+	engine := gin.New()
+	engine.Use(gin.Recovery())
+	engine.Use(middleware.Logger())
 
 	router.InitRouterGroup(engine, environment)
 

@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"mirror/db"
 	"net/http"
-	"regexp"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -50,13 +49,10 @@ func LoginIn(c *gin.Context) {
 }
 
 func GetUserInfo(c *gin.Context) {
-	token := c.Query("token")
 
-	re := regexp.MustCompile(`(.*)-token`)
-	name := re.FindStringSubmatch(token)
-	fmt.Println(token, name)
+	id := GetUserID(c)
 
-	user, _ := db.GetUserByName(name[1])
+	user, _ := db.GetUserByID(id)
 
 	userInfo := UserInfo{
 		user.Name,

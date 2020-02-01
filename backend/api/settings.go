@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	log "github.com/sirupsen/logrus"
 )
 
 type ProgramSettings struct {
@@ -24,18 +25,18 @@ func SetProgramSetting(c *gin.Context) {
 		return
 	}
 
-	fmt.Println(s)
+	log.Debug(s)
 
 	s.UserID1 = id
 	err := db.NewLeetcodeSetting(&s.LeetcodeSetting)
 	if err != nil {
-		fmt.Println(err)
+		log.Error(err)
 	}
 
 	s.UserID2 = id
 	db.NewGithubSetting(&s.GithubSetting)
 	if err != nil {
-		fmt.Println(err)
+		log.Error(err)
 	}
 
 	c.JSON(http.StatusOK, gin.H{"code": 20000, "data": ""})

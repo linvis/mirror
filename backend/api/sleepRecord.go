@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	log "github.com/sirupsen/logrus"
 )
 
 type EvtItems struct {
@@ -21,7 +22,6 @@ func NewSleepRecord(c *gin.Context) {
 	id := GetUserID(c)
 
 	if err := c.BindJSON(&rec); err != nil {
-		fmt.Println(err)
 		c.JSON(http.StatusOK, gin.H{"code": 60204, "message": "Invalid Account"})
 		return
 	}
@@ -31,7 +31,7 @@ func NewSleepRecord(c *gin.Context) {
 	rec.UserID = id
 	err := db.NewSleepRecord(&rec)
 	if err != nil {
-		fmt.Println(err)
+		log.Error(err)
 	}
 
 	c.JSON(http.StatusOK, gin.H{"code": 20000, "data": ""})
@@ -63,11 +63,11 @@ func GetSleepRecord(c *gin.Context) {
 
 	msg, found := db.GetSleepRecordFromRedis(id)
 	if found {
-		fmt.Println("fetch sleep records from redis", msg)
+		log.Debug("fetch sleep records from redis", msg)
 		c.String(http.StatusOK, msg)
 	} else {
 		records, err := db.GetSleepRecord(id, 30)
-		fmt.Println("fetch sleep records from db", records)
+		log.Debug("fetch sleep records from db", records)
 
 		if err != nil {
 			c.JSON(http.StatusOK, gin.H{"code": 60204, "message": "Invalid Account"})
@@ -79,7 +79,6 @@ func GetSleepRecord(c *gin.Context) {
 		b, _ := json.Marshal(gin.H{"code": 20000, "data": *msg})
 
 		err = db.SetSleepRecordToRedis(id, string(b))
-		fmt.Println(err)
 
 		c.String(http.StatusOK, string(b))
 	}

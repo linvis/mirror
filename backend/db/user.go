@@ -59,3 +59,17 @@ func GetUserByName(name string) (*User, error) {
 
 	return u, nil
 }
+
+func GetUserByID(id int) (*User, error) {
+
+	u := new(User)
+
+	has, err := x.Where("user_id = ?", id).Get(u)
+	if err != nil {
+		return nil, err
+	} else if !has {
+		return nil, errors.New("no user")
+	}
+
+	return u, nil
+}
