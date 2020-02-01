@@ -16,6 +16,8 @@ type ProgramSettings struct {
 func SetProgramSetting(c *gin.Context) {
 	var s ProgramSettings
 
+	id := GetUserID(c)
+
 	if err := c.BindJSON(&s); err != nil {
 		fmt.Println(err)
 		c.JSON(http.StatusOK, gin.H{"code": 60204, "message": "Invalid Setting"})
@@ -24,13 +26,13 @@ func SetProgramSetting(c *gin.Context) {
 
 	fmt.Println(s)
 
-	s.UserID1 = 3
+	s.UserID1 = id
 	err := db.NewLeetcodeSetting(&s.LeetcodeSetting)
 	if err != nil {
 		fmt.Println(err)
 	}
 
-	s.UserID2 = 3
+	s.UserID2 = id
 	db.NewGithubSetting(&s.GithubSetting)
 	if err != nil {
 		fmt.Println(err)
@@ -42,9 +44,11 @@ func SetProgramSetting(c *gin.Context) {
 func GetProgramSetting(c *gin.Context) {
 	var s ProgramSettings
 
-	s.LeetcodeSetting, _ = db.GetLeetcodeSetting(3)
+	id := GetUserID(c)
 
-	s.GithubSetting, _ = db.GetGithubSetting(3)
+	s.LeetcodeSetting, _ = db.GetLeetcodeSetting(id)
+
+	s.GithubSetting, _ = db.GetGithubSetting(id)
 
 	c.JSON(http.StatusOK, gin.H{"code": 20000, "data": s})
 }

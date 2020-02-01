@@ -14,11 +14,12 @@ import (
 
 func GetGithubRecord(c *gin.Context) {
 
-	val, found := db.GetGithubRecordFromRedis(3)
+	id := GetUserID(c)
+	val, found := db.GetGithubRecordFromRedis(id)
 	if found {
 		c.String(http.StatusOK, val)
 	} else {
-		setting, has := db.GetGithubSetting(3)
+		setting, has := db.GetGithubSetting(id)
 		if has == false {
 			c.JSON(http.StatusOK, gin.H{"code": 60204, "message": "Invalid Github setting"})
 			return
@@ -57,7 +58,7 @@ func GetGithubRecord(c *gin.Context) {
 
 		b, _ = json.Marshal(string(b))
 
-		db.SetGithubRecordToRedis(3, string(b))
+		db.SetGithubRecordToRedis(id, string(b))
 
 		c.String(http.StatusOK, string(b))
 	}

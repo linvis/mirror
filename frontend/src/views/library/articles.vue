@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container">
+  <div class="app-container" style="margin-left:50px;">
     <div class="article-card">
       <h2 class="article-head">
         <a href="https://www.baidu.com">Test1</a>

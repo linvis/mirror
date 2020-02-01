@@ -9,14 +9,14 @@ import (
 )
 
 func SetGithubRecordToRedis(user_id int, val interface{}) error {
-	err := r.Set(strconv.Itoa(user_id)+"github", val, time.Hour*24).Err()
+	err := r.Set(strconv.Itoa(user_id)+"-github", val, time.Hour*24).Err()
 
 	return err
 }
 
 func GetGithubRecordFromRedis(user_id int) (string, bool) {
 	found := false
-	id := strconv.Itoa(user_id) + "github"
+	id := strconv.Itoa(user_id) + "-github"
 
 	val, err := r.Get(id).Result()
 

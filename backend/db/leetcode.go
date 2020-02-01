@@ -9,14 +9,14 @@ import (
 )
 
 func SetLeetcodeRecordToRedis(user_id int, val interface{}) error {
-	err := r.Set(strconv.Itoa(user_id)+"leetcode", val, time.Hour*24).Err()
+	err := r.Set(strconv.Itoa(user_id)+"-leetcode", val, time.Hour*24).Err()
 
 	return err
 }
 
 func GetLeetcodeRecordFromRedis(user_id int) (string, bool) {
 	found := false
-	id := strconv.Itoa(user_id) + "leetcode"
+	id := strconv.Itoa(user_id) + "-leetcode"
 
 	val, err := r.Get(id).Result()
 

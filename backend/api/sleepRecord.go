@@ -18,6 +18,8 @@ type EvtItems struct {
 func NewSleepRecord(c *gin.Context) {
 	var rec db.SleepRecord
 
+	id := GetUserID(c)
+
 	if err := c.BindJSON(&rec); err != nil {
 		fmt.Println(err)
 		c.JSON(http.StatusOK, gin.H{"code": 60204, "message": "Invalid Account"})
@@ -26,7 +28,7 @@ func NewSleepRecord(c *gin.Context) {
 
 	fmt.Println(rec)
 
-	rec.UserID = 3
+	rec.UserID = id
 	err := db.NewSleepRecord(&rec)
 	if err != nil {
 		fmt.Println(err)
@@ -57,13 +59,14 @@ func buildSleepRecordMsg(records *[]db.SleepRecord) *map[string][]int64 {
 
 func GetSleepRecord(c *gin.Context) {
 	// get last month
+	id := GetUserID(c)
 
-	msg, found := db.GetSleepRecordFromRedis(3)
+	msg, found := db.GetSleepRecordFromRedis(id)
 	if found {
 		fmt.Println("fetch sleep records from redis", msg)
 		c.String(http.StatusOK, msg)
 	} else {
-		records, err := db.GetSleepRecord(3, 30)
+		records, err := db.GetSleepRecord(id, 30)
 		fmt.Println("fetch sleep records from db", records)
 
 		if err != nil {
@@ -75,7 +78,7 @@ func GetSleepRecord(c *gin.Context) {
 
 		b, _ := json.Marshal(gin.H{"code": 20000, "data": *msg})
 
-		err = db.SetSleepRecordToRedis(3, string(b))
+		err = db.SetSleepRecordToRedis(id, string(b))
 		fmt.Println(err)
 
 		c.String(http.StatusOK, string(b))
@@ -93,7 +96,8 @@ type SleepRecordMsg struct {
 }
 
 func GetSleepRecordAnalysis(c *gin.Context) {
-	msgCache, found := db.GetSleepRecordFromRedis(3)
+	id := GetUserID(c)
+	msgCache, found := db.GetSleepRecordFromRedis(id)
 	if found {
 		var msg SleepRecordMsg
 

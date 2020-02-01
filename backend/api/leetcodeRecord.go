@@ -9,11 +9,12 @@ import (
 )
 
 func GetLeetcodeRecord(c *gin.Context) {
-	val, found := db.GetLeetcodeRecordFromRedis(3)
+	id := GetUserID(c)
+	val, found := db.GetLeetcodeRecordFromRedis(id)
 	if found {
 		c.String(http.StatusOK, val)
 	} else {
-		setting, has := db.GetLeetcodeSetting(3)
+		setting, has := db.GetLeetcodeSetting(id)
 		if has == false {
 			c.JSON(http.StatusOK, gin.H{"code": 60204, "message": "Invalid Leetcode Setting"})
 			return
@@ -26,7 +27,7 @@ func GetLeetcodeRecord(c *gin.Context) {
 			c.JSON(http.StatusOK, gin.H{"code": 60204, "message": "Invalid Leetcode Account"})
 		}
 
-		db.SetLeetcodeRecordToRedis(3, heatMap)
+		db.SetLeetcodeRecordToRedis(id, heatMap)
 
 		c.String(http.StatusOK, heatMap)
 	}
