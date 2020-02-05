@@ -10,6 +10,7 @@ import (
 func InitRouterGroup(engine *gin.Engine, env string) {
 	// home
 	engine.GET("/", api.Home)
+	engine.Use()
 
 	user := engine.Group(env + "/user")
 	{

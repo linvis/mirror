@@ -110,15 +110,15 @@ export const constantRoutes = [
 
   // library
   {
-    path: '/library',
+    path: '/wiki',
     component: Layout,
-    redirect: '/library/show',
-    meta: { title: 'Memory Library', icon: 'example' },
+    redirect: '/wiki/show',
+    meta: { title: 'Wiki', icon: 'example' },
     children: [{
-      path: 'articles',
-      name: 'Articles',
-      component: () => import('@/views/library/articles'),
-      meta: { title: 'Articles', icon: 'example' }
+      path: 'wiki',
+      name: 'wiki',
+      component: () => import('@/views/wiki/index'),
+      meta: { title: 'Wiki', icon: 'example' }
     }]
   },
   // settings
