@@ -22,14 +22,7 @@ export default {
         label: 'Level one 1',
         children: [{
           id: 4,
-          label: 'Level two 1-1',
-          children: [{
-            id: 9,
-            label: 'Level three 1-1-1'
-          }, {
-            id: 10,
-            label: 'Level three 1-1-2'
-          }]
+          label: 'Level two 1-1'
         }]
       }, {
         id: 2,

@@ -4,14 +4,14 @@
       <search />
     </el-header>
     <el-container>
-      <el-aside width="200px">
+      <el-menu>
         <tree />
-      </el-aside>
-      <el-aside width="200px">
+      </el-menu>
+      <el-menu>
         <tree />
-      </el-aside>
+      </el-menu>
       <el-main>
-        <note />
+        <editor />
       </el-main>
     </el-container>
   </el-container>
@@ -21,13 +21,13 @@
 
 import Search from './components/Search'
 import Tree from './components/Tree'
-import Note from './components/Note'
+import Editor from './components/Editor'
 
 export default {
   components: {
     Search,
     Tree,
-    Note
+    Editor
   }
 
 }
@@ -44,7 +44,7 @@ export default {
 }
 
 .el-aside {
-  background-color: #d3dce6;
+  /* background-color: #d3dce6; */
   color: #333;
   border-radius: 2px;
   /* text-align: center; */
@@ -52,7 +52,7 @@ export default {
 }
 
 .el-main {
-  background-color: #e9eef3;
+  /* background-color: #e9eef3; */
   color: #333;
   border-radius: 2px;
   /* text-align: center; */
