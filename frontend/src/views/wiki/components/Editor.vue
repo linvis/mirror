@@ -7,7 +7,9 @@
           :class="{ 'is-active': isActive.bold() }"
           @click="commands.bold"
         >
-          <icon name="bold" />
+          <span class="svg-container">
+            <svg-icon icon-class="editor_bold" />
+          </span>
         </button>
 
         <button
@@ -15,7 +17,9 @@
           :class="{ 'is-active': isActive.italic() }"
           @click="commands.italic"
         >
-          <icon name="italic" />
+          <span class="svg-container">
+            <svg-icon icon-class="editor_italic" />
+          </span>
         </button>
 
         <button
@@ -23,7 +27,9 @@
           :class="{ 'is-active': isActive.strike() }"
           @click="commands.strike"
         >
-          <icon name="strike" />
+          <span class="svg-container">
+            <svg-icon icon-class="editor_strike" />
+          </span>
         </button>
 
         <button
@@ -31,7 +37,9 @@
           :class="{ 'is-active': isActive.underline() }"
           @click="commands.underline"
         >
-          <icon name="underline" />
+          <span class="svg-container">
+            <svg-icon icon-class="editor_underline" />
+          </span>
         </button>
 
         <button
@@ -39,7 +47,9 @@
           :class="{ 'is-active': isActive.code() }"
           @click="commands.code"
         >
-          <icon name="code" />
+          <span class="svg-container">
+            <svg-icon icon-class="editor_code" />
+          </span>
         </button>
 
         <button
@@ -47,7 +57,9 @@
           :class="{ 'is-active': isActive.paragraph() }"
           @click="commands.paragraph"
         >
-          <icon name="paragraph" />
+          <span class="svg-container">
+            <svg-icon icon-class="editor_paragraph" />
+          </span>
         </button>
 
         <button
@@ -73,7 +85,9 @@
           :class="{ 'is-active': isActive.bullet_list() }"
           @click="commands.bullet_list"
         >
-          <icon name="ul" />
+          <span class="svg-container">
+            <svg-icon icon-class="editor_ul" />
+          </span>
         </button>
 
         <button
@@ -81,7 +95,9 @@
           :class="{ 'is-active': isActive.ordered_list() }"
           @click="commands.ordered_list"
         >
-          <icon name="ol" />
+          <span class="svg-container">
+            <svg-icon icon-class="editor_ol" />
+          </span>
         </button>
 
         <button
@@ -89,7 +105,9 @@
           :class="{ 'is-active': isActive.blockquote() }"
           @click="commands.blockquote"
         >
-          <icon name="quote" />
+          <span class="svg-container">
+            <svg-icon icon-class="editor_quote" />
+          </span>
         </button>
 
         <button
@@ -97,19 +115,27 @@
           :class="{ 'is-active': isActive.code_block() }"
           @click="commands.code_block"
         >
-          <icon name="code" />
+          <span class="svg-container">
+            <svg-icon icon-class="editor_code" />
+          </span>
         </button>
 
         <button class="menubar__button" @click="commands.horizontal_rule">
-          <icon name="hr" />
+          <span class="svg-container">
+            <svg-icon icon-class="editor_hr" />
+          </span>
         </button>
 
         <button class="menubar__button" @click="commands.undo">
-          <icon name="undo" />
+          <span class="svg-container">
+            <svg-icon icon-class="editor_undo" />
+          </span>
         </button>
 
         <button class="menubar__button" @click="commands.redo">
-          <icon name="redo" />
+          <span class="svg-container">
+            <svg-icon icon-class="editor_redo" />
+          </span>
         </button>
       </div>
     </editor-menu-bar>
@@ -119,9 +145,7 @@
 </template>
 
 <script>
-import Icon from '@/components/Icon'
 
-import Hamburger from '@/components/Hamburger'
 import { Editor, EditorContent, EditorMenuBar } from 'tiptap'
 import {
   Blockquote,
@@ -145,8 +169,7 @@ import {
 export default {
   components: {
     EditorContent,
-    EditorMenuBar,
-    Icon
+    EditorMenuBar
   },
   data() {
     return {
@@ -200,3 +223,11 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+@import "~@/styles/variables.scss";
+// @import "~@/styles/editor.scss";
+// @import "~@/styles/main.scss";
+@import "~@/styles/menubar.scss";
+@import "~@/styles/menububble.scss";
+</style>

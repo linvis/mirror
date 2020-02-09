@@ -8,14 +8,14 @@
 
 <script>
 export default {
-  name: 'Icon',
   props: {
+    name: {
+      type: String,
+      default: ''
+    },
     size: {
       type: String,
       default: 'normal'
-    },
-    modifier: {
-      default: null
     },
     fixAlign: {
       type: Boolean,

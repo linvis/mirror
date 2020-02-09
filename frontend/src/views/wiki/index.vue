@@ -1,23 +1,32 @@
 <template>
-  <el-container>
+  <div class="components-container">
     <el-header style="margin-top:20px">
       <search />
     </el-header>
-    <el-container>
-      <el-menu>
-        <tree />
-      </el-menu>
-      <el-menu>
-        <tree />
-      </el-menu>
-      <el-main>
-        <editor />
-      </el-main>
-    </el-container>
-  </el-container>
+    <split-pane
+      split="vertical"
+      :default-percent="25"
+      @resize="resize"
+    >
+      <template slot="paneL">
+        <split-pane split="vertical" @resize="resize">
+          <template slot="paneL">
+            <tree />
+          </template>
+          <template slot="paneR">
+            <tree />
+          </template>
+        </split-pane>
+      </template>
+      <template slot="paneR">
+        <editor style="margin-left:40px" />
+      </template>
+    </split-pane>
+    </el-header></div>
 </template>
 
 <script>
+import splitPane from 'vue-splitpane'
 
 import Search from './components/Search'
 import Tree from './components/Tree'
@@ -25,6 +34,7 @@ import Editor from './components/Editor'
 
 export default {
   components: {
+    splitPane,
     Search,
     Tree,
     Editor
@@ -42,33 +52,8 @@ export default {
   /* text-align: center;
   line-height: 60px; */
 }
-
-.el-aside {
-  /* background-color: #d3dce6; */
-  color: #333;
-  border-radius: 2px;
-  /* text-align: center; */
-  /* line-height: 200px; */
-}
-
-.el-main {
-  /* background-color: #e9eef3; */
-  color: #333;
-  border-radius: 2px;
-  /* text-align: center; */
-  /* line-height: 160px; */
-}
-
-body > .el-container {
-  margin-bottom: 40px;
-}
-
-.el-container:nth-child(5) .el-aside,
-.el-container:nth-child(6) .el-aside {
-  line-height: 260px;
-}
-
-.el-container:nth-child(7) .el-aside {
-  line-height: 320px;
+.components-container {
+  position: relative;
+  height: 100vh;
 }
 </style>
