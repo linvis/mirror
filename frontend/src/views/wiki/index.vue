@@ -38,6 +38,11 @@ export default {
     Search,
     Tree,
     Editor
+  },
+  methods: {
+    resize() {
+    }
+
   }
 
 }

@@ -7,15 +7,48 @@
       :filter-node-method="filterNode"
       class="filter-tree"
       default-expand-all
-    />
+      @node-contextmenu="handleClick"
+    >
+      <span slot-scope="{ node, data }" class="custom-tree-node">
+        <span>{{ node.label }}</span>
+      </span>
+    </el-tree>
+    <vue-context ref="menu">
+      <template v-if="child.data" slot-scope="child">
+        <li>
+          <a @click.prevent="alertName(child.data.value)">Alert name</a>
+        </li>
+      </template>
+    </vue-context>
   </div>
 </template>
 
 <script>
+
+import VueContext from 'vue-context'
+import 'vue-context/src/sass/vue-context.scss'
+
 export default {
+  components: {
+    VueContext
+  },
 
   data() {
     return {
+      options: [
+        {
+          name: 'Duplicate',
+          slug: 'duplicate'
+        },
+        {
+          name: 'Edit',
+          slug: 'edit'
+        },
+        {
+          name: 'Delete',
+          slug: 'delete'
+        }
+      ],
       filterText: '',
       data2: [{
         id: 1,
@@ -61,6 +94,14 @@ export default {
     filterNode(value, data) {
       if (!value) return true
       return data.label.indexOf(value) !== -1
+    },
+    handleClick(event, obj, node, components) {
+      console.log(node)
+      this.$refs.menu.open(event, { value: node })
+    },
+    alertName(node) {
+      alert(`You clicked on: "${node.label}"`)
+      console.log(node)
     }
   }
 }
