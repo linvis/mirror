@@ -34,57 +34,17 @@ export default {
         [
           1516631400000,
           177
-        ],
-        [
-          1516717800000,
-          177
-        ],
-        [
-          1516804200000,
-          174
-        ],
-        [
-          1516890600000,
-          171
-        ],
-        [
-          1516977000000,
-          171
-        ],
-        [
-          1517236200000,
-          167
-        ],
-        [
-          1517322600000,
-          166
-        ],
-        [
-          1517409000000,
-          167
-        ],
-        [
-          1517495400000,
-          167
-        ],
-        [
-          1517581800000,
-          160
-        ],
-        [
-          1517841000000,
-          156
-        ],
-        [
-          1517927400000,
-          163
         ]]
     }
   },
   created() {
+    this.$bus.on('update-sleeprecord', this.featchData)
   },
   mounted() {
     this.featchData()
+  },
+  beforeDestroy() {
+    this.$bus.off('update-sleeprecord', this.featchData)
   },
   methods: {
     featchData() {
@@ -97,10 +57,9 @@ export default {
           this.end_time_data.push([response.data.date[i], response.data.end_time[i] + 24 * 60])
         }
 
-        this.chart_data = this.dur_data.slice(0, this.dur_data.length - 1)
-        console.log('fd', this.dur_data)
-        console.log('ff', this.start_time_data)
-        console.log('fz', this.end_time_data)
+        // this.chart_data = this.dur_data.slice(0, this.dur_data.length)
+        this.chart_data = this.dur_data
+        console.log(this.chart_data)
 
         this.initChart()
       })
@@ -112,17 +71,19 @@ export default {
         // do nothing
         return
       } else if (tab.name === 'first') {
-        this.chart_data = this.dur_data.slice(0, this.dur_data.length - 1)
+        // this.chart_data = this.dur_data.slice(0, this.dur_data.length - 1)
+        this.chart_data = this.dur_data
       } else if (tab.name === 'second') {
-        this.chart_data = this.start_time_data.slice(0, this.start_time_data.length - 1)
+        // this.chart_data = this.start_time_data.slice(0, this.start_time_data.length - 1)
+        this.chart_data = this.start_time_data
       } else if (tab.name === 'third') {
-        this.chart_data = this.end_time_data.slice(0, this.end_time_data.length - 1)
+        // this.chart_data = this.end_time_data.slice(0, this.end_time_data.length - 1)
+        this.chart_data = this.end_time_data
       }
       this.activeTab = tab.name
       this.sleep_chart.series[0].update({
         data: this.chart_data
       }, false)
-      console.log(this.chart_data, this.dur_data)
       this.sleep_chart.redraw()
       // querySleepRec(time).then(response => {
       //   this.options = response.data

@@ -34,6 +34,9 @@ func NewSleepRecord(c *gin.Context) {
 		log.Error(err)
 	}
 
+	// delete redis record
+	db.DeleteSleepRecordFromRedis(id)
+
 	c.JSON(http.StatusOK, gin.H{"code": 20000, "data": ""})
 }
 
@@ -137,25 +140,14 @@ func GetSleepRecordAnalysis(c *gin.Context) {
 			avgStartTime[0] /= count[0]
 			avgEndTime[0] /= count[0]
 		}
-		if count[1] <= 0 {
-			avgDuration[1] = avgDuration[0]
-			avgDuration[2] = avgDuration[1]
-
-			avgStartTime[1] = avgStartTime[0]
-			avgStartTime[2] = avgStartTime[1]
-
-			avgEndTime[1] = avgEndTime[0]
-			avgEndTime[2] = avgEndTime[1]
-		} else {
+		// last week
+		if count[1] > 0 {
 			avgDuration[1] /= count[1]
 			avgStartTime[1] /= count[1]
 			avgEndTime[1] /= count[1]
 		}
-		if count[2] <= 0 {
-			avgDuration[2] = avgDuration[1]
-			avgStartTime[2] = avgStartTime[1]
-			avgEndTime[2] = avgEndTime[1]
-		} else {
+		// last month
+		if count[2] > 0 {
 			avgDuration[2] = avgDuration[1]
 			avgStartTime[2] = avgStartTime[1]
 			avgEndTime[2] = avgEndTime[1]

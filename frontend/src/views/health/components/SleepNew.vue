@@ -66,7 +66,10 @@ export default {
           return time.getTime() > Date.now()
         }
       },
-      record_date: new Date()
+      record_date: new Date(),
+      form: {
+
+      }
     }
   },
   created() {
@@ -132,6 +135,7 @@ export default {
           type: 'success',
           duration: 800
         })
+        this.$bus.emit('update-sleeprecord')
       })
     }
   }

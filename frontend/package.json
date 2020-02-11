@@ -27,6 +27,7 @@
     "tiptap": "^1.26.6",
     "tiptap-extensions": "^1.28.6",
     "vue": "2.6.10",
+    "vue-bus": "^1.2.1",
     "vue-calendar-heatmap": "^0.8.4",
     "vue-context": "^5.0.0",
     "vue-router": "3.0.6",

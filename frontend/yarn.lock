@@ -10584,6 +10584,11 @@ vm-browserify@^1.0.1:
   resolved "https://registry.npm.taobao.org/vm-browserify/download/vm-browserify-1.1.2.tgz?cache=0&sync_timestamp=1572870717730&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fvm-browserify%2Fdownload%2Fvm-browserify-1.1.2.tgz#78641c488b8e6ca91a75f511e7a3b32a86e5dda0"
   integrity sha1-eGQcSIuObKkadfUR56OzKobl3aA=
 
+vue-bus@^1.2.1:
+  version "1.2.1"
+  resolved "https://registry.npm.taobao.org/vue-bus/download/vue-bus-1.2.1.tgz#50577b0b73fc1af9cda8a475fef2f7f0fdad7045"
+  integrity sha1-UFd7C3P8GvnNqKR1/vL38P2tcEU=
+
 vue-calendar-heatmap@^0.8.4:
   version "0.8.4"
   resolved "https://registry.npm.taobao.org/vue-calendar-heatmap/download/vue-calendar-heatmap-0.8.4.tgz#eb450a23870df0ca1ab80d12489125f590d482d2"
