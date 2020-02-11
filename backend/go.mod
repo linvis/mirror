@@ -20,6 +20,7 @@ require (
 	github.com/sirupsen/logrus v1.4.2
 	github.com/smartystreets/goconvey v1.6.4
 	github.com/temoto/robotstxt v1.1.1 // indirect
+	go.mongodb.org/mongo-driver v1.3.0
 	gopkg.in/bufio.v1 v1.0.0-20140618132640-567b2bfa514e // indirect
 	gopkg.in/redis.v2 v2.3.2
 	xorm.io/xorm v0.8.0
