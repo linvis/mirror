@@ -9,6 +9,10 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
+var (
+	collections *mongo.Collection
+)
+
 func InitMongoDB() {
 
 	// Set client options
@@ -29,4 +33,6 @@ func InitMongoDB() {
 	}
 
 	fmt.Println("Connected to MongoDB!")
+
+	collections = client.Database("mirror").Collection("catalog")
 }

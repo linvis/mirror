@@ -51,30 +51,30 @@ export default {
       ],
       filterText: '',
       data2: [{
-        id: 1,
+        id: '1-0',
         label: 'Level one 1',
         children: [{
-          id: 4,
+          id: '1-1',
           label: 'Level two 1-1'
         }]
       }, {
-        id: 2,
+        id: '2-0',
         label: 'Level one 2',
         children: [{
-          id: 5,
+          id: '2-1',
           label: 'Level two 2-1'
         }, {
-          id: 6,
+          id: '2-2',
           label: 'Level two 2-2'
         }]
       }, {
-        id: 3,
+        id: '3-0',
         label: 'Level one 3',
         children: [{
-          id: 7,
+          id: '3-1',
           label: 'Level two 3-1'
         }, {
-          id: 8,
+          id: '3-2',
           label: 'Level two 3-2'
         }]
       }],
