@@ -39,6 +39,7 @@ func main() {
 
 	db.InitDB(dbPath)
 	db.InitRedis(redisPath)
+	db.InitMongoDB()
 
 	engine.Static("/static", "./templates/static")
 	engine.StaticFile("/favicon.ico", "./templates/favicon.ico")

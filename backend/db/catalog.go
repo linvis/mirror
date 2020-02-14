@@ -3,7 +3,6 @@ package db
 import (
 	"context"
 	"errors"
-	"fmt"
 
 	log "github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/bson"
@@ -12,10 +11,10 @@ import (
 )
 
 type Catalog struct {
-	UserID   int `bson:"user_id" json:"user_id"`
-	ID       int `bson:"id" json:"id"`
-	Label    string
-	ParendID int `bson:"parend_id" json:"parend_id"`
+	UserID   int    `bson:"user_id" json:"-"`
+	ID       int    `bson:"id" json:"id"`
+	Label    string `json:"label"`
+	ParendID int    `bson:"parend_id" json:"parend_id"`
 }
 
 func NewCatalog(catalog Catalog) error {
@@ -40,6 +39,19 @@ func NewCatalog(catalog Catalog) error {
 	}
 
 	return nil
+}
+
+func NewDefaultCatalog(user_id int) (Catalog, error) {
+	catalog := Catalog{
+		UserID:   user_id,
+		ID:       1,
+		Label:    "默认笔记本",
+		ParendID: 0,
+	}
+
+	_, err := collections.InsertOne(context.TODO(), catalog)
+
+	return catalog, err
 }
 
 func GetCatalog(user_id int) (*[]Catalog, error) {
@@ -72,9 +84,16 @@ func GetCatalog(user_id int) (*[]Catalog, error) {
 		log.Fatal(err)
 	}
 
-	cur.Close(context.TODO())
+	defer cur.Close(context.TODO())
 
-	fmt.Println(res)
+	if len(res) == 0 {
+		// create default catalog
+		catalog, err := NewDefaultCatalog(user_id)
+
+		res = append(res, catalog)
+
+		return &res, err
+	}
 
 	return &res, nil
 }

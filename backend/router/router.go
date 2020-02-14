@@ -45,4 +45,10 @@ func InitRouterGroup(engine *gin.Engine, env string) {
 		settings.GET("/program", api.GetProgramSetting)
 		settings.POST("/program", api.SetProgramSetting)
 	}
+
+	editor := engine.Group(env + "editor")
+	{
+		editor.Use(middleware.BaseAuth())
+		editor.GET("/catalog", api.GetEditorCatalog)
+	}
 }
