@@ -7,3 +7,11 @@ export function queryEditorCatalog(token) {
     params: { token }
   })
 }
+
+export function submitNewCatalog(data) {
+  return request({
+    url: '/editor/catalog/new',
+    method: 'post',
+    data
+  })
+}

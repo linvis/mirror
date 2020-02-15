@@ -11,10 +11,10 @@
       @node-contextmenu="handleClick"
     >
       <span slot-scope="{ node, data }" class="custom-tree-node">
-        <div v-if="data.filetype === 'notebook'">
+        <div v-if="data.filetype === 0">
           <i class="el-icon-folder" />
         </div>
-        <div v-else-if="data.filetype === 'markdown'">
+        <div v-else-if="data.filetype === 1">
           <i class="el-icon-document" />
         </div>
         <div v-else />
@@ -41,7 +41,7 @@
 import VueContext from 'vue-context'
 import 'vue-context/src/sass/vue-context.scss'
 
-import { queryEditorCatalog } from '@/api/editor'
+import { queryEditorCatalog, submitNewCatalog } from '@/api/editor'
 
 export default {
   components: {
@@ -55,10 +55,11 @@ export default {
       catalog: [{
         id: 1,
         label: 'Level one 1',
-        filetype: 'notebook',
+        filetype: 0,
+        level: 1,
         children: [{
           id: 2,
-          filetype: 'markdown',
+          filetype: 1,
           label: 'Level two 1-1'
         }]
       }],
@@ -95,17 +96,17 @@ export default {
     handleNew(node) {
       // alert(`You clicked on: "${node.label}"`)
       console.log(node)
-      console.log(node.expanded)
 
       var data = node.data
 
-      const newChild = { id: data.id++, label: 'testtest', children: [] }
+      const newChild = { id: data.id++, label: 'notebook', children: [] }
       if (!data.children) {
         this.$set(data, 'children', [])
       }
       data.children.push(newChild)
 
-      node.expanded = true
+      submitNewCatalog(newChild).then(response => {
+      })
     },
     handleRename(node) {
       alert(`You clicked on: "${node.label}"`)

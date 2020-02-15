@@ -10,10 +10,17 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
+const (
+	FileTypeNoteBook = iota
+	FileTypeMarkdown
+)
+
 type Catalog struct {
 	UserID   int    `bson:"user_id" json:"-"`
 	ID       int    `bson:"id" json:"id"`
 	Label    string `json:"label"`
+	Level    int    `json:"level"`
+	FileType int    `bson:"filetype" json:"filetype"`
 	ParendID int    `bson:"parend_id" json:"parend_id"`
 }
 
@@ -26,16 +33,17 @@ func NewCatalog(catalog Catalog) error {
 
 	err := collections.FindOne(context.TODO(), filter).Decode(&res)
 	if err == nil {
-		log.Fatal("duplicated catalog")
+		log.Warn("duplicated catalog")
 		return errors.New("duplicated catalog")
 	} else if err != mongo.ErrNoDocuments {
-		log.Fatal(err)
+		log.Warn(err)
 		return err
 	}
 
 	_, err = collections.InsertOne(context.TODO(), catalog)
 	if err != nil {
-		log.Fatal(err)
+		log.Warn(err)
+		return err
 	}
 
 	return nil
@@ -46,6 +54,8 @@ func NewDefaultCatalog(user_id int) (Catalog, error) {
 		UserID:   user_id,
 		ID:       1,
 		Label:    "默认笔记本",
+		Level:    1,
+		FileType: FileTypeNoteBook,
 		ParendID: 0,
 	}
 
