@@ -1,16 +1,27 @@
 <template>
   <div class="app-container">
     <el-tree
-      ref="tree2"
+      ref="tree"
       :data="catalog"
       :props="defaultProps"
       :filter-node-method="filterNode"
       class="filter-tree"
-      default-expand-all
+      :highlight-current="true"
+      :expand-on-click-node="false"
       @node-contextmenu="handleClick"
     >
       <span slot-scope="{ node, data }" class="custom-tree-node">
-        <span>{{ node.label }}</span>
+        <div v-if="data.filetype === 'notebook'">
+          <i class="el-icon-folder" />
+        </div>
+        <div v-else-if="data.filetype === 'markdown'">
+          <i class="el-icon-document" />
+        </div>
+        <div v-else />
+        <span style="margin-left:5px;">{{ node.label }}</span>
+        <span>
+          <el-button type="text" size="mini" @click="() => handleNew(node)">+</el-button>
+        </span>
       </span>
     </el-tree>
     <vue-context ref="menu">
@@ -42,10 +53,12 @@ export default {
       filterText: '',
       // catalog: [],
       catalog: [{
-        id: '1-0',
+        id: 1,
         label: 'Level one 1',
+        filetype: 'notebook',
         children: [{
-          id: '1-1',
+          id: 2,
+          filetype: 'markdown',
           label: 'Level two 1-1'
         }]
       }],
@@ -81,8 +94,8 @@ export default {
 
     handleNew(node) {
       // alert(`You clicked on: "${node.label}"`)
-      console.log(node.data.id)
-      console.log(node.data.children)
+      console.log(node)
+      console.log(node.expanded)
 
       var data = node.data
 
@@ -91,16 +104,33 @@ export default {
         this.$set(data, 'children', [])
       }
       data.children.push(newChild)
+
+      node.expanded = true
     },
     handleRename(node) {
       alert(`You clicked on: "${node.label}"`)
       console.log(node)
     },
     handleDelete(node) {
-      alert(`You clicked on: "${node.label}"`)
       console.log(node)
+      const parent = node.parent
+      var data = node.data
+      const children = parent.data.children || parent.data
+      const index = children.findIndex(d => d.id === data.id)
+      children.splice(index, 1)
     }
   }
 }
 </script>
+
+<style>
+.custom-tree-node {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 14px;
+  padding-right: 8px;
+}
+</style>
 

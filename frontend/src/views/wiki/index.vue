@@ -5,7 +5,7 @@
     </el-header>
     <split-pane
       split="vertical"
-      :default-percent="25"
+      :default-percent="30"
       @resize="resize"
     >
       <template slot="paneL">
