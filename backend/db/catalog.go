@@ -2,7 +2,6 @@ package db
 
 import (
 	"context"
-	"errors"
 
 	log "github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/bson"
@@ -16,34 +15,36 @@ const (
 )
 
 type Catalog struct {
-	UserID   int    `bson:"user_id" json:"-"`
-	ID       int    `bson:"id" json:"id"`
-	Label    string `json:"label"`
-	Level    int    `json:"level"`
-	FileType int    `bson:"filetype" json:"filetype"`
-	ParendID int    `bson:"parend_id" json:"parend_id"`
+	UserID   int       `bson:"user_id" json:"-"`
+	ID       int       `bson:"id" json:"id"`
+	Label    string    `json:"label"`
+	Level    int       `json:"level"`
+	FileType int       `bson:"filetype" json:"filetype"`
+	ParendID int       `bson:"parend_id" json:"parendID"`
+	Children []Catalog `bson:"children" json:"children"`
 }
 
-func NewCatalog(catalog Catalog) error {
+func UpdateCatalog(catalog Catalog) error {
 	var res Catalog
 	filter := bson.M{
 		"user_id": catalog.UserID,
-		"id":      catalog.ID,
 	}
 
 	err := collections.FindOne(context.TODO(), filter).Decode(&res)
-	if err == nil {
-		log.Warn("duplicated catalog")
-		return errors.New("duplicated catalog")
-	} else if err != mongo.ErrNoDocuments {
+	if err == mongo.ErrNoDocuments {
+		_, err = collections.InsertOne(context.TODO(), catalog)
+		if err != nil {
+			log.Warn(err)
+			return err
+		}
+	} else if err != nil {
 		log.Warn(err)
 		return err
 	}
 
-	_, err = collections.InsertOne(context.TODO(), catalog)
+	_, err = collections.UpdateOne(context.TODO(), filter, catalog)
 	if err != nil {
-		log.Warn(err)
-		return err
+		log.Fatal(err)
 	}
 
 	return nil
@@ -52,11 +53,12 @@ func NewCatalog(catalog Catalog) error {
 func NewDefaultCatalog(user_id int) (Catalog, error) {
 	catalog := Catalog{
 		UserID:   user_id,
-		ID:       1,
-		Label:    "默认笔记本",
-		Level:    1,
+		ID:       0,
+		Label:    "资料库",
+		Level:    0,
 		FileType: FileTypeNoteBook,
 		ParendID: 0,
+		Children: []Catalog{},
 	}
 
 	_, err := collections.InsertOne(context.TODO(), catalog)

@@ -5,18 +5,11 @@
     </el-header>
     <split-pane
       split="vertical"
-      :default-percent="30"
+      :default-percent="25"
       @resize="resize"
     >
       <template slot="paneL">
-        <split-pane split="vertical" @resize="resize">
-          <template slot="paneL">
-            <tree />
-          </template>
-          <template slot="paneR">
-            <tree />
-          </template>
-        </split-pane>
+        <tree />
       </template>
       <template slot="paneR">
         <editor style="margin-left:40px" />

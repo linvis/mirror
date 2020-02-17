@@ -12,7 +12,7 @@
     >
       <span slot-scope="{ node, data }" class="custom-tree-node">
         <div v-if="data.filetype === 0">
-          <i class="el-icon-folder" />
+          <i class="el-icon-notebook-1" />
         </div>
         <div v-else-if="data.filetype === 1">
           <i class="el-icon-document" />
@@ -20,14 +20,15 @@
         <div v-else />
         <span style="margin-left:5px;">{{ node.label }}</span>
         <span>
-          <el-button type="text" size="mini" @click="() => handleNew(node)">+</el-button>
+          <el-button type="text" size="mini" @click="() => handleNewFile(node)">+</el-button>
         </span>
       </span>
     </el-tree>
     <vue-context ref="menu">
       <template v-if="child.data" slot-scope="child">
         <li>
-          <a @click.prevent="handleNew(child.data.value)">New</a>
+          <a @click.prevent="handleNewFile(child.data.value)">New File</a>
+          <a @click.prevent="handleNewNoteBook(child.data.value)">New NoteBook</a>
           <a @click.prevent="handleRename(child.data.value)">Rename</a>
           <a @click.prevent="handleDelete(child.data.value)">Delete</a>
         </li>
@@ -41,7 +42,7 @@
 import VueContext from 'vue-context'
 import 'vue-context/src/sass/vue-context.scss'
 
-import { queryEditorCatalog, submitNewCatalog } from '@/api/editor'
+import { queryEditorCatalog, updateEditorCatalog } from '@/api/editor'
 
 export default {
   components: {
@@ -53,14 +54,17 @@ export default {
       filterText: '',
       // catalog: [],
       catalog: [{
-        id: 1,
-        label: 'Level one 1',
+        id: 0,
+        label: 'root',
         filetype: 0,
-        level: 1,
+        level: 0,
+        parentID: 0,
         children: [{
-          id: 2,
+          id: 1,
+          label: 'level 1',
           filetype: 1,
-          label: 'Level two 1-1'
+          level: 1,
+          parentID: 0
         }]
       }],
       defaultProps: {
@@ -88,24 +92,81 @@ export default {
       if (!value) return true
       return data.label.indexOf(value) !== -1
     },
+    getMaxChildID(children) {
+      var maxID = -1
+      for (var i = 0; i < children.length; i++) {
+        if (children[i].id > maxID) {
+          maxID = children[i].id
+        }
+      }
+
+      return maxID
+    },
     handleClick(event, obj, node, components) {
       console.log(node)
       this.$refs.menu.open(event, { value: node })
     },
 
-    handleNew(node) {
+    handleNewFile(node) {
       // alert(`You clicked on: "${node.label}"`)
       console.log(node)
 
       var data = node.data
 
-      const newChild = { id: data.id++, label: 'notebook', children: [] }
+      var maxID = this.getMaxChildID(data.children)
+      if (maxID === -1) {
+        maxID = data.id
+      }
+
+      const newChild = {
+        id: maxID + 1,
+        label: 'file',
+        level: data.level + 1,
+        filetype: 1,
+        parentID: data.id,
+        children: []
+      }
       if (!data.children) {
         this.$set(data, 'children', [])
       }
       data.children.push(newChild)
 
-      submitNewCatalog(newChild).then(response => {
+      updateEditorCatalog(this.catalog).then(response => {
+      })
+    },
+    handleNewNoteBook(node) {
+      // alert(`You clicked on: "${node.label}"`)
+      var data = node.data
+
+      console.log('current node', data.level, data.id, data.label)
+
+      if (data.level >= 2) {
+        this.$message({
+          message: '仅支持2级notebook',
+          type: 'warning'
+        })
+        return
+      }
+
+      var maxID = this.getMaxChildID(data.children)
+      if (maxID === -1) {
+        maxID = data.id
+      }
+
+      const newChild = {
+        id: maxID + 1,
+        label: 'notebook',
+        level: data.level + 1,
+        filetype: 0,
+        parentID: data.id,
+        children: []
+      }
+      if (!data.children) {
+        this.$set(data, 'children', [])
+      }
+      data.children.push(newChild)
+
+      updateEditorCatalog(this.catalog).then(response => {
       })
     },
     handleRename(node) {

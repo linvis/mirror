@@ -8,9 +8,9 @@ export function queryEditorCatalog(token) {
   })
 }
 
-export function submitNewCatalog(data) {
+export function updateEditorCatalog(data) {
   return request({
-    url: '/editor/catalog/new',
+    url: '/editor/catalog/update',
     method: 'post',
     data
   })
