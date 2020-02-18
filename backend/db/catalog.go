@@ -30,6 +30,10 @@ func UpdateCatalog(catalog Catalog) error {
 		"user_id": catalog.UserID,
 	}
 
+	update := bson.D{
+		{"$set", catalog},
+	}
+
 	err := collections.FindOne(context.TODO(), filter).Decode(&res)
 	if err == mongo.ErrNoDocuments {
 		_, err = collections.InsertOne(context.TODO(), catalog)
@@ -42,7 +46,7 @@ func UpdateCatalog(catalog Catalog) error {
 		return err
 	}
 
-	_, err = collections.UpdateOne(context.TODO(), filter, catalog)
+	_, err = collections.UpdateOne(context.TODO(), filter, update)
 	if err != nil {
 		log.Fatal(err)
 	}

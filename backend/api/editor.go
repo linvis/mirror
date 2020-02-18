@@ -22,7 +22,7 @@ func GetEditorCatalog(c *gin.Context) {
 }
 
 func UpdateEditorCatalog(c *gin.Context) {
-	var catalog db.Catalog
+	var catalog []db.Catalog
 
 	id := GetUserID(c)
 
@@ -32,11 +32,11 @@ func UpdateEditorCatalog(c *gin.Context) {
 		return
 	}
 
-	catalog.UserID = id
+	catalog[0].UserID = id
 
 	log.Info("insert new catalog", catalog)
 
-	err := db.UpdateCatalog(catalog)
+	err := db.UpdateCatalog(catalog[0])
 	if err != nil {
 		log.Warn(err)
 		c.JSON(http.StatusOK, gin.H{"code": 60204, "message": "Invalid submit"})
