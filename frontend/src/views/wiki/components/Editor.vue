@@ -1,153 +1,176 @@
 <template>
-  <div class="editor">
-    <editor-menu-bar v-slot="{ commands, isActive }" :editor="editor">
-      <div class="menubar">
-        <button
-          class="menubar__button"
-          :class="{ 'is-active': isActive.bold() }"
-          @click="commands.bold"
-        >
-          <span class="svg-container">
-            <svg-icon icon-class="editor_bold" />
-          </span>
-        </button>
+  <el-container>
+    <el-header height="20px">
+      <!-- <el-row> -->
+      <el-col :span="12">
+        <el-breadcrumb separator="/">
+          <el-breadcrumb-item>首页</el-breadcrumb-item>
+          <el-breadcrumb-item>活动管理</el-breadcrumb-item>
+          <el-breadcrumb-item>活动列表</el-breadcrumb-item>
+          <el-breadcrumb-item>活动详情</el-breadcrumb-item>
+        </el-breadcrumb>
+      </el-col>
+      <el-col :span="12">
+        <div class="right-menu">
+          <el-button type="primary" plain size="small" @click="saveFile">save</el-button>
+          <el-button type="primary" plain size="small">cancel</el-button>
+        </div>
+      </el-col>
+      <!-- </el-row> -->
+    </el-header>
 
-        <button
-          class="menubar__button"
-          :class="{ 'is-active': isActive.italic() }"
-          @click="commands.italic"
-        >
-          <span class="svg-container">
-            <svg-icon icon-class="editor_italic" />
-          </span>
-        </button>
+    <el-main>
+      <div class="editor">
+        <editor-menu-bar v-slot="{ commands, isActive }" :editor="editor">
+          <div class="menubar">
+            <button
+              class="menubar__button"
+              :class="{ 'is-active': isActive.bold() }"
+              @click="commands.bold"
+            >
+              <span class="svg-container">
+                <svg-icon icon-class="editor_bold" />
+              </span>
+            </button>
 
-        <button
-          class="menubar__button"
-          :class="{ 'is-active': isActive.strike() }"
-          @click="commands.strike"
-        >
-          <span class="svg-container">
-            <svg-icon icon-class="editor_strike" />
-          </span>
-        </button>
+            <button
+              class="menubar__button"
+              :class="{ 'is-active': isActive.italic() }"
+              @click="commands.italic"
+            >
+              <span class="svg-container">
+                <svg-icon icon-class="editor_italic" />
+              </span>
+            </button>
 
-        <button
-          class="menubar__button"
-          :class="{ 'is-active': isActive.underline() }"
-          @click="commands.underline"
-        >
-          <span class="svg-container">
-            <svg-icon icon-class="editor_underline" />
-          </span>
-        </button>
+            <button
+              class="menubar__button"
+              :class="{ 'is-active': isActive.strike() }"
+              @click="commands.strike"
+            >
+              <span class="svg-container">
+                <svg-icon icon-class="editor_strike" />
+              </span>
+            </button>
 
-        <button
-          class="menubar__button"
-          :class="{ 'is-active': isActive.code() }"
-          @click="commands.code"
-        >
-          <span class="svg-container">
-            <svg-icon icon-class="editor_code" />
-          </span>
-        </button>
+            <button
+              class="menubar__button"
+              :class="{ 'is-active': isActive.underline() }"
+              @click="commands.underline"
+            >
+              <span class="svg-container">
+                <svg-icon icon-class="editor_underline" />
+              </span>
+            </button>
 
-        <button
-          class="menubar__button"
-          :class="{ 'is-active': isActive.paragraph() }"
-          @click="commands.paragraph"
-        >
-          <span class="svg-container">
-            <svg-icon icon-class="editor_paragraph" />
-          </span>
-        </button>
+            <button
+              class="menubar__button"
+              :class="{ 'is-active': isActive.code() }"
+              @click="commands.code"
+            >
+              <span class="svg-container">
+                <svg-icon icon-class="editor_code" />
+              </span>
+            </button>
 
-        <button
-          class="menubar__button"
-          :class="{ 'is-active': isActive.heading({ level: 1 }) }"
-          @click="commands.heading({ level: 1 })"
-        >H1</button>
+            <button
+              class="menubar__button"
+              :class="{ 'is-active': isActive.paragraph() }"
+              @click="commands.paragraph"
+            >
+              <span class="svg-container">
+                <svg-icon icon-class="editor_paragraph" />
+              </span>
+            </button>
 
-        <button
-          class="menubar__button"
-          :class="{ 'is-active': isActive.heading({ level: 2 }) }"
-          @click="commands.heading({ level: 2 })"
-        >H2</button>
+            <button
+              class="menubar__button"
+              :class="{ 'is-active': isActive.heading({ level: 1 }) }"
+              @click="commands.heading({ level: 1 })"
+            >H1</button>
 
-        <button
-          class="menubar__button"
-          :class="{ 'is-active': isActive.heading({ level: 3 }) }"
-          @click="commands.heading({ level: 3 })"
-        >H3</button>
+            <button
+              class="menubar__button"
+              :class="{ 'is-active': isActive.heading({ level: 2 }) }"
+              @click="commands.heading({ level: 2 })"
+            >H2</button>
 
-        <button
-          class="menubar__button"
-          :class="{ 'is-active': isActive.bullet_list() }"
-          @click="commands.bullet_list"
-        >
-          <span class="svg-container">
-            <svg-icon icon-class="editor_ul" />
-          </span>
-        </button>
+            <button
+              class="menubar__button"
+              :class="{ 'is-active': isActive.heading({ level: 3 }) }"
+              @click="commands.heading({ level: 3 })"
+            >H3</button>
 
-        <button
-          class="menubar__button"
-          :class="{ 'is-active': isActive.ordered_list() }"
-          @click="commands.ordered_list"
-        >
-          <span class="svg-container">
-            <svg-icon icon-class="editor_ol" />
-          </span>
-        </button>
+            <button
+              class="menubar__button"
+              :class="{ 'is-active': isActive.bullet_list() }"
+              @click="commands.bullet_list"
+            >
+              <span class="svg-container">
+                <svg-icon icon-class="editor_ul" />
+              </span>
+            </button>
 
-        <button
-          class="menubar__button"
-          :class="{ 'is-active': isActive.blockquote() }"
-          @click="commands.blockquote"
-        >
-          <span class="svg-container">
-            <svg-icon icon-class="editor_quote" />
-          </span>
-        </button>
+            <button
+              class="menubar__button"
+              :class="{ 'is-active': isActive.ordered_list() }"
+              @click="commands.ordered_list"
+            >
+              <span class="svg-container">
+                <svg-icon icon-class="editor_ol" />
+              </span>
+            </button>
 
-        <button
-          class="menubar__button"
-          :class="{ 'is-active': isActive.code_block() }"
-          @click="commands.code_block"
-        >
-          <span class="svg-container">
-            <svg-icon icon-class="editor_code" />
-          </span>
-        </button>
+            <button
+              class="menubar__button"
+              :class="{ 'is-active': isActive.blockquote() }"
+              @click="commands.blockquote"
+            >
+              <span class="svg-container">
+                <svg-icon icon-class="editor_quote" />
+              </span>
+            </button>
 
-        <button class="menubar__button" @click="commands.horizontal_rule">
-          <span class="svg-container">
-            <svg-icon icon-class="editor_hr" />
-          </span>
-        </button>
+            <button
+              class="menubar__button"
+              :class="{ 'is-active': isActive.code_block() }"
+              @click="commands.code_block"
+            >
+              <span class="svg-container">
+                <svg-icon icon-class="editor_code" />
+              </span>
+            </button>
 
-        <button class="menubar__button" @click="commands.undo">
-          <span class="svg-container">
-            <svg-icon icon-class="editor_undo" />
-          </span>
-        </button>
+            <button class="menubar__button" @click="commands.horizontal_rule">
+              <span class="svg-container">
+                <svg-icon icon-class="editor_hr" />
+              </span>
+            </button>
 
-        <button class="menubar__button" @click="commands.redo">
-          <span class="svg-container">
-            <svg-icon icon-class="editor_redo" />
-          </span>
-        </button>
+            <button class="menubar__button" @click="commands.undo">
+              <span class="svg-container">
+                <svg-icon icon-class="editor_undo" />
+              </span>
+            </button>
+
+            <button class="menubar__button" @click="commands.redo">
+              <span class="svg-container">
+                <svg-icon icon-class="editor_redo" />
+              </span>
+            </button>
+          </div>
+        </editor-menu-bar>
+        <editor-content class="editor__content" :editor="editor" />
       </div>
-    </editor-menu-bar>
-
-    <editor-content class="editor__content" :editor="editor" />
-  </div>
-</template>
+    </el-main>
+  </el-container>
+  </el-con></template>
 
 <script>
-
 import { Editor, EditorContent, EditorMenuBar } from 'tiptap'
 import {
+  Placeholder,
+  Bold,
   Blockquote,
   CodeBlock,
   HardBreak,
@@ -158,7 +181,6 @@ import {
   ListItem,
   TodoItem,
   TodoList,
-  Bold,
   Code,
   Italic,
   Link,
@@ -166,6 +188,11 @@ import {
   Underline,
   History
 } from 'tiptap-extensions'
+import Doc from './Doc'
+import Title from './Title'
+
+import { saveEditorFile } from '@/api/editor'
+
 export default {
   components: {
     EditorContent,
@@ -173,8 +200,35 @@ export default {
   },
   data() {
     return {
-      editor: new Editor({
+      editor: null,
+      title: '',
+      contents: ''
+    }
+  },
+  mounted() {
+    this.initEditor()
+  },
+  beforeDestroy() {
+    this.editor.destroy()
+  },
+  methods: {
+    initEditor() {
+      this.editor = new Editor({
+        autoFocus: true,
         extensions: [
+          new Doc(),
+          new Title(),
+          new Placeholder({
+            showOnlyCurrent: false,
+            emptyNodeText: node => {
+              if (node.type.name === 'title') {
+                return 'Title'
+              }
+
+              return 'Write something'
+            }
+          }),
+          new Bold(),
           new Blockquote(),
           new BulletList(),
           new CodeBlock(),
@@ -192,42 +246,74 @@ export default {
           new Strike(),
           new Underline(),
           new History()
-        ],
-        content: `
-          <h2>
-            Hi there,
-          </h2>
-          <p>
-            this is a very <em>basic</em> example of tiptap.
-          </p>
-          <pre><code>body { display: none; }</code></pre>
-          <ul>
-            <li>
-              A regular list
-            </li>
-            <li>
-              With regular items
-            </li>
-          </ul>
-          <blockquote>
-            It's amazing 👏
-            <br />
-            – mom
-          </blockquote>
-        `
+        ]
+      })
+      this.editor.on('update', ({ getJSON, getHTML }) => {
+        // get new content on update
+        const json = getJSON()
+        if ('text' in json.content[0].content[0]) {
+          this.title = json.content[0].content[0].text
+        }
+        console.log(this.title)
+        const newContent = getHTML()
+        this.contents = newContent
+        console.log(this.contents)
+      })
+    },
+    updateContent(content) {
+      this.contents = content
+      console.log(content)
+    },
+    saveFile(event) {
+      var file = {
+        'fileid': 1,
+        'title': this.title,
+        'content': this.contents
+      }
+      saveEditorFile(file).then(response => {
       })
     }
-  },
-  beforeDestroy() {
-    this.editor.destroy()
   }
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
+.el-header,
+.el-footer {
+  /* background-color: #b3c0d1; */
+  color: #333;
+  border-radius: 2px;
+  /* text-align: center;
+  line-height: 60px; */
+}
+.components-container {
+  position: relative;
+  height: 100vh;
+}
+.el-button {
+  padding:2 20px;
+}
+
 @import "~@/styles/variables.scss";
 // @import "~@/styles/editor.scss";
 // @import "~@/styles/main.scss";
 @import "~@/styles/menubar.scss";
 @import "~@/styles/menububble.scss";
+
+.editor *.is-empty:nth-child(1)::before,
+.editor *.is-empty:nth-child(2)::before {
+  content: attr(data-empty-text);
+  float: left;
+  color: #aaa;
+  pointer-events: none;
+  height: 0;
+  font-style: italic;
+}
+
+.right-menu {
+    float: right;
+    height: 100%;
+    line-height: 10px;
+
+  }
 </style>

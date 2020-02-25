@@ -1,18 +1,18 @@
 <template>
   <div class="components-container">
-    <el-header style="margin-top:20px">
-      <search />
-    </el-header>
     <split-pane
       split="vertical"
       :default-percent="25"
       @resize="resize"
     >
       <template slot="paneL">
+        <el-header style="margin-top:10px">
+          <search />
+        </el-header>
         <tree />
       </template>
       <template slot="paneR">
-        <editor style="margin-left:40px" />
+        <editor style="margin-left:20px;margin-top:20px" />
       </template>
     </split-pane>
     </el-header></div>

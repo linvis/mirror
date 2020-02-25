@@ -15,3 +15,11 @@ export function updateEditorCatalog(data) {
     data
   })
 }
+
+export function saveEditorFile(data) {
+  return request({
+    url: '/editor/file/save',
+    method: 'post',
+    data
+  })
+}
