@@ -44,3 +44,39 @@ func UpdateEditorCatalog(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"code": 20000, "data": ""})
 }
+
+func NewDocument(c *gin.Context) {
+	var doc db.Document
+
+	id := GetUserID(c)
+	doc.UserID = id
+
+	if err := c.BindJSON(&doc); err != nil {
+		log.Warn("new doc invalid request", err)
+		c.JSON(http.StatusOK, gin.H{"code": 60204, "message": "Invalid request"})
+		return
+	}
+
+	err := db.NewDocument(&doc)
+	if err != nil {
+		log.Warn("new doc save fail", err)
+		c.JSON(http.StatusOK, gin.H{"code": 60204, "message": "Invalid request"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"code": 20000, "data": ""})
+}
+
+func GetAllDocument(c *gin.Context) {
+
+	id := GetUserID(c)
+
+	docs, err := db.GetAllDocument(id)
+	if err != nil {
+		log.Warn("get doc fail", err)
+		c.JSON(http.StatusOK, gin.H{"code": 60204, "message": "Invalid request"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"code": 20000, "data": docs})
+}

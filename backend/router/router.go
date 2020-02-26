@@ -51,5 +51,7 @@ func InitRouterGroup(engine *gin.Engine, env string) {
 		editor.Use(middleware.BaseAuth())
 		editor.GET("/catalog", api.GetEditorCatalog)
 		editor.POST("/catalog/update", api.UpdateEditorCatalog)
+		editor.POST("/document/new", api.NewDocument)
+		editor.GET("/document/query", api.GetAllDocument)
 	}
 }

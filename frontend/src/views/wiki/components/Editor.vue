@@ -12,7 +12,7 @@
       </el-col>
       <el-col :span="12">
         <div class="right-menu">
-          <el-button type="primary" plain size="small" @click="saveFile">save</el-button>
+          <el-button type="primary" plain size="small" @click="saveDoc">save</el-button>
           <el-button type="primary" plain size="small">cancel</el-button>
         </div>
       </el-col>
@@ -191,7 +191,7 @@ import {
 import Doc from './Doc'
 import Title from './Title'
 
-import { saveEditorFile } from '@/api/editor'
+import { saveDocument, queryAllDocument } from '@/api/editor'
 
 export default {
   components: {
@@ -207,6 +207,7 @@ export default {
   },
   mounted() {
     this.initEditor()
+    this.getAllDoc()
   },
   beforeDestroy() {
     this.editor.destroy()
@@ -264,13 +265,28 @@ export default {
       this.contents = content
       console.log(content)
     },
-    saveFile(event) {
+    saveDoc(event) {
       var file = {
-        'fileid': 1,
-        'title': this.title,
-        'content': this.contents
+        'doc_id': '1234567890123456',
+        // 'title': this.title,
+        'raw': '',
+        'html': this.contents
       }
-      saveEditorFile(file).then(response => {
+      saveDocument(file).then(response => {
+        this.$notify({
+          title: '成功',
+          message: '',
+          type: 'success',
+          duration: 800
+        })
+      })
+    },
+    getAllDoc() {
+      queryAllDocument().then(response => {
+        var docs = response.data
+        this.contents = docs[0].html
+        console.log(this.contents)
+        this.editor.setContent(this.contents)
       })
     }
   }

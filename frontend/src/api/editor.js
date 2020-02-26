@@ -16,10 +16,17 @@ export function updateEditorCatalog(data) {
   })
 }
 
-export function saveEditorFile(data) {
+export function saveDocument(data) {
   return request({
-    url: '/editor/file/save',
+    url: '/editor/document/new',
     method: 'post',
     data
+  })
+}
+
+export function queryAllDocument(token) {
+  return request({
+    url: '/editor/document/query',
+    method: 'get'
   })
 }

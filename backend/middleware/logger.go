@@ -18,6 +18,7 @@ func InitLogger(env string) {
 	} else {
 		log.SetFormatter(&log.TextFormatter{})
 		log.SetLevel(log.DebugLevel)
+		// log.SetReportCaller(true)
 		log.SetOutput(os.Stdout)
 	}
 }

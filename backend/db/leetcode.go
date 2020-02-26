@@ -36,7 +36,7 @@ type LeetcodeSetting struct {
 	ID1       int    `xorm:"unsigned zerofill not null 'id'" json:"-"`
 	UserID1   int    `xorm:"not null 'user_id'" json:"-"`
 	UserName1 string `xorm:"not null 'user_name'" json:"leetcode_user_name"`
-	Cookie    string `json:"cookie"`
+	Cookie    string `xorm:"TEXT not null" json:"cookie"`
 }
 
 func (s LeetcodeSetting) TableName() string {
