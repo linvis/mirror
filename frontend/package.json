@@ -26,6 +26,7 @@
     "path-to-regexp": "2.4.0",
     "tiptap": "^1.26.6",
     "tiptap-extensions": "^1.28.6",
+    "uuid": "^7.0.1",
     "vue": "2.6.10",
     "vue-calendar-heatmap": "^0.8.4",
     "vue-context": "^5.0.0",

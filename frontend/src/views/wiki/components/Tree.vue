@@ -12,10 +12,10 @@
       @node-click="handleNodeClick"
     >
       <span slot-scope="{ node, data }" class="custom-tree-node">
-        <div v-if="data.filetype === 0">
+        <div v-if="data.filetype === 'nb'">
           <i class="el-icon-notebook-1" />
         </div>
-        <div v-else-if="data.filetype === 1">
+        <div v-else-if="data.filetype === 'md'">
           <i class="el-icon-document" />
         </div>
         <div v-else />
@@ -42,6 +42,7 @@
 
 import VueContext from 'vue-context'
 import 'vue-context/src/sass/vue-context.scss'
+import { v4 as uuidv4 } from 'uuid'
 
 import { queryEditorCatalog, updateEditorCatalog } from '@/api/editor'
 import { bus } from '@/utils/bus'
@@ -56,17 +57,17 @@ export default {
       filterText: '',
       // catalog: [],
       catalog: [{
-        id: 0,
+        id: '0',
         label: 'root',
-        filetype: 0,
+        filetype: 'nb',
         level: 0,
-        parentID: 0,
+        parentID: '0',
         children: [{
-          id: 1,
+          id: '1',
           label: 'level 1',
-          filetype: 1,
+          filetype: 'md',
           level: 1,
-          parentID: 0
+          parentID: '0'
         }]
       }],
       defaultProps: {
@@ -109,11 +110,16 @@ export default {
       this.$refs.menu.open(event, { value: node })
     },
     handleNodeClick(data) {
-      if (data.filetype === 1) {
+      if (data.filetype === 'md') {
         bus.$emit('show-reminder', false)
         bus.$emit('show-editor', true)
         bus.$emit('open-document', data.id)
       }
+    },
+
+    newID() {
+      var uuid = uuidv4()
+      return uuid.split('-').join('')
     },
 
     handleNewFile(node) {
@@ -122,16 +128,13 @@ export default {
 
       var data = node.data
 
-      var maxID = this.getMaxChildID(data.children)
-      if (maxID === -1) {
-        maxID = data.id
-      }
+      var id = this.newID()
 
       const newChild = {
-        id: maxID + 1,
+        id: id,
         label: 'file',
         level: data.level + 1,
-        filetype: 1,
+        filetype: 'md',
         parentID: data.id,
         children: []
       }
@@ -141,6 +144,8 @@ export default {
       data.children.push(newChild)
 
       updateEditorCatalog(this.catalog).then(response => {
+        bus.$emit('show-reminder', false)
+        bus.$emit('open-new-doc', id)
       })
     },
     handleNewNoteBook(node) {
@@ -157,16 +162,13 @@ export default {
         return
       }
 
-      var maxID = this.getMaxChildID(data.children)
-      if (maxID === -1) {
-        maxID = data.id
-      }
+      var id = this.newID()
 
       const newChild = {
-        id: maxID + 1,
+        id: id,
         label: 'notebook',
         level: data.level + 1,
-        filetype: 0,
+        filetype: 'nb',
         parentID: data.id,
         children: []
       }

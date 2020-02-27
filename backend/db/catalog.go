@@ -2,6 +2,7 @@ package db
 
 import (
 	"context"
+	"strconv"
 
 	log "github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/bson"
@@ -10,17 +11,17 @@ import (
 )
 
 const (
-	FileTypeNoteBook = iota
-	FileTypeMarkdown
+	FileTypeNoteBook = "nb"
+	FileTypeMarkdown = "md"
 )
 
 type Catalog struct {
 	UserID   int       `bson:"user_id" json:"-"`
-	ID       int       `bson:"id" json:"id"`
+	ID       string    `bson:"id" json:"id"`
 	Label    string    `json:"label"`
 	Level    int       `json:"level"`
-	FileType int       `bson:"filetype" json:"filetype"`
-	ParendID int       `bson:"parend_id" json:"parendID"`
+	FileType string    `bson:"filetype" json:"filetype"`
+	ParendID string    `bson:"parend_id" json:"parendID"`
 	Children []Catalog `bson:"children" json:"children"`
 }
 
@@ -55,13 +56,14 @@ func UpdateCatalog(catalog Catalog) error {
 }
 
 func NewDefaultCatalog(user_id int) (Catalog, error) {
+	defaultID := "root" + strconv.Itoa(user_id)
 	catalog := Catalog{
 		UserID:   user_id,
-		ID:       0,
+		ID:       defaultID,
 		Label:    "资料库",
 		Level:    0,
 		FileType: FileTypeNoteBook,
-		ParendID: 0,
+		ParendID: defaultID,
 		Children: []Catalog{},
 	}
 

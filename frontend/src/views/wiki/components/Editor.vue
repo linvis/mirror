@@ -204,6 +204,7 @@ export default {
       show: false,
       loading: false,
       editor: null,
+      docID: null,
       title: '',
       contents: ''
     }
@@ -211,14 +212,16 @@ export default {
   created() {
     bus.$on('show-editor', this.showEditor)
     bus.$on('open-document', this.openDocument)
+    bus.$on('open-new-doc', this.openNewDoc)
   },
   mounted() {
     this.initEditor()
-    this.getAllDoc()
+    // this.getAllDoc()
   },
   beforeDestroy() {
     bus.$off('show-editor', this.showEditor)
     bus.$off('open-document', this.openDocument)
+    bus.$off('open-new-doc', this.openNewDoc)
     this.editor.destroy()
   },
   methods: {
@@ -279,19 +282,24 @@ export default {
     },
     openDocument(docID) {
       console.log(docID)
+      this.docID = docID
       this.loading = true
-      queryDocumentByID('1234567890123456').then(response => {
+      queryDocumentByID(this.docID).then(response => {
         var docs = response.data
         this.setContent(docs.html)
         this.loading = false
       })
+    },
+    openNewDoc(docID) {
+      this.docID = docID
+      this.showEditor(true)
     },
     updateContent(content) {
       this.contents = content
     },
     saveDoc(event) {
       var file = {
-        'doc_id': '1234567890123456',
+        'doc_id': this.docID,
         // 'title': this.title,
         'raw': '',
         'html': this.contents
