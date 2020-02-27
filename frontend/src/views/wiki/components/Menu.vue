@@ -166,6 +166,10 @@ import {
   Underline,
   History
 } from 'tiptap-extensions'
+
+import Doc from './Doc'
+import Title from './Title'
+
 export default {
   components: {
     EditorContent,
@@ -175,6 +179,18 @@ export default {
     return {
       editor: new Editor({
         extensions: [
+          new Doc(),
+          new Title(),
+          new Placeholder({
+            showOnlyCurrent: false,
+            emptyNodeText: node => {
+              if (node.type.name === 'title') {
+                return 'Title'
+              }
+
+              return 'Write something'
+            }
+          }),
           new Blockquote(),
           new BulletList(),
           new CodeBlock(),
@@ -192,29 +208,7 @@ export default {
           new Strike(),
           new Underline(),
           new History()
-        ],
-        content: `
-          <h2>
-            Hi there,
-          </h2>
-          <p>
-            this is a very <em>basic</em> example of tiptap.
-          </p>
-          <pre><code>body { display: none; }</code></pre>
-          <ul>
-            <li>
-              A regular list
-            </li>
-            <li>
-              With regular items
-            </li>
-          </ul>
-          <blockquote>
-            It's amazing 👏
-            <br />
-            – mom
-          </blockquote>
-        `
+        ]
       })
     }
   },

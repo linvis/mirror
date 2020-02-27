@@ -80,3 +80,18 @@ func GetAllDocument(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"code": 20000, "data": docs})
 }
+
+func GetDocumentByID(c *gin.Context) {
+
+	user_id := GetUserID(c)
+	doc_id := c.Param("docid")
+
+	docs, err := db.GetDocumentByID(user_id, doc_id)
+	if err != nil {
+		log.Warn("get doc fail", err)
+		c.JSON(http.StatusOK, gin.H{"code": 60204, "message": "Invalid request"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"code": 20000, "data": docs})
+}

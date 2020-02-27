@@ -8,7 +8,8 @@
       class="filter-tree"
       :highlight-current="true"
       :expand-on-click-node="false"
-      @node-contextmenu="handleClick"
+      @node-contextmenu="handleMenuClick"
+      @node-click="handleNodeClick"
     >
       <span slot-scope="{ node, data }" class="custom-tree-node">
         <div v-if="data.filetype === 0">
@@ -43,6 +44,7 @@ import VueContext from 'vue-context'
 import 'vue-context/src/sass/vue-context.scss'
 
 import { queryEditorCatalog, updateEditorCatalog } from '@/api/editor'
+import { bus } from '@/utils/bus'
 
 export default {
   components: {
@@ -102,9 +104,16 @@ export default {
 
       return maxID
     },
-    handleClick(event, obj, node, components) {
+    handleMenuClick(event, obj, node, components) {
       console.log(node)
       this.$refs.menu.open(event, { value: node })
+    },
+    handleNodeClick(data) {
+      if (data.filetype === 1) {
+        bus.$emit('show-reminder', false)
+        bus.$emit('show-editor', true)
+        bus.$emit('open-document', data.id)
+      }
     },
 
     handleNewFile(node) {

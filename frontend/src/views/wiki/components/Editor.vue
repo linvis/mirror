@@ -1,5 +1,5 @@
 <template>
-  <el-container>
+  <el-container v-show="show" v-loading="loading">
     <el-header height="20px">
       <!-- <el-row> -->
       <el-col :span="12">
@@ -164,7 +164,7 @@
       </div>
     </el-main>
   </el-container>
-  </el-con></template>
+</template>
 
 <script>
 import { Editor, EditorContent, EditorMenuBar } from 'tiptap'
@@ -191,7 +191,8 @@ import {
 import Doc from './Doc'
 import Title from './Title'
 
-import { saveDocument, queryAllDocument } from '@/api/editor'
+import { saveDocument, queryAllDocument, queryDocumentByID } from '@/api/editor'
+import { bus } from '@/utils/bus'
 
 export default {
   components: {
@@ -200,16 +201,24 @@ export default {
   },
   data() {
     return {
+      show: false,
+      loading: false,
       editor: null,
       title: '',
       contents: ''
     }
+  },
+  created() {
+    bus.$on('show-editor', this.showEditor)
+    bus.$on('open-document', this.openDocument)
   },
   mounted() {
     this.initEditor()
     this.getAllDoc()
   },
   beforeDestroy() {
+    bus.$off('show-editor', this.showEditor)
+    bus.$off('open-document', this.openDocument)
     this.editor.destroy()
   },
   methods: {
@@ -255,15 +264,30 @@ export default {
         if ('text' in json.content[0].content[0]) {
           this.title = json.content[0].content[0].text
         }
-        console.log(this.title)
+
         const newContent = getHTML()
         this.contents = newContent
-        console.log(this.contents)
+      })
+    },
+    setContent(content) {
+      this.contents = content
+      this.editor.setContent(content)
+    },
+    showEditor(state) {
+      console.log('show editor')
+      this.show = true
+    },
+    openDocument(docID) {
+      console.log(docID)
+      this.loading = true
+      queryDocumentByID('1234567890123456').then(response => {
+        var docs = response.data
+        this.setContent(docs.html)
+        this.loading = false
       })
     },
     updateContent(content) {
       this.contents = content
-      console.log(content)
     },
     saveDoc(event) {
       var file = {
@@ -307,7 +331,7 @@ export default {
   height: 100vh;
 }
 .el-button {
-  padding:2 20px;
+  padding: 2 20px;
 }
 
 @import "~@/styles/variables.scss";
@@ -327,9 +351,8 @@ export default {
 }
 
 .right-menu {
-    float: right;
-    height: 100%;
-    line-height: 10px;
-
-  }
+  float: right;
+  height: 100%;
+  line-height: 10px;
+}
 </style>

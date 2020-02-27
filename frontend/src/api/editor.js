@@ -26,7 +26,14 @@ export function saveDocument(data) {
 
 export function queryAllDocument(token) {
   return request({
-    url: '/editor/document/query',
+    url: '/editor/document/queryall',
+    method: 'get'
+  })
+}
+
+export function queryDocumentByID(id, token) {
+  return request({
+    url: '/editor/document/query/' + id,
     method: 'get'
   })
 }

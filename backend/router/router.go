@@ -52,6 +52,7 @@ func InitRouterGroup(engine *gin.Engine, env string) {
 		editor.GET("/catalog", api.GetEditorCatalog)
 		editor.POST("/catalog/update", api.UpdateEditorCatalog)
 		editor.POST("/document/new", api.NewDocument)
-		editor.GET("/document/query", api.GetAllDocument)
+		editor.GET("/document/queryall", api.GetAllDocument)
+		editor.GET("/document/query/:docid", api.GetDocumentByID)
 	}
 }

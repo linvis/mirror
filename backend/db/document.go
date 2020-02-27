@@ -30,3 +30,14 @@ func GetAllDocument(user_id int) (*[]Document, error) {
 
 	return docs, nil
 }
+
+func GetDocumentByID(user_id int, doc_id string) (*Document, error) {
+	docs := Document{}
+
+	_, err := x.Where("user_id = ? AND doc_id = ?", user_id, doc_id).Get(&docs)
+	if err != nil {
+		return nil, errors.New("no document")
+	}
+
+	return &docs, nil
+}

@@ -1,10 +1,6 @@
 <template>
   <div class="components-container">
-    <split-pane
-      split="vertical"
-      :default-percent="25"
-      @resize="resize"
-    >
+    <split-pane split="vertical" :default-percent="25" @resize="resize">
       <template slot="paneL">
         <el-header style="margin-top:10px">
           <search />
@@ -12,10 +8,11 @@
         <tree />
       </template>
       <template slot="paneR">
+        <reminder style="margin-left:20px;margin-top:20px" />
         <editor style="margin-left:20px;margin-top:20px" />
       </template>
     </split-pane>
-    </el-header></div>
+  </div>
 </template>
 
 <script>
@@ -24,15 +21,32 @@ import splitPane from 'vue-splitpane'
 import Search from './components/Search'
 import Tree from './components/Tree'
 import Editor from './components/Editor'
+import Reminder from './components/Reminder'
 
 export default {
   components: {
     splitPane,
     Search,
     Tree,
-    Editor
+    Editor,
+    Reminder
+  },
+  data() {
+    return {
+      showReminder: true,
+      showEditor: false
+    }
   },
   methods: {
+    created() {
+      // this.$refs.created()
+      console.log('create')
+    },
+    refresh() {
+      console.log('refresh')
+      this.showReminder = false
+      this.showEditor = true
+    },
     resize() {
     }
 
