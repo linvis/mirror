@@ -14,15 +14,28 @@ const (
 	FileTypeMarkdown = "md"
 )
 
+type Reminder struct {
+	Enable   bool  `json:"enable"`
+	Count    int   `json:"count"`
+	LastTime int64 `bson:"last_time" json:"last_time"`
+	NextTime int64 `bson:"next_time" json:"next_time"`
+}
+
+type MetaData struct {
+	Label    string `json:"label"`
+	Level    int    `json:"level"`
+	FileType string `bson:"filetype" json:"filetype"`
+	Tag      []string
+}
+
 type Catalog struct {
-	UserID    int       `bson:"user_id" json:"-"`
-	ID        int       `bson:"id" json:"id"`
-	Key       string    `bson:"key" json:"key"`
-	Label     string    `json:"label"`
-	Level     int       `json:"level"`
-	FileType  string    `bson:"filetype" json:"filetype"`
-	ParendKey string    `bson:"parend_key" json:"parend_key"`
-	Children  []Catalog `bson:"children" json:"children"`
+	UserID int    `bson:"user_id" json:"-"`
+	ID     int    `bson:"id" json:"id"`
+	Key    string `bson:"key" json:"key"`
+	Parent string `bson:"parent" json:"parent"`
+	MetaData
+	Reminder
+	Children []Catalog `bson:"children" json:"children"`
 }
 
 func UpdateCatalog(catalog Catalog) error {
@@ -57,14 +70,16 @@ func UpdateCatalog(catalog Catalog) error {
 
 func NewDefaultCatalog(user_id int) (Catalog, error) {
 	catalog := Catalog{
-		UserID:    user_id,
-		ID:        0,
-		Key:       "0",
-		Label:     "资料库",
-		Level:     0,
-		FileType:  FileTypeNoteBook,
-		ParendKey: "0",
-		Children:  []Catalog{},
+		UserID: user_id,
+		ID:     0,
+		Key:    "0",
+		MetaData: MetaData{
+			Label:    "资料库",
+			Level:    0,
+			FileType: FileTypeNoteBook,
+		},
+		Parent:   "0",
+		Children: []Catalog{},
 	}
 
 	_, err := collections.InsertOne(context.TODO(), catalog)

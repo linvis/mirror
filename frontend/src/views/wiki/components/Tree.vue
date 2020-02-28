@@ -62,14 +62,14 @@ export default {
         label: 'root',
         filetype: 'nb',
         level: 0,
-        parentKey: '0',
+        parent: '0',
         children: [{
           id: 1,
           key: '1',
           label: 'level 1',
           filetype: 'md',
           level: 1,
-          parentKey: '0'
+          parent: '0'
         }]
       }],
       defaultProps: {
@@ -139,7 +139,7 @@ export default {
         label: 'file',
         level: data.level + 1,
         filetype: 'md',
-        parentKey: data.key,
+        parent: data.key,
         children: []
       }
       if (!data.children) {
@@ -169,7 +169,7 @@ export default {
         label: 'notebook',
         level: data.level + 1,
         filetype: 'nb',
-        parentKey: data.key,
+        parent: data.key,
         children: []
       }
       if (!data.children) {
