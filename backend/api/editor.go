@@ -57,6 +57,7 @@ func NewDocument(c *gin.Context) {
 		return
 	}
 
+	fmt.Println(doc)
 	err := db.NewDocument(&doc)
 	if err != nil {
 		log.Warn("new doc save fail", err)
@@ -64,7 +65,7 @@ func NewDocument(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"code": 20000, "data": ""})
+	c.JSON(http.StatusOK, gin.H{"code": 20000, "data": gin.H{"id": doc.Id}})
 }
 
 func GetAllDocument(c *gin.Context) {

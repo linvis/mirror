@@ -2,7 +2,6 @@ package db
 
 import (
 	"context"
-	"strconv"
 
 	log "github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/bson"
@@ -16,13 +15,14 @@ const (
 )
 
 type Catalog struct {
-	UserID   int       `bson:"user_id" json:"-"`
-	ID       string    `bson:"id" json:"id"`
-	Label    string    `json:"label"`
-	Level    int       `json:"level"`
-	FileType string    `bson:"filetype" json:"filetype"`
-	ParendID string    `bson:"parend_id" json:"parendID"`
-	Children []Catalog `bson:"children" json:"children"`
+	UserID    int       `bson:"user_id" json:"-"`
+	ID        int       `bson:"id" json:"id"`
+	Key       string    `bson:"key" json:"key"`
+	Label     string    `json:"label"`
+	Level     int       `json:"level"`
+	FileType  string    `bson:"filetype" json:"filetype"`
+	ParendKey string    `bson:"parend_key" json:"parend_key"`
+	Children  []Catalog `bson:"children" json:"children"`
 }
 
 func UpdateCatalog(catalog Catalog) error {
@@ -56,15 +56,15 @@ func UpdateCatalog(catalog Catalog) error {
 }
 
 func NewDefaultCatalog(user_id int) (Catalog, error) {
-	defaultID := "root" + strconv.Itoa(user_id)
 	catalog := Catalog{
-		UserID:   user_id,
-		ID:       defaultID,
-		Label:    "资料库",
-		Level:    0,
-		FileType: FileTypeNoteBook,
-		ParendID: defaultID,
-		Children: []Catalog{},
+		UserID:    user_id,
+		ID:        0,
+		Key:       "0",
+		Label:     "资料库",
+		Level:     0,
+		FileType:  FileTypeNoteBook,
+		ParendKey: "0",
+		Children:  []Catalog{},
 	}
 
 	_, err := collections.InsertOne(context.TODO(), catalog)

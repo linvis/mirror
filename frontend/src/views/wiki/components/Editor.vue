@@ -204,7 +204,7 @@ export default {
       show: false,
       loading: false,
       editor: null,
-      docID: null,
+      activeNode: null,
       title: '',
       contents: ''
     }
@@ -280,18 +280,23 @@ export default {
       console.log('show editor')
       this.show = true
     },
-    openDocument(docID) {
-      console.log(docID)
-      this.docID = docID
+    openDocument(node) {
+      console.log(node)
+      if (node.id <= 0) {
+        return
+      }
+
+      this.activeNode = node
       this.loading = true
-      queryDocumentByID(this.docID).then(response => {
+
+      queryDocumentByID(node.id).then(response => {
         var docs = response.data
         this.setContent(docs.html)
         this.loading = false
       })
     },
-    openNewDoc(docID) {
-      this.docID = docID
+    openNewDoc(node) {
+      this.activeNode = node
       this.showEditor(true)
     },
     updateContent(content) {
@@ -299,12 +304,17 @@ export default {
     },
     saveDoc(event) {
       var file = {
-        'doc_id': this.docID,
+        'id': this.activeNode.id,
+        'doc_key': this.activeNode.key,
         // 'title': this.title,
         'raw': '',
         'html': this.contents
       }
       saveDocument(file).then(response => {
+        this.activeNode.id = response.data.id
+
+        bus.$emit('update-catalog')
+
         this.$notify({
           title: '成功',
           message: '',

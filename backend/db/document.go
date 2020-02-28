@@ -1,9 +1,12 @@
 package db
 
-import "errors"
+import (
+	"errors"
+)
 
 type Document struct {
-	DocID  string `xorm:"doc_id" json:"doc_id"`
+	Id     int64  `json:"id"`
+	DocKey string `xorm:"doc_key" json:"doc_key"`
 	UserID int    `xorm:"user_id" json:"-"`
 	Raw    string `xorm:"MEDIUMTEXT"`
 	HTML   string `xorm:"MEDIUMTEXT html" json:"html"`
@@ -15,6 +18,17 @@ func (d Document) TableName() string {
 }
 
 func NewDocument(doc *Document) error {
+	oldRec := Document{}
+	if doc.Id != 0 {
+		has, err := x.Where("id = ?", doc.Id).Get(&oldRec)
+		if err != nil {
+			return err
+		} else if has {
+			x.Update(doc, &Document{Id: oldRec.Id})
+			return nil
+		}
+	}
+
 	_, err := x.Insert(doc)
 
 	return err
@@ -34,7 +48,7 @@ func GetAllDocument(user_id int) (*[]Document, error) {
 func GetDocumentByID(user_id int, doc_id string) (*Document, error) {
 	docs := Document{}
 
-	_, err := x.Where("user_id = ? AND doc_id = ?", user_id, doc_id).Get(&docs)
+	_, err := x.Where("user_id = ? AND id = ?", user_id, doc_id).Get(&docs)
 	if err != nil {
 		return nil, errors.New("no document")
 	}

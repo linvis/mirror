@@ -13,7 +13,8 @@
             "env": {},
             "args": [
                 "dev",
-                "/Users/shlin/wspace/mirrow_pj/mirror/backend/db/db.config"
+                "/Users/shlin/wspace/mirrow_pj/mirror/backend/db/db.config",
+                "/Users/shlin/wspace/mirrow_pj/mirror/backend/db/redis.config"
             ]
         ]
     }

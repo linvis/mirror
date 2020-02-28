@@ -57,17 +57,19 @@ export default {
       filterText: '',
       // catalog: [],
       catalog: [{
-        id: '0',
+        id: 0,
+        key: '0',
         label: 'root',
         filetype: 'nb',
         level: 0,
-        parentID: '0',
+        parentKey: '0',
         children: [{
-          id: '1',
+          id: 1,
+          key: '1',
           label: 'level 1',
           filetype: 'md',
           level: 1,
-          parentID: '0'
+          parentKey: '0'
         }]
       }],
       defaultProps: {
@@ -81,8 +83,15 @@ export default {
       this.$refs.tree2.filter(val)
     }
   },
+  created() {
+    bus.$on('update-catalog', this.updateCatalog)
+  },
   mounted() {
     this.featchData()
+  },
+
+  beforeDestroy() {
+    bus.$off('update-catalog', this.updateCatalog)
   },
 
   methods: {
@@ -95,31 +104,25 @@ export default {
       if (!value) return true
       return data.label.indexOf(value) !== -1
     },
-    getMaxChildID(children) {
-      var maxID = -1
-      for (var i = 0; i < children.length; i++) {
-        if (children[i].id > maxID) {
-          maxID = children[i].id
-        }
-      }
-
-      return maxID
-    },
     handleMenuClick(event, obj, node, components) {
       console.log(node)
       this.$refs.menu.open(event, { value: node })
     },
-    handleNodeClick(data) {
-      if (data.filetype === 'md') {
+    handleNodeClick(node) {
+      if (node.filetype === 'md') {
         bus.$emit('show-reminder', false)
         bus.$emit('show-editor', true)
-        bus.$emit('open-document', data.id)
+        bus.$emit('open-document', node)
       }
     },
 
-    newID() {
+    newRandomKey() {
       var uuid = uuidv4()
       return uuid.split('-').join('')
+    },
+    updateCatalog() {
+      updateEditorCatalog(this.catalog).then(response => {
+      })
     },
 
     handleNewFile(node) {
@@ -128,14 +131,15 @@ export default {
 
       var data = node.data
 
-      var id = this.newID()
+      var key = this.newRandomKey()
 
       const newChild = {
-        id: id,
+        id: 0,
+        key: key,
         label: 'file',
         level: data.level + 1,
         filetype: 'md',
-        parentID: data.id,
+        parentKey: data.key,
         children: []
       }
       if (!data.children) {
@@ -143,16 +147,11 @@ export default {
       }
       data.children.push(newChild)
 
-      updateEditorCatalog(this.catalog).then(response => {
-        bus.$emit('show-reminder', false)
-        bus.$emit('open-new-doc', id)
-      })
+      bus.$emit('show-reminder', false)
+      bus.$emit('open-new-doc', newChild)
     },
     handleNewNoteBook(node) {
-      // alert(`You clicked on: "${node.label}"`)
       var data = node.data
-
-      console.log('current node', data.level, data.id, data.label)
 
       if (data.level >= 2) {
         this.$message({
@@ -162,14 +161,15 @@ export default {
         return
       }
 
-      var id = this.newID()
+      var key = this.newRandomKey()
 
       const newChild = {
-        id: id,
+        id: 0,
+        key: key,
         label: 'notebook',
         level: data.level + 1,
         filetype: 'nb',
-        parentID: data.id,
+        parentKey: data.key,
         children: []
       }
       if (!data.children) {
