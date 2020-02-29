@@ -8,20 +8,35 @@
       class="filter-tree"
       :highlight-current="true"
       :expand-on-click-node="false"
+      :draggable="isDrag"
       @node-contextmenu="handleMenuClick"
       @node-click="handleNodeClick"
+      @node-drop="handleDrop"
     >
       <span slot-scope="{ node, data }" class="custom-tree-node">
-        <div v-if="data.filetype === 'nb'">
-          <i class="el-icon-notebook-1" />
-        </div>
-        <div v-else-if="data.filetype === 'md'">
-          <i class="el-icon-document" />
-        </div>
-        <div v-else />
-        <span style="margin-left:5px;">{{ node.label }}</span>
-        <span>
-          <el-button type="text" size="mini" @click="() => handleNewFile(node)">+</el-button>
+        <span v-show="!node.isEdit">
+          <span v-if="data.filetype === 'nb'">
+            <i class="el-icon-notebook-1" />
+          </span>
+          <span v-else-if="data.filetype === 'md'">
+            <i class="el-icon-document" />
+          </span>
+          <span v-else />
+          <span style="margin-left:5px;">{{ node.label }}</span>
+          <span>
+            <el-button type="text" size="mini" @click="() => handleNewFile(node)">+</el-button>
+          </span>
+        </span>
+        <span v-show="node.isEdit">
+          <el-input
+            :ref="data.key"
+            v-model="data.label"
+            class="slot-t-input"
+            size="mini"
+            autofocus
+            @blur.stop="NodeBlur(node, data)"
+            @keyup.enter.native="NodeBlur(node, data)"
+          />
         </span>
       </span>
     </el-tree>
@@ -55,6 +70,7 @@ export default {
   data() {
     return {
       filterText: '',
+      isDrag: true,
       // catalog: [],
       catalog: [{
         id: 0,
@@ -70,7 +86,15 @@ export default {
           filetype: 'md',
           level: 1,
           parent: '0'
-        }]
+        }, {
+          id: 2,
+          key: '2',
+          label: 'level 2',
+          filetype: 'md',
+          level: 1,
+          parent: '0'
+        }
+        ]
       }],
       defaultProps: {
         children: 'children',
@@ -108,11 +132,18 @@ export default {
       console.log(node)
       this.$refs.menu.open(event, { value: node })
     },
-    handleNodeClick(node) {
-      if (node.filetype === 'md') {
+    handleNodeClick(data, node) {
+      // node edit toggle click
+      console.log('node click')
+      console.log(node)
+      if (node.hasOwnProperty('isEdit') === true && node.isEdit === true) {
+        return
+      }
+
+      if (data.filetype === 'md') {
         bus.$emit('show-reminder', false)
         bus.$emit('show-editor', true)
-        bus.$emit('open-document', node)
+        bus.$emit('open-document', data)
       }
     },
 
@@ -180,9 +211,25 @@ export default {
       updateEditorCatalog(this.catalog).then(response => {
       })
     },
+    NodeBlur(node, data) { // 输入框失焦
+      console.log('lose focus')
+      if (node.isEdit) {
+        this.$set(node, 'isEdit', false)
+      }
+      this.isDrag = true
+      updateEditorCatalog(this.catalog).then(response => {
+      })
+    },
     handleRename(node) {
-      alert(`You clicked on: "${node.label}"`)
+      // alert(`You clicked on: "${node.label}"`)
       console.log(node)
+      if (!node.isEdit) {
+        this.$set(node, 'isEdit', true)
+      }
+      this.isDrag = false
+      this.$nextTick(() => {
+        this.$refs[node.data.key].$refs.input.focus()
+      })
     },
     handleDelete(node) {
       console.log(node)
@@ -191,6 +238,13 @@ export default {
       const children = parent.data.children || parent.data
       const index = children.findIndex(d => d.id === data.id)
       children.splice(index, 1)
+
+      updateEditorCatalog(this.catalog).then(response => {
+      })
+    },
+    handleDrop(draggingNode, dropNode, dropType, ev) {
+      updateEditorCatalog(this.catalog).then(response => {
+      })
     }
   }
 }

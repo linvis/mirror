@@ -312,6 +312,9 @@ export default {
       }
       saveDocument(file).then(response => {
         this.activeNode.id = response.data.id
+        if (this.title !== '') {
+          this.activeNode.label = this.title
+        }
 
         bus.$emit('update-catalog')
 
