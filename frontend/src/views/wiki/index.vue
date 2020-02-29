@@ -2,10 +2,14 @@
   <div class="components-container">
     <split-pane split="vertical" :default-percent="25" @resize="resize">
       <template slot="paneL">
-        <el-header style="margin-top:10px">
-          <search />
-        </el-header>
-        <tree />
+        <el-container>
+          <el-header style="margin-top:10px">
+            <search />
+          </el-header>
+          <el-main>
+            <tree />
+          </el-main>
+        </el-container>
       </template>
       <template slot="paneR">
         <reminder style="margin-left:20px;margin-top:20px" />
