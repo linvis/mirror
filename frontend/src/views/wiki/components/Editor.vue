@@ -12,201 +12,39 @@
       </el-col>
       <el-col :span="12">
         <div class="right-menu">
-          <el-button type="primary" plain size="small" @click="saveDoc">save</el-button>
-          <el-button type="primary" plain size="small">cancel</el-button>
+          <el-button type="primary" plain size="small" @click="edit">edit</el-button>
+          <el-button type="primary" plain size="small" @click="save">save</el-button>
         </div>
       </el-col>
       <!-- </el-row> -->
     </el-header>
-
     <el-main>
-      <div class="editor">
-        <editor-menu-bar v-slot="{ commands, isActive }" :editor="editor">
-          <div class="menubar">
-            <button
-              class="menubar__button"
-              :class="{ 'is-active': isActive.bold() }"
-              @click="commands.bold"
-            >
-              <span class="svg-container">
-                <svg-icon icon-class="editor_bold" />
-              </span>
-            </button>
-
-            <button
-              class="menubar__button"
-              :class="{ 'is-active': isActive.italic() }"
-              @click="commands.italic"
-            >
-              <span class="svg-container">
-                <svg-icon icon-class="editor_italic" />
-              </span>
-            </button>
-
-            <button
-              class="menubar__button"
-              :class="{ 'is-active': isActive.strike() }"
-              @click="commands.strike"
-            >
-              <span class="svg-container">
-                <svg-icon icon-class="editor_strike" />
-              </span>
-            </button>
-
-            <button
-              class="menubar__button"
-              :class="{ 'is-active': isActive.underline() }"
-              @click="commands.underline"
-            >
-              <span class="svg-container">
-                <svg-icon icon-class="editor_underline" />
-              </span>
-            </button>
-
-            <button
-              class="menubar__button"
-              :class="{ 'is-active': isActive.code() }"
-              @click="commands.code"
-            >
-              <span class="svg-container">
-                <svg-icon icon-class="editor_code" />
-              </span>
-            </button>
-
-            <button
-              class="menubar__button"
-              :class="{ 'is-active': isActive.paragraph() }"
-              @click="commands.paragraph"
-            >
-              <span class="svg-container">
-                <svg-icon icon-class="editor_paragraph" />
-              </span>
-            </button>
-
-            <button
-              class="menubar__button"
-              :class="{ 'is-active': isActive.heading({ level: 1 }) }"
-              @click="commands.heading({ level: 1 })"
-            >H1</button>
-
-            <button
-              class="menubar__button"
-              :class="{ 'is-active': isActive.heading({ level: 2 }) }"
-              @click="commands.heading({ level: 2 })"
-            >H2</button>
-
-            <button
-              class="menubar__button"
-              :class="{ 'is-active': isActive.heading({ level: 3 }) }"
-              @click="commands.heading({ level: 3 })"
-            >H3</button>
-
-            <button
-              class="menubar__button"
-              :class="{ 'is-active': isActive.bullet_list() }"
-              @click="commands.bullet_list"
-            >
-              <span class="svg-container">
-                <svg-icon icon-class="editor_ul" />
-              </span>
-            </button>
-
-            <button
-              class="menubar__button"
-              :class="{ 'is-active': isActive.ordered_list() }"
-              @click="commands.ordered_list"
-            >
-              <span class="svg-container">
-                <svg-icon icon-class="editor_ol" />
-              </span>
-            </button>
-
-            <button
-              class="menubar__button"
-              :class="{ 'is-active': isActive.blockquote() }"
-              @click="commands.blockquote"
-            >
-              <span class="svg-container">
-                <svg-icon icon-class="editor_quote" />
-              </span>
-            </button>
-
-            <button
-              class="menubar__button"
-              :class="{ 'is-active': isActive.code_block() }"
-              @click="commands.code_block"
-            >
-              <span class="svg-container">
-                <svg-icon icon-class="editor_code" />
-              </span>
-            </button>
-
-            <button class="menubar__button" @click="commands.horizontal_rule">
-              <span class="svg-container">
-                <svg-icon icon-class="editor_hr" />
-              </span>
-            </button>
-
-            <button class="menubar__button" @click="commands.undo">
-              <span class="svg-container">
-                <svg-icon icon-class="editor_undo" />
-              </span>
-            </button>
-
-            <button class="menubar__button" @click="commands.redo">
-              <span class="svg-container">
-                <svg-icon icon-class="editor_redo" />
-              </span>
-            </button>
-          </div>
-        </editor-menu-bar>
-        <editor-content class="editor__content" :editor="editor" />
-      </div>
+      <!-- <editor-content ref="editor" class="editor__content" :editor="editor" /> -->
+      <div class="content" />
     </el-main>
   </el-container>
 </template>
 
 <script>
-import { Editor, EditorContent, EditorMenuBar } from 'tiptap'
-import {
-  Placeholder,
-  Bold,
-  Blockquote,
-  CodeBlock,
-  HardBreak,
-  Heading,
-  HorizontalRule,
-  OrderedList,
-  BulletList,
-  ListItem,
-  TodoItem,
-  TodoList,
-  Code,
-  Italic,
-  Link,
-  Strike,
-  Underline,
-  History
-} from 'tiptap-extensions'
-import Doc from './Doc'
-import Title from './Title'
+import { Editor } from 'tiptap'
+import Stackedit from 'stackedit-js'
 
 import { saveDocument, queryAllDocument, queryDocumentByID } from '@/api/editor'
 import { bus } from '@/utils/bus'
 
 export default {
   components: {
-    EditorContent,
-    EditorMenuBar
   },
   data() {
     return {
       show: false,
       loading: false,
-      editor: null,
+      eleContent: null,
+      stackedit: null,
       activeNode: null,
       title: '',
-      contents: ''
+      contentHTML: '',
+      contentText: ''
     }
   },
   created() {
@@ -216,7 +54,6 @@ export default {
   },
   mounted() {
     this.initEditor()
-    // this.getAllDoc()
   },
   beforeDestroy() {
     bus.$off('show-editor', this.showEditor)
@@ -226,55 +63,12 @@ export default {
   },
   methods: {
     initEditor() {
-      this.editor = new Editor({
-        autoFocus: true,
-        extensions: [
-          new Doc(),
-          new Title(),
-          new Placeholder({
-            showOnlyCurrent: false,
-            emptyNodeText: node => {
-              if (node.type.name === 'title') {
-                return 'Title'
-              }
-
-              return 'Write something'
-            }
-          }),
-          new Bold(),
-          new Blockquote(),
-          new BulletList(),
-          new CodeBlock(),
-          new HardBreak(),
-          new Heading({ levels: [1, 2, 3] }),
-          new HorizontalRule(),
-          new ListItem(),
-          new OrderedList(),
-          new TodoItem(),
-          new TodoList(),
-          new Link(),
-          new Bold(),
-          new Code(),
-          new Italic(),
-          new Strike(),
-          new Underline(),
-          new History()
-        ]
-      })
-      this.editor.on('update', ({ getJSON, getHTML }) => {
-        // get new content on update
-        const json = getJSON()
-        if ('text' in json.content[0].content[0]) {
-          this.title = json.content[0].content[0].text
-        }
-
-        const newContent = getHTML()
-        this.contents = newContent
-      })
+      this.stackedit = new Stackedit()
+      this.eleContent = document.getElementsByClassName('content')
     },
-    setContent(content) {
-      this.contents = content
-      this.editor.setContent(content)
+    setContent(html) {
+      this.contentHTML = html
+      this.eleContent.innerHTML = html
     },
     showEditor(state) {
       this.show = true
@@ -294,6 +88,7 @@ export default {
         this.setContent(docs.html)
         this.loading = false
       })
+      this.loading = false
     },
     openNewDoc(node) {
       this.activeNode = node
@@ -302,7 +97,30 @@ export default {
     updateContent(content) {
       this.contents = content
     },
-    saveDoc(event) {
+    edit(event) {
+      this.stackedit.openFile({
+        name: 'Filename', // with a filename
+        content: {
+          // text: this.contentText // and the Markdown content.
+          text: 'Hello **Markdown** writer!'
+        }
+      })
+
+      this.stackedit.on('fileChange', (file) => {
+        // el.value = file.content.text
+        this.contentHTML = file.content.html
+        this.contentText = file.content.text
+        this.$log.debug(file.content.text)
+        this.$log.debug(file.content.html)
+      })
+
+      this.stackedit.on('close', () => {
+        this.eleContent.innerHTML = this.contentHTML
+        this.$log.debug(this.contentText)
+        this.$log.debug(this.contentHTML)
+      })
+    },
+    save(event) {
       var file = {
         'id': this.activeNode.id,
         'doc_key': this.activeNode.key,
