@@ -277,11 +277,11 @@ export default {
       this.editor.setContent(content)
     },
     showEditor(state) {
-      console.log('show editor')
       this.show = true
     },
     openDocument(node) {
-      console.log(node)
+      this.$log.debug(node)
+
       if (node.id <= 0) {
         return
       }
@@ -330,7 +330,6 @@ export default {
       queryAllDocument().then(response => {
         var docs = response.data
         this.contents = docs[0].html
-        console.log(this.contents)
         this.editor.setContent(this.contents)
       })
     }

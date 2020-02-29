@@ -8,12 +8,28 @@ import locale from 'element-ui/lib/locale/lang/en' // lang i18n
 
 import '@/styles/index.scss' // global css
 
+import VueLogger from 'vuejs-logger'
+const isProduction = process.env.NODE_ENV === 'production'
+
 import App from './App'
 import store from './store'
 import router from './router'
 
 import '@/icons' // icon
 import '@/permission' // permission control
+
+// logger
+const options = {
+  isEnabled: true,
+  logLevel: isProduction ? 'error' : 'debug',
+  stringifyArguments: false,
+  showLogLevel: true,
+  showMethodName: true,
+  separator: '|',
+  showConsoleColors: true
+}
+
+Vue.use(VueLogger, options)
 
 /**
  * If you don't want to use mock-server

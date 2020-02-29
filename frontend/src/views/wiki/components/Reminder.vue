@@ -40,7 +40,6 @@ export default {
   },
   methods: {
     showReminder(state) {
-      console.log('show reminder')
       this.show = state
     }
   }

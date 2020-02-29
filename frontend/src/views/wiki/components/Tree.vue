@@ -129,13 +129,12 @@ export default {
       return data.label.indexOf(value) !== -1
     },
     handleMenuClick(event, obj, node, components) {
-      console.log(node)
+      this.$log.debug(node)
       this.$refs.menu.open(event, { value: node })
     },
     handleNodeClick(data, node) {
       // node edit toggle click
-      console.log('node click')
-      console.log(node)
+      this.$log.debug(node)
       if (node.hasOwnProperty('isEdit') === true && node.isEdit === true) {
         return
       }
@@ -157,11 +156,9 @@ export default {
     },
 
     handleNewFile(node) {
-      // alert(`You clicked on: "${node.label}"`)
-      console.log(node)
+      this.$log.debug(node)
 
       var data = node.data
-
       var key = this.newRandomKey()
 
       const newChild = {
@@ -212,7 +209,8 @@ export default {
       })
     },
     NodeBlur(node, data) { // 输入框失焦
-      console.log('lose focus')
+      this.$log.debug('lose focus')
+
       if (node.isEdit) {
         this.$set(node, 'isEdit', false)
       }
@@ -222,7 +220,7 @@ export default {
     },
     handleRename(node) {
       // alert(`You clicked on: "${node.label}"`)
-      console.log(node)
+      this.$log.debug(node)
       if (!node.isEdit) {
         this.$set(node, 'isEdit', true)
       }
@@ -232,7 +230,8 @@ export default {
       })
     },
     handleDelete(node) {
-      console.log(node)
+      this.$log.debug(node)
+
       const parent = node.parent
       var data = node.data
       const children = parent.data.children || parent.data
