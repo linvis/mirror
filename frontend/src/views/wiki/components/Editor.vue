@@ -294,6 +294,7 @@ export default {
         this.setContent(docs.html)
         this.loading = false
       })
+      this.loading = false
     },
     openNewDoc(node) {
       this.activeNode = node
@@ -355,8 +356,8 @@ export default {
 }
 
 @import "~@/styles/variables.scss";
-// @import "~@/styles/editor.scss";
-// @import "~@/styles/main.scss";
+@import "~@/styles/editor.scss";
+@import "~@/styles/main.scss";
 @import "~@/styles/menubar.scss";
 @import "~@/styles/menububble.scss";
 
