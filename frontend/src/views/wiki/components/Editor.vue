@@ -171,6 +171,15 @@
                 <svg-icon icon-class="editor_redo" />
               </span>
             </button>
+            <button
+              class="menubar__button"
+              :class="{ 'is-active': isActive.todo_list() }"
+              @click="commands.todo_list"
+            >
+              <span class="svg-container">
+                <svg-icon icon-class="editor_checklist" />
+              </span>
+            </button>
           </div>
         </editor-menu-bar>
         <editor-content class="editor__content" :editor="editor" />
@@ -267,7 +276,9 @@ export default {
           new HorizontalRule(),
           new ListItem(),
           new OrderedList(),
-          new TodoItem(),
+          new TodoItem({
+            nested: true
+          }),
           new TodoList(),
           new Link(),
           new Bold(),
@@ -315,11 +326,25 @@ export default {
       })
       this.setContent(`
           <h2>
-            Links
+            Todo List
           </h2>
           <p>
-            Try to add some links to the <a href="https://en.wikipedia.org/wiki/World_Wide_Web">world wide web</a>. By default every link will get a <code>rel="noopener noreferrer nofollow"</code> attribute.
+            There is always something to do. Thankfully, there are checklists for that. Don't forget to call mom.
           </p>
+          <ul data-type="todo_list">
+            <li data-type="todo_item" data-done="true">
+              Buy beer
+            </li>
+            <li data-type="todo_item" data-done="true">
+              Buy meat
+            </li>
+            <li data-type="todo_item" data-done="true">
+              Buy milk
+            </li>
+            <li data-type="todo_item" data-done="false">
+              Call mom
+            </li>
+          </ul>
         `)
       this.loading = false
     },
@@ -430,4 +455,52 @@ export default {
 //   justify-content: center;
 //   // padding: 50px;
 // }
+ul[data-type="todo_list"] {
+  padding-left: 0;
+}
+
+li[data-type="todo_item"] {
+  display: flex;
+  flex-direction: row;
+}
+
+.todo-checkbox {
+  border: 2px solid $color-black;
+  height: 0.9em;
+  width: 0.9em;
+  box-sizing: border-box;
+  margin-right: 10px;
+  margin-top: 0.3rem;
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: pointer;
+  border-radius: 0.2em;
+  background-color: transparent;
+  transition: 0.4s background;
+}
+
+.todo-content {
+  flex: 1;
+  > p:last-of-type {
+    margin-bottom: 0;
+  }
+  > ul[data-type="todo_list"] {
+    margin: 0.5rem 0;
+  }
+}
+
+li[data-done="true"] {
+  > .todo-content {
+    > p {
+      text-decoration: line-through;
+    }
+  }
+  > .todo-checkbox {
+    background-color: $color-black;
+  }
+}
+
+li[data-done="false"] {
+  text-decoration: none;
+}
 </style>
