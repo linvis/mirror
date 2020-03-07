@@ -1,3 +1,11 @@
+<!--
+ * @Author: your name
+ * @Date: 2020-01-31 15:33:44
+ * @LastEditTime: 2020-03-07 19:55:05
+ * @LastEditors: Please set LastEditors
+ * @Description: In User Settings Edit
+ * @FilePath: /frontend/src/views/settings/index.vue
+ -->
 <template>
   <div class="mixin-components-container">
     <el-card class="box-card" shadow="hover">

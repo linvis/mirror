@@ -1,51 +1,40 @@
 <template>
-  <div id="app">
-    <div ref="editor" />
-  </div>
+  <!-- <el-container v-show="show" style="height:100%;"> -->
+  <el-container v-show="show" style="height: 100%; border: 1px solid #eee">
+    <el-main>
+      <el-table :data="tableData" style="width: 100%">
+        <el-table-column prop="date" label="日期" width="180" />
+        <el-table-column prop="name" label="姓名" width="180" />
+        <el-table-column prop="address" label="地址" />
+      </el-table>
+    </el-main>
+  </el-container>
 </template>
 
 <script>
-import Muya from '@/muya/lib'
-import TablePicker from '@/muya/lib/ui/tablePicker'
-import QuickInsert from '@/muya/lib/ui/quickInsert'
-import CodePicker from '@/muya/lib/ui/codePicker'
-import EmojiPicker from '@/muya/lib/ui/emojiPicker'
-import ImagePathPicker from '@/muya/lib/ui/imagePicker'
-import ImageSelector from '@/muya/lib/ui/imageSelector'
-import FormatPicker from '@/muya/lib/ui/formatPicker'
-import FrontMenu from '@/muya/lib/ui/frontMenu'
-import '@/muya/themes/default.css'
-import './assets/index.css'
+import { bus } from '@/utils/bus'
 export default {
-  name: 'App',
+  data() {
+    const item = {
+      date: '2016-05-02',
+      name: '王小虎',
+      address: '上海市普陀区金沙江路 1518 弄'
+    }
+    return {
+      show: true,
+      tableData: Array(30).fill(item)
+    }
+  },
   created() {
-    this.$nextTick(() => {
-      const ele = this.$refs.editor
-      Muya.use(TablePicker)
-      Muya.use(QuickInsert)
-      Muya.use(CodePicker)
-      Muya.use(EmojiPicker)
-      Muya.use(ImagePathPicker)
-      Muya.use(ImageSelector)
-      Muya.use(FormatPicker)
-      Muya.use(FrontMenu)
-      this.editor = new Muya(ele, {
-        markdown: 'Welcome to use muya...'
-      })
-      this.editor.on('change', changes => {
-        console.log(changes)
-      })
-    })
+    bus.$on('show-reminder', this.showReminder)
+  },
+  beforeDestroy() {
+    bus.$off('show-reminder', this.showReminder)
+  },
+  methods: {
+    showReminder(state) {
+      this.show = state
+    }
   }
 }
 </script>
-
-<style>
-#app {
-  font-family: "Avenir", Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>

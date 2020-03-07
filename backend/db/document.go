@@ -1,3 +1,11 @@
+/*
+ * @Author: your name
+ * @Date: 2020-02-26 21:16:16
+ * @LastEditTime: 2020-03-07 17:03:18
+ * @LastEditors: Please set LastEditors
+ * @Description: In User Settings Edit
+ * @FilePath: /backend/db/document.go
+ */
 package db
 
 import (
@@ -5,11 +13,11 @@ import (
 )
 
 type Document struct {
-	Id     int64  `json:"id"`
-	DocKey string `xorm:"doc_key" json:"doc_key"`
-	UserID int    `xorm:"user_id" json:"-"`
-	Raw    string `xorm:"MEDIUMTEXT"`
-	HTML   string `xorm:"MEDIUMTEXT html" json:"html"`
+	Id      int64  `json:"id"`
+	DocKey  string `xorm:"doc_key" json:"doc_key"`
+	UserID  int    `xorm:"user_id" json:"-"`
+	Content string `xorm:"MEDIUMTEXT" json:"content"`
+	HTML    string `xorm:"MEDIUMTEXT html" json:"html"`
 }
 
 // TableName return table name

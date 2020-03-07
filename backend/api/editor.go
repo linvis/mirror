@@ -57,7 +57,6 @@ func NewDocument(c *gin.Context) {
 		return
 	}
 
-	fmt.Println(doc)
 	err := db.NewDocument(&doc)
 	if err != nil {
 		log.Warn("new doc save fail", err)
