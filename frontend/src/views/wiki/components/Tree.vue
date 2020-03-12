@@ -5,9 +5,9 @@
       :data="catalog"
       :props="defaultProps"
       :filter-node-method="filterNode"
-      class="filter-tree"
+      class="tree"
       :highlight-current="true"
-      :expand-on-click-node="false"
+      :expand-on-click-node="true"
       :draggable="isDrag"
       @node-contextmenu="handleMenuClick"
       @node-click="handleNodeClick"
@@ -257,6 +257,10 @@ export default {
   justify-content: space-between;
   font-size: 14px;
   padding-right: 8px;
+}
+
+.tree {
+  background: #f8f8f8;
 }
 </style>
 

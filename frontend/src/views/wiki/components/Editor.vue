@@ -1,29 +1,28 @@
 <template>
   <!-- <div id="app"> -->
-  <el-container v-show="show" v-loading="loading" style="height:100%;">
-    <el-header class="head">
-      <!-- <el-row> -->
+  <el-container v-show="show" v-loading="loading" class="app">
+    <div class="navbar">
+      <el-breadcrumb separator="/">
+        <el-breadcrumb-item>首页</el-breadcrumb-item>
+        <el-breadcrumb-item>活动管理</el-breadcrumb-item>
+        <el-breadcrumb-item>活动列表</el-breadcrumb-item>
+        <el-breadcrumb-item>活动详情</el-breadcrumb-item>
+      </el-breadcrumb>
+    </div>
+    <!-- <el-header class="head">
       <el-col :span="12">
-        <el-breadcrumb separator="/">
-          <el-breadcrumb-item>首页</el-breadcrumb-item>
-          <el-breadcrumb-item>活动管理</el-breadcrumb-item>
-          <el-breadcrumb-item>活动列表</el-breadcrumb-item>
-          <el-breadcrumb-item>活动详情</el-breadcrumb-item>
-        </el-breadcrumb>
       </el-col>
       <el-col :span="12">
         <div class="right-menu">
-          <el-button type="primary" plain size="small" @click="save">save</el-button>
+          <el-button type="text" icon="el-icon-check" @click="save" />
           <el-button type="primary" plain size="small" @click="edit">edit</el-button>
+          <el-button type="primary" plain size="small" @click="reminder">reminder</el-button>
         </div>
       </el-col>
-      <!-- </el-row> -->
-    </el-header>
-    <el-main>
-      <keep-alive>
-        <div ref="editor" />
-      </keep-alive>
-    </el-main>
+    </el-header>-->
+    <simplebar class="editor">
+      <div ref="editor" />
+    </simplebar>
   </el-container>
   <!-- </div> -->
 </template>
@@ -41,6 +40,9 @@ import FrontMenu from '@/muya/lib/ui/frontMenu'
 import '@/muya/themes/default.css'
 import './assets/index.css'
 
+import simplebar from 'simplebar-vue'
+import 'simplebar/dist/simplebar.min.css'
+
 Muya.use(TablePicker)
 Muya.use(QuickInsert)
 Muya.use(CodePicker)
@@ -54,6 +56,9 @@ import { saveDocument, queryDocumentByID } from '@/api/editor'
 import { bus } from '@/utils/bus'
 
 export default {
+  components: {
+    simplebar
+  },
   data() {
     return {
       show: false,
@@ -123,6 +128,9 @@ export default {
     edit(event) {
       this.setContent('Welcome to use muya...\n\nhello fuck\n')
     },
+    reminder(event) {
+      this.setContent('Welcome to use muya...\n\nhello fuck\n')
+    },
     save(event) {
       var doc = {
         'id': this.activeNode.id,
@@ -164,7 +172,10 @@ export default {
 
 <style>
 .components-container {
-  position: relative;
+  /* display: flex;
+  flex-direction: column;
+  justify-content: flex-start; */
+  /* position: relative; */
 }
 .right-menu {
   float: right;
@@ -172,11 +183,23 @@ export default {
   line-height: 10px;
   justify-content: left;
 }
-/* #app {
-  font-family: "Avenir", Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  color: #2c3e50;
-  margin-top: 60px;
-} */
+.navbar {
+  width: 100%;
+  height: 20px;
+}
+.editor {
+  float: left;
+  width: 100%;
+  /* height: 300px; */
+  padding: 0%;
+  /* height: 100%; */
+  height: calc(100vh - 20px);
+  /* height: 100px; */
+  justify-content: left;
+}
+.app {
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+}
 </style>

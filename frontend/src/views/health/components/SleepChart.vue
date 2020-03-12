@@ -21,6 +21,7 @@ import stockInit from 'highcharts/modules/stock'
 stockInit(Highcharts)
 
 import { querySleepRec } from '@/api/sleep'
+import { bus } from '@/utils/bus'
 
 export default {
   data() {
@@ -30,26 +31,26 @@ export default {
       dur_data: [],
       start_time_data: [],
       end_time_data: [],
-      chart_data: [
-        [
-          1516631400000,
-          177
-        ]]
+      chart_data: []
     }
   },
   created() {
-    this.$bus.on('update-sleeprecord', this.featchData)
+    bus.$on('update-sleep-record', this.getSleepRecord)
   },
   mounted() {
-    this.featchData()
+    this.getSleepRecord()
   },
   beforeDestroy() {
-    this.$bus.off('update-sleeprecord', this.featchData)
+    bus.$off('update-sleep-record', this.getSleepRecord)
   },
   methods: {
-    featchData() {
+    getSleepRecord() {
       querySleepRec().then(response => {
         console.log(response.data)
+
+        this.dur_data = []
+        this.start_time_data = []
+        this.end_time_data = []
 
         for (var i = 0; i < response.data.date.length; i++) {
           this.dur_data.push([response.data.date[i], response.data.duration[i]])

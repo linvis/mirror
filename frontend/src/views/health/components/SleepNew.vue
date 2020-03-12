@@ -50,7 +50,7 @@
 <script>
 
 import { submitSleepRec } from '@/api/sleep'
-// import { parse } from 'path'
+import { bus } from '@/utils/bus'
 
 export default {
   data() {
@@ -135,7 +135,7 @@ export default {
           type: 'success',
           duration: 800
         })
-        this.$bus.emit('update-sleeprecord')
+        bus.$emit('update-sleep-record')
       })
     }
   }
