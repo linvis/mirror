@@ -1,15 +1,14 @@
 <template>
   <!-- <div class="components-container"> -->
-
   <el-container>
     <splitpanes>
-      <pane min-size="10" max-size="30" class="sidebar">
+      <pane min-size="10" size="20" max-size="30" class="sidebar">
         <search />
-        <tree class="sidebar" />
+        <tree />
       </pane>
       <pane>
-        <reminder style="margin-left:20px;margin-top:20px" />
-        <editor style="margin-left:20px;margin-top:20px" />
+        <home style="margin-left:20px;margin-top:5px" />
+        <editor style="margin-left:20px;margin-top:5px" />
       </pane>
     </splitpanes>
     <!-- <split-pane split="vertical" :default-percent="25" @resize="resize">
@@ -40,7 +39,7 @@ import 'splitpanes/dist/splitpanes.css'
 import Search from './components/Search'
 import Tree from './components/Tree'
 import Editor from './components/Editor'
-import Reminder from './components/Reminder'
+import Home from './components/Home'
 
 export default {
   components: {
@@ -50,7 +49,7 @@ export default {
     Search,
     Tree,
     Editor,
-    Reminder
+    Home
   },
   data() {
     return {
@@ -79,23 +78,12 @@ export default {
 <style>
 .el-header,
 .el-footer {
-  /* background-color: #b3c0d1; */
   color: #333;
   border-radius: 2px;
-  /* text-align: center;
-  line-height: 60px; */
 }
-/* .components-container {
-  position: relative;
-  height: 100%;
-} */
 .el-container {
-  height: 100vh;
+  height: 100%;
 }
-
-/* .splitpanes {
-  background: #fff;
-} */
 .splitpanes__pane span {
   font-family: Helvetica, Arial, sans-serif;
   height: 100%;
@@ -107,9 +95,17 @@ export default {
 .splitpanes--vertical {
   height: 100vh;
 }
-
 .sidebar {
   background: #f8f8f8;
   height: 100vh;
+}
+.search {
+  margin-top: 5%;
+  margin-bottom: 0%;
+  margin-left: 10%;
+  margin-right: 10%;
+}
+.tree {
+  margin: 0%;
 }
 </style>

@@ -22,7 +22,7 @@ type Reminder struct {
 }
 
 type MetaData struct {
-	Label    string `json:"label"`
+	Title    string `json:"title"`
 	Level    int    `json:"level"`
 	FileType string `bson:"filetype" json:"filetype"`
 	Tag      []string
@@ -74,7 +74,7 @@ func NewDefaultCatalog(user_id int) (Catalog, error) {
 		ID:     0,
 		Key:    "0",
 		MetaData: MetaData{
-			Label:    "资料库",
+			Title:    "Home",
 			Level:    0,
 			FileType: FileTypeNoteBook,
 		},

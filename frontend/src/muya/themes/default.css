@@ -128,8 +128,8 @@ kbd {
     max-width: var(--editorAreaWidth);
     min-width: 400px;
     min-height: 100%;
-    margin: 0 auto;
-    padding: 20px 50px 100px 50px;
+    margin: 0;
+    padding: 0px;
     box-sizing: border-box;
   }
 

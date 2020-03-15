@@ -1,30 +1,17 @@
 <template>
-  <!-- <div id="app"> -->
   <el-container v-show="show" v-loading="loading" class="app">
-    <div class="navbar">
-      <el-breadcrumb separator="/">
-        <el-breadcrumb-item>首页</el-breadcrumb-item>
-        <el-breadcrumb-item>活动管理</el-breadcrumb-item>
-        <el-breadcrumb-item>活动列表</el-breadcrumb-item>
-        <el-breadcrumb-item>活动详情</el-breadcrumb-item>
-      </el-breadcrumb>
-    </div>
-    <!-- <el-header class="head">
-      <el-col :span="12">
+    <el-container class="navbar">
+      <el-col :span="18">
+        <tag />
       </el-col>
-      <el-col :span="12">
-        <div class="right-menu">
-          <el-button type="text" icon="el-icon-check" @click="save" />
-          <el-button type="primary" plain size="small" @click="edit">edit</el-button>
-          <el-button type="primary" plain size="small" @click="reminder">reminder</el-button>
-        </div>
+      <el-col :span="3" :offset="3" class="editor-menu">
+        <editormenu />
       </el-col>
-    </el-header>-->
-    <simplebar class="editor">
-      <div ref="editor" />
+    </el-container>
+    <simplebar>
+      <div ref="editor" class="editor" />
     </simplebar>
   </el-container>
-  <!-- </div> -->
 </template>
 
 <script>
@@ -43,6 +30,9 @@ import './assets/index.css'
 import simplebar from 'simplebar-vue'
 import 'simplebar/dist/simplebar.min.css'
 
+import Tag from './Tag'
+import Editormenu from './Editormenu'
+
 Muya.use(TablePicker)
 Muya.use(QuickInsert)
 Muya.use(CodePicker)
@@ -57,14 +47,16 @@ import { bus } from '@/utils/bus'
 
 export default {
   components: {
-    simplebar
+    simplebar,
+    Tag,
+    Editormenu
   },
   data() {
     return {
       show: false,
       loading: false,
       editor: null,
-      activeNode: null,
+      activeFile: null,
       content: '',
       html: '',
       title: ''
@@ -109,7 +101,7 @@ export default {
         return
       }
 
-      this.activeNode = node
+      this.activeFile = node
       this.loading = true
 
       queryDocumentByID(node.id).then(response => {
@@ -122,7 +114,7 @@ export default {
       this.loading = false
     },
     openNewDoc(node) {
-      this.activeNode = node
+      this.activeFile = node
       this.showEditor(true)
     },
     edit(event) {
@@ -133,16 +125,16 @@ export default {
     },
     save(event) {
       var doc = {
-        'id': this.activeNode.id,
+        'id': this.activeFile.id,
         'content': this.content,
         'html': this.html
       }
-      this.activeNode.label = this.title
+      this.activeFile.title = this.title
 
-      this.$log.debug('udpate tree', this.activeNode)
+      this.$log.debug('udpate tree', this.activeFile)
 
       saveDocument(doc).then(response => {
-        this.activeNode.id = response.data.id
+        this.activeFile.id = response.data.id
         if (this.title === '') {
           this.title = 'untitle'
           if (this.content.includes('\n')) {
@@ -152,9 +144,9 @@ export default {
             }
           }
         }
-        this.activeNode.label = this.title
+        this.activeFile.metadata.title = this.title
 
-        this.$log.debug('udpate tree', this.activeNode)
+        this.$log.debug('udpate tree', this.activeFile)
 
         bus.$emit('update-catalog')
 
@@ -171,35 +163,36 @@ export default {
 </script>
 
 <style>
-.components-container {
-  /* display: flex;
-  flex-direction: column;
-  justify-content: flex-start; */
-  /* position: relative; */
-}
-.right-menu {
-  float: right;
-  height: 100%;
-  line-height: 10px;
-  justify-content: left;
-}
 .navbar {
   width: 100%;
-  height: 20px;
+  height: 30px;
+  padding: 0%;
+  margin: 0%;
+}
+.editor-menu {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  /* transform: scale(2); */
+}
+.path {
+  margin-top: 3vh;
 }
 .editor {
-  float: left;
+  /* float: left; */
   width: 100%;
-  /* height: 300px; */
-  padding: 0%;
-  /* height: 100%; */
-  height: calc(100vh - 20px);
+  padding: 0px;
+  margin: 10px;
+  height: calc(100vh - 30px);
+  /* height: 90%; */
   /* height: 100px; */
-  justify-content: left;
+  /* justify-content: left; */
+  /* position: left; */
 }
 .app {
   display: flex;
   flex-direction: column;
   align-items: left;
+  justify-content: flex-start;
 }
 </style>

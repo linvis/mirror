@@ -15,10 +15,10 @@
     >
       <span slot-scope="{ node, data }" class="custom-tree-node">
         <span v-show="!node.isEdit">
-          <span v-if="data.filetype === 'nb'">
+          <span v-if="data.metadata.filetype === 'nb'">
             <i class="el-icon-notebook-1" />
           </span>
-          <span v-else-if="data.filetype === 'md'">
+          <span v-else-if="data.metadata.filetype === 'md'">
             <i class="el-icon-document" />
           </span>
           <span v-else />
@@ -30,7 +30,7 @@
         <span v-show="node.isEdit">
           <el-input
             :ref="data.key"
-            v-model="data.label"
+            v-model="data.metadata.label"
             class="slot-t-input"
             size="mini"
             autofocus
@@ -75,30 +75,59 @@ export default {
       catalog: [{
         id: 0,
         key: '0',
-        label: 'root',
-        filetype: 'nb',
-        level: 0,
         parent: '0',
+        metadata: {
+          title: 'root',
+          level: 0,
+          filetype: 'nb',
+          tag: []
+        },
+        reminder: {
+          enable: false,
+          count: 0,
+          last_time: 0,
+          next_time: 0
+        },
         children: [{
           id: 1,
           key: '1',
-          label: 'level 1',
-          filetype: 'md',
-          level: 1,
-          parent: '0'
+          parent: '0',
+          metadata: {
+            title: 'file1',
+            level: 1,
+            filetype: 'md',
+            tag: []
+          },
+          reminder: {
+            enable: false,
+            count: 0,
+            last_time: 0,
+            next_time: 0
+          }
         }, {
           id: 2,
           key: '2',
-          label: 'level 2',
-          filetype: 'md',
-          level: 1,
-          parent: '0'
+          parent: '0',
+          metadata: {
+            title: 'file2',
+            level: 1,
+            filetype: 'md',
+            tag: []
+          },
+          reminder: {
+            enable: false,
+            count: 0,
+            last_time: 0,
+            next_time: 0
+          }
         }
         ]
       }],
       defaultProps: {
         children: 'children',
-        label: 'label'
+        label: function(data, node) {
+          return data.metadata.title
+        }
       }
     }
   },
@@ -126,7 +155,7 @@ export default {
     },
     filterNode(value, data) {
       if (!value) return true
-      return data.label.indexOf(value) !== -1
+      return data.metadata.title.indexOf(value) !== -1
     },
     handleMenuClick(event, obj, node, components) {
       this.$log.debug(node)
@@ -139,7 +168,7 @@ export default {
         return
       }
 
-      if (data.filetype === 'md') {
+      if (data.metadata.filetype === 'md') {
         bus.$emit('show-reminder', false)
         bus.$emit('show-editor', true)
         bus.$emit('open-document', data)
@@ -164,10 +193,19 @@ export default {
       const newChild = {
         id: 0,
         key: key,
-        label: 'file',
-        level: data.level + 1,
-        filetype: 'md',
         parent: data.key,
+        metadata: {
+          title: 'file',
+          level: data.level + 1,
+          filetype: 'md',
+          tag: []
+        },
+        reminder: {
+          enable: false,
+          count: 0,
+          last_time: 0,
+          next_time: 0
+        },
         children: []
       }
       if (!data.children) {
@@ -181,7 +219,7 @@ export default {
     handleNewNoteBook(node) {
       var data = node.data
 
-      if (data.level >= 2) {
+      if (data.metadata.level >= 2) {
         this.$message({
           message: '仅支持2级notebook',
           type: 'warning'
@@ -194,10 +232,19 @@ export default {
       const newChild = {
         id: 0,
         key: key,
-        label: 'notebook',
-        level: data.level + 1,
-        filetype: 'nb',
         parent: data.key,
+        metadata: {
+          title: 'notebook',
+          level: data.level + 1,
+          filetype: 'nb',
+          tag: []
+        },
+        reminder: {
+          enable: false,
+          count: 0,
+          last_time: 0,
+          next_time: 0
+        },
         children: []
       }
       if (!data.children) {
@@ -219,7 +266,7 @@ export default {
       })
     },
     handleRename(node) {
-      // alert(`You clicked on: "${node.label}"`)
+      // alert(`You clicked on: "${node.title}"`)
       this.$log.debug(node)
       if (!node.isEdit) {
         this.$set(node, 'isEdit', true)
