@@ -16,6 +16,8 @@
 
 import { bus } from '@/utils/bus'
 
+const reviewDay = [1, 3, 5, 7, 14, 30]
+
 export default {
   data() {
     return {
@@ -40,8 +42,29 @@ export default {
     save(event) {
 
     },
+    addDays(days) {
+      var date = new Date(this.valueOf())
+      date.setDate(date.getDate() + days)
+      return date
+    },
     handleReminder(command) {
       this.$log.debug(command)
+      if (command === 'start') {
+        this.activeFile.reminder.enable = true
+        this.activeFile.reminder.count = 1
+        this.activeFile.reminder.last_time = 0
+        this.activeFile.reminder.next_time = this.addDays(reviewDay[this.activeFile.reminder.count - 1])
+      } else if (command === 'reviewed') {
+        this.activeFile.reminder.count++
+        if (this.activeFile.reminder.count >= reviewDay.length()) {
+          this.activeFile.reminder.count = reviewDay.length() - 1
+        }
+        this.activeFile.reminder.last_time = this.activeFile.reminder.next_time
+        this.activeFile.reminder.next_time = this.addDays(reviewDay[this.activeFile.reminder.count - 1])
+      } else {
+        this.activeFile.reminder.next_time = this.addDays(reviewDay[this.activeFile.reminder.count - 1])
+      }
+      bus.$emit('update-catalog')
     }
 
   }

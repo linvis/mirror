@@ -82,7 +82,7 @@ export default {
   border-radius: 2px;
 }
 .el-container {
-  height: 100%;
+  height: 90vh;
 }
 .splitpanes__pane span {
   font-family: Helvetica, Arial, sans-serif;
@@ -90,14 +90,14 @@ export default {
 }
 .splitpanes--vertical > .splitpanes__splitter {
   min-width: 5px;
-  height: 100vh;
+  height: 100%;
 }
 .splitpanes--vertical {
-  height: 100vh;
+  height: 100%;
 }
 .sidebar {
   background: #f8f8f8;
-  height: 100vh;
+  height: 100%;
 }
 .search {
   margin-top: 5%;

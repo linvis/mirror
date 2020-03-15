@@ -2,9 +2,9 @@
   <div class="search">
     <el-autocomplete
       v-model="keyword"
-      :fetch-suggestions="querySearchAsync"
+      :fetch-suggestions="querySearch"
       placeholder="search"
-      clearable="true"
+      :clearable="true"
       style="width:100%;"
       @select="handleSelect"
     />

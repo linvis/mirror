@@ -11,6 +11,7 @@
     <simplebar>
       <div ref="editor" class="editor" />
     </simplebar>
+    <span style="height:=10vh;" />
   </el-container>
 </template>
 
@@ -173,6 +174,7 @@ export default {
   display: flex;
   flex-direction: row;
   align-items: flex-end;
+  height: 30px;
   /* transform: scale(2); */
 }
 .path {
@@ -182,8 +184,10 @@ export default {
   /* float: left; */
   width: 100%;
   padding: 0px;
-  margin: 10px;
-  height: calc(100vh - 30px);
+  /* margin: 10px; */
+  margin-bottom: 40px;
+  /* height: calc(100vh 30px); */
+  height: 80vh;
   /* height: 90%; */
   /* height: 100px; */
   /* justify-content: left; */

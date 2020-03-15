@@ -83,7 +83,7 @@ export default {
           tag: []
         },
         reminder: {
-          enable: false,
+          enable: true,
           count: 0,
           last_time: 0,
           next_time: 0
@@ -99,7 +99,7 @@ export default {
             tag: []
           },
           reminder: {
-            enable: false,
+            enable: true,
             count: 0,
             last_time: 0,
             next_time: 0
@@ -140,7 +140,7 @@ export default {
     bus.$on('update-catalog', this.updateCatalog)
   },
   mounted() {
-    this.featchData()
+    this.getEditorCatalog()
   },
 
   beforeDestroy() {
@@ -148,10 +148,11 @@ export default {
   },
 
   methods: {
-    featchData() {
+    getEditorCatalog() {
       queryEditorCatalog().then(response => {
         this.catalog = response.data
       })
+      bus.$emit('get-catalog', this.catalog)
     },
     filterNode(value, data) {
       if (!value) return true
