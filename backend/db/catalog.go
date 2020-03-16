@@ -29,12 +29,12 @@ type MetaData struct {
 }
 
 type Catalog struct {
-	UserID int    `bson:"user_id" json:"-"`
-	ID     int    `bson:"id" json:"id"`
-	Key    string `bson:"key" json:"key"`
-	Parent string `bson:"parent" json:"parent"`
-	MetaData
-	Reminder
+	UserID   int       `bson:"user_id" json:"-"`
+	ID       int       `bson:"id" json:"id"`
+	Key      string    `bson:"key" json:"key"`
+	Parent   string    `bson:"parent" json:"parent"`
+	Meta     MetaData  `bson:"metadata" json:"metadata"`
+	Remind   Reminder  `bson:"reminder" json:"reminder"`
 	Children []Catalog `bson:"children" json:"children"`
 }
 
@@ -73,10 +73,16 @@ func NewDefaultCatalog(user_id int) (Catalog, error) {
 		UserID: user_id,
 		ID:     0,
 		Key:    "0",
-		MetaData: MetaData{
+		Meta: MetaData{
 			Title:    "Home",
 			Level:    0,
 			FileType: FileTypeNoteBook,
+		},
+		Remind: Reminder{
+			Enable:   false,
+			Count:    0,
+			LastTime: 0,
+			NextTime: 0,
 		},
 		Parent:   "0",
 		Children: []Catalog{},

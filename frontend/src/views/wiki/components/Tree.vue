@@ -71,64 +71,17 @@ export default {
     return {
       filterText: '',
       isDrag: true,
-      // catalog: [],
-      catalog: [{
-        id: 0,
-        key: '0',
-        parent: '0',
-        metadata: {
-          title: 'root',
-          level: 0,
-          filetype: 'nb',
-          tag: []
-        },
-        reminder: {
-          enable: true,
-          count: 0,
-          last_time: 0,
-          next_time: 0
-        },
-        children: [{
-          id: 1,
-          key: '1',
-          parent: '0',
-          metadata: {
-            title: 'file1',
-            level: 1,
-            filetype: 'md',
-            tag: []
-          },
-          reminder: {
-            enable: true,
-            count: 0,
-            last_time: 0,
-            next_time: 0
-          }
-        }, {
-          id: 2,
-          key: '2',
-          parent: '0',
-          metadata: {
-            title: 'file2',
-            level: 1,
-            filetype: 'md',
-            tag: []
-          },
-          reminder: {
-            enable: false,
-            count: 0,
-            last_time: 0,
-            next_time: 0
-          }
-        }
-        ]
-      }],
       defaultProps: {
         children: 'children',
         label: function(data, node) {
           return data.metadata.title
         }
       }
+    }
+  },
+  computed: {
+    catalog() {
+      return this.$store.state.editor.catalog
     }
   },
   watch: {
@@ -150,9 +103,10 @@ export default {
   methods: {
     getEditorCatalog() {
       queryEditorCatalog().then(response => {
-        this.catalog = response.data
+        // this.catalog = response.data
+        this.$store.dispatch('editor/changeCatalog', response.data)
       })
-      bus.$emit('get-catalog', this.catalog)
+      // bus.$emit('get-catalog', this.catalog)
     },
     filterNode(value, data) {
       if (!value) return true
@@ -196,7 +150,7 @@ export default {
         key: key,
         parent: data.key,
         metadata: {
-          title: 'file',
+          title: 'untitle',
           level: data.level + 1,
           filetype: 'md',
           tag: []
@@ -213,6 +167,8 @@ export default {
         this.$set(data, 'children', [])
       }
       data.children.push(newChild)
+
+      this.$store.dispatch('editor/submitCatalog', this.catalog)
 
       bus.$emit('show-reminder', false)
       bus.$emit('open-new-doc', newChild)
@@ -253,8 +209,7 @@ export default {
       }
       data.children.push(newChild)
 
-      updateEditorCatalog(this.catalog).then(response => {
-      })
+      this.$store.dispatch('editor/submitCatalog', this.catalog)
     },
     NodeBlur(node, data) { // 输入框失焦
       this.$log.debug('lose focus')
@@ -263,8 +218,8 @@ export default {
         this.$set(node, 'isEdit', false)
       }
       this.isDrag = true
-      updateEditorCatalog(this.catalog).then(response => {
-      })
+
+      this.$store.dispatch('editor/submitCatalog', this.catalog)
     },
     handleRename(node) {
       // alert(`You clicked on: "${node.title}"`)
@@ -286,12 +241,10 @@ export default {
       const index = children.findIndex(d => d.id === data.id)
       children.splice(index, 1)
 
-      updateEditorCatalog(this.catalog).then(response => {
-      })
+      this.$store.dispatch('editor/submitCatalog', this.catalog)
     },
     handleDrop(draggingNode, dropNode, dropType, ev) {
-      updateEditorCatalog(this.catalog).then(response => {
-      })
+      this.$store.dispatch('editor/submitCatalog', this.catalog)
     }
   }
 }

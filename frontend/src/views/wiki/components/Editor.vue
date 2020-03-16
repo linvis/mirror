@@ -1,10 +1,10 @@
 <template>
   <el-container v-show="show" v-loading="loading" class="app">
     <el-container class="navbar">
-      <el-col :span="18">
+      <el-col :span="16">
         <tag />
       </el-col>
-      <el-col :span="3" :offset="3" class="editor-menu">
+      <el-col :span="5" :offset="3" class="editor-menu">
         <editormenu />
       </el-col>
     </el-container>
@@ -43,7 +43,7 @@ Muya.use(ImageSelector)
 Muya.use(FormatPicker)
 Muya.use(FrontMenu)
 
-import { saveDocument, queryDocumentByID } from '@/api/editor'
+import { queryDocumentByID } from '@/api/editor'
 import { bus } from '@/utils/bus'
 
 export default {
@@ -57,8 +57,6 @@ export default {
       show: false,
       loading: false,
       editor: null,
-      activeFile: null,
-      content: '',
       html: '',
       title: ''
     }
@@ -77,8 +75,13 @@ export default {
       this.editor = new Muya(ele)
     }
     this.editor.on('change', changes => {
-      console.log(changes.markdown)
-      this.content = changes.markdown
+      var key = this.$store.state.editor.activeFile.key
+      var content = changes.markdown
+      if (content === '\n') {
+        return
+      }
+      this.$log.debug('markdown callback', key, content)
+      this.$store.dispatch('editor/changeFileContent', { key, content })
     })
   },
   beforeDestroy() {
@@ -91,73 +94,39 @@ export default {
     showEditor(state) {
       this.show = true
     },
-    setContent(content) {
-      this.content = content
+    setContent(key, content) {
+      this.$log.debug('markdown set content')
+      this.$store.dispatch('editor/changeFileContent', { key, content })
       this.editor.setMarkdown(content)
     },
-    openDoc(node) {
-      this.$log.debug(node)
+    openDoc(file) {
+      this.$log.debug(file)
 
-      if (node.id <= 0) {
+      if (file.metadata.filetype !== 'md') {
         return
       }
 
-      this.activeFile = node
+      this.$store.dispatch('editor/changeActiveFile', file)
       this.loading = true
 
-      queryDocumentByID(node.id).then(response => {
-        var docs = response.data
-        this.$log.debug('update markdown', docs.content)
-        this.setContent(docs.content)
-        this.loading = false
-      })
+      var localContents = this.$store.state.editor.contents
+      this.$log.debug('local', localContents, file.key in localContents)
+      if (file.key in localContents) {
+        this.editor.setMarkdown(localContents[file.key])
+      } else {
+        queryDocumentByID(file.id).then(response => {
+          var docs = response.data
+          this.$log.debug('update markdown from remote', docs.content)
+          this.setContent(file.key, docs.content)
+        })
+      }
 
       this.loading = false
     },
-    openNewDoc(node) {
-      this.activeFile = node
+    openNewDoc(file) {
+      this.$store.dispatch('editor/changeActiveFile', file)
+      this.setContent(file.key, '')
       this.showEditor(true)
-    },
-    edit(event) {
-      this.setContent('Welcome to use muya...\n\nhello fuck\n')
-    },
-    reminder(event) {
-      this.setContent('Welcome to use muya...\n\nhello fuck\n')
-    },
-    save(event) {
-      var doc = {
-        'id': this.activeFile.id,
-        'content': this.content,
-        'html': this.html
-      }
-      this.activeFile.title = this.title
-
-      this.$log.debug('udpate tree', this.activeFile)
-
-      saveDocument(doc).then(response => {
-        this.activeFile.id = response.data.id
-        if (this.title === '') {
-          this.title = 'untitle'
-          if (this.content.includes('\n')) {
-            var title = this.content.split('\n')[0]
-            if (title.includes('#')) {
-              this.title = title.split('#')[1]
-            }
-          }
-        }
-        this.activeFile.metadata.title = this.title
-
-        this.$log.debug('udpate tree', this.activeFile)
-
-        bus.$emit('update-catalog')
-
-        this.$notify({
-          title: '成功',
-          message: '',
-          type: 'success',
-          duration: 800
-        })
-      })
     }
   }
 }

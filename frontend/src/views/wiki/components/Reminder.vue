@@ -24,26 +24,35 @@ export default {
       reminderList: []
     }
   },
+  computed: {
+    catalog() {
+      return this.$store.state.editor.catalog
+    }
+  },
+  watch: {
+    catalog: function(newVal, oldVal) {
+      this.$log.debug('watch catalog change', newVal)
+      this.reminderList = this.filterReminder(newVal)
+    }
+  },
   created() {
     bus.$on('show-reminder', this.showReminder)
-    bus.$on('get-catalog', this.updateReminder)
+    bus.$on('update-reminder', this.updateReminder)
   },
   beforeDestroy() {
     bus.$off('show-reminder', this.showReminder)
-    bus.$off('get-catalog', this.updateReminder)
   },
   methods: {
     showReminder(state) {
       this.show = state
     },
-    updateReminder(catalog) {
-      this.reminderList = this.filterReminder(catalog)
-      this.$log.debug(this.reminderList)
+    updateReminder() {
+      this.reminderList = this.filterReminder(this.catalog)
     },
     filterReminder(catalog) {
       var list = []
 
-      if (catalog === null) {
+      if (catalog === null || typeof catalog === 'undefined') {
         return list
       }
 
@@ -55,11 +64,10 @@ export default {
             'overdue': 0,
             'file': catalog[i]
           })
-
-          if ('children' in catalog[i]) {
-            var subList = this.filterReminder(catalog[i].children)
-            list = list.concat(subList)
-          }
+        }
+        if ('children' in catalog[i]) {
+          var subList = this.filterReminder(catalog[i].children)
+          list = list.concat(subList)
         }
       }
 

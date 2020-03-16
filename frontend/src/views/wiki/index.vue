@@ -7,7 +7,7 @@
         <tree />
       </pane>
       <pane>
-        <home style="margin-left:20px;margin-top:5px" />
+        <reminder style="margin-left:20px;margin-top:5px" />
         <editor style="margin-left:20px;margin-top:5px" />
       </pane>
     </splitpanes>
@@ -39,7 +39,7 @@ import 'splitpanes/dist/splitpanes.css'
 import Search from './components/Search'
 import Tree from './components/Tree'
 import Editor from './components/Editor'
-import Home from './components/Home'
+import Reminder from './components/Reminder'
 
 export default {
   components: {
@@ -49,7 +49,7 @@ export default {
     Search,
     Tree,
     Editor,
-    Home
+    Reminder
   },
   data() {
     return {
