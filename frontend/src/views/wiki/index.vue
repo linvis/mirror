@@ -82,7 +82,7 @@ export default {
   border-radius: 2px;
 }
 .el-container {
-  height: 90vh;
+  height: calc(100vh - 50px);
 }
 .splitpanes__pane span {
   font-family: Helvetica, Arial, sans-serif;
