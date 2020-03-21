@@ -12,7 +12,7 @@ export const getLongUniqueId = () => `${getUniqueId()}-${(+new Date()).toString(
 
 export const isMetaKey = ({ key }) => key === 'Shift' || key === 'Control' || key === 'Alt' || key === 'Meta'
 
-export const noop = () => {}
+export const noop = () => { }
 
 export const identity = i => i
 
@@ -367,7 +367,7 @@ export const sanitize = (html, options) => {
 export const getParagraphReference = (ele, id) => {
   const { x, y, left, top, bottom, height } = ele.getBoundingClientRect()
   return {
-    getBoundingClientRect () {
+    getBoundingClientRect() {
       return { x, y, left, top, bottom, height, width: 0, right: left }
     },
     clientWidth: 0,

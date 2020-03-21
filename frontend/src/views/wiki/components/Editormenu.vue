@@ -25,43 +25,42 @@ export default {
     return {
     }
   },
+  computed: {
+    activeFile() {
+      return this.$store.state.editor.activeFile
+    }
+  },
   created() {
   },
   beforeDestroy() {
   },
   methods: {
-    updateActiveFile(file) {
-      this.activeFile = file
-      this.$log.debug(file)
-    },
     backHome(event) {
       bus.$emit('show-reminder', true)
       bus.$emit('show-editor', false)
     },
     addDays(days) {
-      var date = new Date(this.valueOf())
+      var date = new Date()
       date.setDate(date.getDate() + days)
-      return date
+      return date.getTime()
     },
     handleReminder(command) {
-      var activeFile = this.$store.state.editor.activeFile
-
-      this.$log.debug(command, activeFile)
+      this.$log.debug(command, this.activeFile)
 
       if (command === 'start') {
-        activeFile.reminder.enable = true
-        activeFile.reminder.count = 1
-        activeFile.reminder.last_time = 0
-        activeFile.reminder.next_time = this.addDays(reviewDay[activeFile.reminder.count - 1])
+        this.activeFile.reminder.enable = true
+        this.activeFile.reminder.count = 1
+        this.activeFile.reminder.last_time = 0
+        this.activeFile.reminder.next_time = this.addDays(reviewDay[this.activeFile.reminder.count - 1])
       } else if (command === 'reviewed') {
-        activeFile.reminder.count++
-        if (activeFile.reminder.count >= reviewDay.length) {
-          activeFile.reminder.count = reviewDay.length - 1
+        this.activeFile.reminder.count++
+        if (this.activeFile.reminder.count >= reviewDay.length) {
+          this.activeFile.reminder.count = reviewDay.length - 1
         }
-        activeFile.reminder.last_time = activeFile.reminder.next_time
-        activeFile.reminder.next_time = this.addDays(reviewDay[activeFile.reminder.count - 1])
+        this.activeFile.reminder.last_time = this.activeFile.reminder.next_time
+        this.activeFile.reminder.next_time = this.addDays(reviewDay[this.activeFile.reminder.count - 1])
       } else {
-        activeFile.reminder.next_time = this.addDays(reviewDay[activeFile.reminder.count - 1])
+        this.activeFile.reminder.next_time = this.addDays(reviewDay[this.activeFile.reminder.count - 1])
       }
       this.$log.debug(this.$store.state.editor.activeFile)
       this.$log.debug(this.$store.state.editor.catalog)
@@ -70,20 +69,19 @@ export default {
       bus.$emit('update-reminder')
     },
     save(event) {
-      var activeFile = this.$store.state.editor.activeFile
-      var content = this.$store.state.editor.contents[activeFile.key]
+      var content = this.$store.state.editor.contents[this.activeFile.key]
       var doc = {
-        'id': activeFile.id,
-        'doc_key': activeFile.key,
+        'id': this.activeFile.id,
+        'doc_key': this.activeFile.key,
         'content': content,
         'html': this.html
       }
 
-      this.$log.debug('udpate tree', activeFile)
+      this.$log.debug('udpate tree', this.activeFile)
       saveDocument(doc).then(response => {
-        activeFile.id = response.data.id
-        var title = activeFile.metadata.title
-        if (activeFile.metadata.title === 'untitle') {
+        this.activeFile.id = response.data.id
+        var title = this.activeFile.metadata.title
+        if (this.activeFile.metadata.title === 'untitle') {
           if (content.includes('\n')) {
             title = content.split('\n')[0]
             if (title.includes('#')) {
@@ -91,7 +89,7 @@ export default {
             }
           }
         }
-        activeFile.metadata.title = title
+        this.activeFile.metadata.title = title
 
         this.$store.dispatch('editor/submitCatalog')
 

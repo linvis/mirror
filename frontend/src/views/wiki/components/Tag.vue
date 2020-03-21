@@ -19,9 +19,67 @@
       @blur="handleInputConfirm"
     />
     <el-button v-else type="text" icon="el-icon-plus" size="small" @click="showInput" />
-    <!-- <el-button v-else class="button-new-tag" size="small" @click="showInput">+ new</el-button> -->
   </div>
 </template>
+
+<script>
+export default {
+  data() {
+    return {
+      inputVisible: false,
+      inputValue: ''
+    }
+  },
+  computed: {
+    activeFile() {
+      return this.$store.state.editor.activeFile
+    },
+    dynamicTags: {
+      get: function() {
+        return this.$store.state.editor.activeFile.metadata.tag
+      },
+      set: function(newVal) {
+        this.$store.state.editor.activeFile.metadata.tag = newVal
+      }
+    }
+  },
+  watch: {
+    activeFile: function(newVal, oldVal) {
+      this.dynamicTags = this.$store.state.editor.activeFile.metadata.tag
+    }
+  },
+  methods: {
+    // delete
+    handleClose(tag) {
+      this.dynamicTags.splice(this.dynamicTags.indexOf(tag), 1)
+
+      this.activeFile.metadata.tag = this.dynamicTags
+      this.$store.dispatch('editor/submitCatalog')
+    },
+
+    showInput() {
+      this.inputVisible = true
+      this.$nextTick(_ => {
+        this.$refs.saveTagInput.$refs.input.focus()
+      })
+    },
+
+    // add
+    handleInputConfirm() {
+      console.log(this.activeFile)
+      const inputValue = this.inputValue
+      if (inputValue) {
+        this.dynamicTags.push(inputValue)
+      }
+      this.inputVisible = false
+      this.inputValue = ''
+
+      this.activeFile.metadata.tag = this.dynamicTags
+      this.$store.dispatch('editor/submitCatalog')
+    }
+  }
+}
+</script>
 
 <style>
 .el-tag + .el-tag {
@@ -41,36 +99,3 @@
   vertical-align: bottom;
 }
 </style>
-
-<script>
-export default {
-  data() {
-    return {
-      dynamicTags: ['tag'],
-      inputVisible: false,
-      inputValue: ''
-    }
-  },
-  methods: {
-    handleClose(tag) {
-      this.dynamicTags.splice(this.dynamicTags.indexOf(tag), 1)
-    },
-
-    showInput() {
-      this.inputVisible = true
-      this.$nextTick(_ => {
-        this.$refs.saveTagInput.$refs.input.focus()
-      })
-    },
-
-    handleInputConfirm() {
-      const inputValue = this.inputValue
-      if (inputValue) {
-        this.dynamicTags.push(inputValue)
-      }
-      this.inputVisible = false
-      this.inputValue = ''
-    }
-  }
-}
-</script>

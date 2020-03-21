@@ -2,9 +2,9 @@ import languages from './languages'
 let peerDependentsMap = null
 export const loadedCache = new Set(['markup', 'css', 'clike', 'javascript'])
 
-function getPeerDependentsMap () {
+function getPeerDependentsMap() {
   const peerDependentsMap = {}
-  Object.keys(languages).forEach(function (language) {
+  Object.keys(languages).forEach(function(language) {
     if (language === 'meta') {
       return false
     }
@@ -13,7 +13,7 @@ function getPeerDependentsMap () {
       if (!Array.isArray(peerDependencies)) {
         peerDependencies = [peerDependencies]
       }
-      peerDependencies.forEach(function (peerDependency) {
+      peerDependencies.forEach(function(peerDependency) {
         if (!peerDependentsMap[peerDependency]) {
           peerDependentsMap[peerDependency] = []
         }
@@ -24,7 +24,7 @@ function getPeerDependentsMap () {
   return peerDependentsMap
 }
 
-function getPeerDependents (mainLanguage) {
+function getPeerDependents(mainLanguage) {
   if (!peerDependentsMap) {
     peerDependentsMap = getPeerDependentsMap()
   }
@@ -57,11 +57,11 @@ export const transfromAliasToOrigin = arr => {
   return result
 }
 
-function initLoadLanguage (Prism) {
-  return async function loadLanguages (arr, withoutDependencies) {
+function initLoadLanguage(Prism) {
+  return async function loadLanguages(arr, withoutDependencies) {
     // If no argument is passed, load all components
     if (!arr) {
-      arr = Object.keys(languages).filter(function (language) {
+      arr = Object.keys(languages).filter(function(language) {
         return language !== 'meta'
       })
     }
@@ -108,7 +108,7 @@ function initLoadLanguage (Prism) {
       }))
 
       // Reload dependents
-      const dependents = getPeerDependents(language).filter(function (dependent) {
+      const dependents = getPeerDependents(language).filter(function(dependent) {
         // If dependent language was already loaded,
         // we want to reload it.
         if (Prism.languages[dependent]) {

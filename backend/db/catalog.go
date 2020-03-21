@@ -22,10 +22,10 @@ type Reminder struct {
 }
 
 type MetaData struct {
-	Title    string `json:"title"`
-	Level    int    `json:"level"`
-	FileType string `bson:"filetype" json:"filetype"`
-	Tag      []string
+	Title    string   `json:"title"`
+	Level    int      `json:"level"`
+	FileType string   `bson:"filetype" json:"filetype"`
+	Tag      []string `json:"tag"`
 }
 
 type Catalog struct {

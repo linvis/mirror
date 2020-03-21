@@ -21,7 +21,9 @@ export default {
   data() {
     return {
       show: true,
-      reminderList: []
+      reminderList: [],
+      month: new Date().getMonth(),
+      today: new Date().getDate()
     }
   },
   computed: {
@@ -59,6 +61,19 @@ export default {
       this.$log.debug(catalog)
       for (var i = 0; i < catalog.length; i++) {
         if (catalog[i].reminder.enable === true) {
+          if (catalog[i].reminder.next_time === '0') {
+            continue
+          }
+
+          var day = new Date(parseInt(catalog[i].reminder.next_time)).getDate()
+          var mon = new Date(parseInt(catalog[i].reminder.next_time)).getMonth()
+
+          console.log(day, mon, this.today, this.month)
+
+          if (day !== this.today || mon !== this.month) {
+            continue
+          }
+
           list.push({
             'fileName': catalog[i].metadata.title,
             'overdue': 0,

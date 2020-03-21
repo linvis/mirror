@@ -30,7 +30,7 @@
         <span v-show="node.isEdit">
           <el-input
             :ref="data.key"
-            v-model="data.metadata.label"
+            v-model="data.metadata.title"
             class="slot-t-input"
             size="mini"
             autofocus
@@ -212,7 +212,7 @@ export default {
       this.$store.dispatch('editor/submitCatalog', this.catalog)
     },
     NodeBlur(node, data) { // 输入框失焦
-      this.$log.debug('lose focus')
+      this.$log.debug('lose focus', node, data)
 
       if (node.isEdit) {
         this.$set(node, 'isEdit', false)
@@ -222,7 +222,7 @@ export default {
       this.$store.dispatch('editor/submitCatalog', this.catalog)
     },
     handleRename(node) {
-      // alert(`You clicked on: "${node.title}"`)
+      // alert(`You clicked on: "${node.data.metadata.title}"`)
       this.$log.debug(node)
       if (!node.isEdit) {
         this.$set(node, 'isEdit', true)
