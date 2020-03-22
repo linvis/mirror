@@ -31,7 +31,8 @@ export default {
       dur_data: [],
       start_time_data: [],
       end_time_data: [],
-      chart_data: []
+      chart_data: [],
+      chart_label: 'sleep about'
     }
   },
   created() {
@@ -72,31 +73,23 @@ export default {
         // do nothing
         return
       } else if (tab.name === 'first') {
-        // this.chart_data = this.dur_data.slice(0, this.dur_data.length - 1)
         this.chart_data = this.dur_data
+        this.chart_label = 'sleep about'
       } else if (tab.name === 'second') {
-        // this.chart_data = this.start_time_data.slice(0, this.start_time_data.length - 1)
         this.chart_data = this.start_time_data
+        this.chart_label = 'goto sleep at'
       } else if (tab.name === 'third') {
-        // this.chart_data = this.end_time_data.slice(0, this.end_time_data.length - 1)
         this.chart_data = this.end_time_data
+        this.chart_label = 'wakeup at'
       }
+
+      this.$log.debug(this.chart_data)
+
       this.activeTab = tab.name
       this.sleep_chart.series[0].update({
         data: this.chart_data
       }, false)
       this.sleep_chart.redraw()
-      // querySleepRec(time).then(response => {
-      //   this.options = response.data
-      //   this.sleep_duration_x = response.data.date
-      //   this.sleep_duration_y = response.data.duration
-
-      //   this.sleep_chart.series[0].update({
-      //     x: this.sleep_duration_x,
-      //     data: this.sleep_duration_y
-      //   }, false)
-      //   this.sleep_chart.redraw()
-      // })
     },
     timeToString(time) {
       var hour = parseInt(time / 60)
@@ -141,7 +134,8 @@ export default {
           },
           title: {
             text: 'Hours'
-          }
+          },
+          opposite: false
         },
 
         tooltip: {
@@ -151,7 +145,7 @@ export default {
             var hour = parseInt(tmpY / 60)
             var min = parseInt(tmpY % 60)
             var time = parseInt(hour / 10).toString() + (hour % 10).toString() + ':' + parseInt(min / 10).toString() + (min % 10).toString()
-            return 'Sleep about ' + time
+            return 'sleep about ' + time
           }
         },
 

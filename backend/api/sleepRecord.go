@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"mirror/db"
 	"net/http"
+	"sort"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
@@ -42,6 +44,12 @@ func NewSleepRecord(c *gin.Context) {
 
 // {"act_type":"read","start_time":1575207586000,"end_time":1575207588000,"duration":"","num":1,"comment":"zzz"}
 
+type SortBySleepRecord []db.SleepRecord
+
+func (a SortBySleepRecord) Len() int           { return len(a) }
+func (a SortBySleepRecord) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
+func (a SortBySleepRecord) Less(i, j int) bool { return a[i].Date < a[j].Date }
+
 func buildSleepRecordMsg(records *[]db.SleepRecord) *map[string][]int64 {
 	msg := map[string][]int64{
 		"date":       []int64{},
@@ -49,6 +57,8 @@ func buildSleepRecordMsg(records *[]db.SleepRecord) *map[string][]int64 {
 		"start_time": []int64{},
 		"end_time":   []int64{},
 	}
+
+	sort.Sort(SortBySleepRecord(*records))
 
 	for _, rec := range *records {
 		msg["date"] = append(msg["date"], rec.Date)
@@ -99,6 +109,8 @@ type SleepRecordMsg struct {
 
 func GetSleepRecordAnalysis(c *gin.Context) {
 	id := GetUserID(c)
+	timeout := 0
+RETRY:
 	msgCache, found := db.GetSleepRecordFromRedis(id)
 	if found {
 		var msg SleepRecordMsg
@@ -159,8 +171,16 @@ func GetSleepRecordAnalysis(c *gin.Context) {
 			"end_time":   avgEndTime,
 		}})
 		return
+	} else {
+		if timeout > 1000 {
+			goto END
+		}
+		time.Sleep(50 * time.Millisecond)
+		timeout += 50
+		goto RETRY
 	}
-	c.JSON(http.StatusOK, gin.H{"code": 60204, "message": "no data"})
+END:
+	c.JSON(http.StatusOK, gin.H{"code": 60204, "message": "data not found"})
 }
 
 func init() {

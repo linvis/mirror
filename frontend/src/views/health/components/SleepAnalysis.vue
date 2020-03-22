@@ -9,6 +9,7 @@
 
 <script>
 
+import moment from 'moment'
 import Highcharts from 'highcharts'
 import stockInit from 'highcharts/modules/stock'
 import { querySleepRecAnalysis } from '@/api/sleep'
@@ -18,32 +19,46 @@ export default {
   data() {
     return {
       sleep_analysis_chart: null,
-      avgLastWeek: null,
-      avgLastTwoWeek: null,
-      avgLastMonth: null
+      avgLastWeek: [],
+      avgLastTwoWeek: [],
+      avgLastMonth: []
     }
   },
   created() {
   },
   mounted() {
-    this.featchDataj()
+    this.featchData()
   },
   methods: {
-    featchDataj() {
+    formatTime(duration) {
+      // var time = new Date('2020, 0, 1, 0, 0, 0').getTime()
+      var time = Date.UTC(2020, 0, 1, 0, 0, 0)
+      if (duration < 0) {
+        time = time + duration * 60 * 1000 + 24 * 60 * 60 * 1000
+      } else {
+        time = time + duration * 60 * 1000
+      }
+      return time
+    },
+    featchData() {
       querySleepRecAnalysis().then(response => {
-        this.avgLastWeek = [response.data.duration[0], response.data.start_time[0], response.data.end_time[0]]
-        this.avgLastTwoWeek = [response.data.duration[1], response.data.start_time[1], response.data.end_time[1]]
-        this.avgLastMonth = [response.data.duration[2], response.data.start_time[2], response.data.end_time[2]]
-        console.log(this.avgLastWeek)
-        console.log(this.avgLastTwoWeek)
-        console.log(this.avgLastMonth)
+        this.avgLastWeek = [this.formatTime(response.data.duration[0]),
+          this.formatTime(response.data.start_time[0]), this.formatTime(response.data.end_time[0])]
+        this.avgLastTwoWeek = [this.formatTime(response.data.duration[1]),
+          this.formatTime(response.data.start_time[1]), this.formatTime(response.data.end_time[1])]
+        this.avgLastMonth = [this.formatTime(response.data.duration[2]),
+          this.formatTime(response.data.start_time[2]), this.formatTime(response.data.end_time[2])]
+
+        this.$log.debug(this.avgLastWeek)
+        this.$log.debug(this.avgLastTwoWeek)
+        this.$log.debug(this.avgLastMonth)
         this.initChart()
       })
-    },
-    timeToString(time) {
-      var hour = parseInt(time / 60)
-      var min = parseInt(time % 60)
-      return parseInt(hour / 10).toString() + (hour % 10).toString() + ':' + parseInt(min / 10).toString() + (min % 10).toString()
+      // this.avgLastWeek = [this.formatTime(409), this.formatTime(-100), this.formatTime(309)]
+      // this.avgLastTwoWeek = [this.formatTime(409), this.formatTime(-100), this.formatTime(309)]
+      // this.avgLastMonth = [this.formatTime(409), this.formatTime(-100), this.formatTime(309)]
+      // this.$log.debug(this.avgLastWeek)
+      // this.initChart()
     },
     initChart() {
       this.sleep_analysis_chart = Highcharts.chart('sleep_analysis_chart', {
@@ -60,14 +75,23 @@ export default {
           }
         },
         yAxis: {
-          labels: {
-            formatter: function() {
-              this.value = this.value % (24 * 60)
-              var hour = parseInt(this.value / 60)
-              var min = parseInt(this.value % 60)
-              return parseInt(hour / 10).toString() + (hour % 10).toString() + ':' + parseInt(min / 10).toString() + (min % 10).toString()
+          min: Date.UTC(2020, 0, 1, 0, 0, 0),
+          max: Date.UTC(2020, 0, 2, 0, 0, 0),
+          type: 'datetime',
+          tickPositioner: function() {
+            var info = this.tickPositions.info
+            var positions = []
+            for (var i = Date.UTC(2020, 0, 1, 0, 0, 0); i <= Date.UTC(2020, 0, 2, 0, 0, 0); i += 3600 * 1000) {
+              positions.push(i)
             }
+            positions.info = info
+            return positions
           },
+          lineWidth: 1,
+          dateTimeLabelFormats: {
+            day: '%H:%M'
+          },
+
           title: {
             text: 'Hours'
           }
@@ -75,51 +99,11 @@ export default {
 
         tooltip: {
           formatter: function() {
-            // yesterday
-            var tmpY = this.y % (24 * 60)
-            var hour = parseInt(tmpY / 60)
-            var min = parseInt(tmpY % 60)
-            var time = parseInt(hour / 10).toString() + (hour % 10).toString() + ':' + parseInt(min / 10).toString() + (min % 10).toString()
-            return 'Sleep about ' + time
+            return moment.utc(this.y).format('HH:MM')
           }
-        },
-        // yAxis: {
-        //   min: 0,
-        //   title: {
-        //     text: 'Population (millions)',
-        //     align: 'high'
-        //   },
-        //   labels: {
-        //     overflow: 'justify'
-        //   }
-        // },
-        // tooltip: {
-        //   valueSuffix: ' millions'
-        // },
-        plotOptions: {
-          bar: {
-            dataLabels: {
-              enabled: true
-            }
-          }
-        },
-        legend: {
-          layout: 'vertical',
-          align: 'right',
-          verticalAlign: 'top',
-          x: -40,
-          y: 80,
-          floating: true,
-          borderWidth: 1,
-          backgroundColor:
-            Highcharts.defaultOptions.legend.backgroundColor || '#FFFFFF',
-          shadow: true
-        },
-        credits: {
-          enabled: false
         },
         series: [{
-          name: 'This Week',
+          name: 'Last Week',
           data: this.avgLastWeek
         }, {
           name: 'Last Two Week',
