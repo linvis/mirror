@@ -45,10 +45,16 @@ export default {
     bus.$off('update-sleep-record', this.getSleepRecord)
   },
   methods: {
+    copyData(ori) {
+      var target = []
+      for (var i = 0; i < ori.length; i++) {
+        target.push(ori[i])
+      }
+
+      return target
+    },
     getSleepRecord() {
       querySleepRec().then(response => {
-        console.log(response.data)
-
         this.dur_data = []
         this.start_time_data = []
         this.end_time_data = []
@@ -59,13 +65,12 @@ export default {
           this.end_time_data.push([response.data.date[i], response.data.end_time[i] + 24 * 60])
         }
 
-        // this.chart_data = this.dur_data.slice(0, this.dur_data.length)
-        this.chart_data = this.dur_data
-        console.log(this.chart_data)
+        this.chart_data = Object.assign([], this.dur_data)
+        this.$log.debug('print time', this.dur_data, this.start_time_data, this.end_time_data)
+        this.$log.debug(this.chart_data)
 
         this.initChart()
       })
-      // this.initChart()
     },
     handleTabClick(tab, event) {
       console.log(tab.name, this.activeTab)
@@ -73,13 +78,13 @@ export default {
         // do nothing
         return
       } else if (tab.name === 'first') {
-        this.chart_data = this.dur_data
+        this.chart_data = Object.assign([], this.dur_data)
         this.chart_label = 'sleep about'
       } else if (tab.name === 'second') {
-        this.chart_data = this.start_time_data
+        this.chart_data = Object.assign([], this.start_time_data)
         this.chart_label = 'goto sleep at'
       } else if (tab.name === 'third') {
-        this.chart_data = this.end_time_data
+        this.chart_data = Object.assign([], this.end_time_data)
         this.chart_label = 'wakeup at'
       }
 
