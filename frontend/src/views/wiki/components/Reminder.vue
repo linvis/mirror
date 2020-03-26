@@ -70,13 +70,13 @@ export default {
 
           console.log(day, mon, this.today, this.month)
 
-          if (day !== this.today || mon !== this.month) {
+          if (mon !== this.month || day > this.today) {
             continue
           }
 
           list.push({
             'fileName': catalog[i].metadata.title,
-            'overdue': 0,
+            'overdue': this.today - day,
             'file': catalog[i]
           })
         }
