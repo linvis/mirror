@@ -10,12 +10,14 @@ const routes = [
   {
     path: "/",
     name: "root",
-    component: Layout
+    component: Layout,
+    hidden: true
   },
   {
     path: "/home",
     name: "Home",
     component: Layout,
+    meta: { text: "Home", icon: "mdi-home" },
     children: [
       {
         path: "/",
@@ -26,13 +28,15 @@ const routes = [
     ]
   },
   {
-    path: "/about",
-    name: "About",
+    path: "/healthy",
+    name: "Healthy",
     component: Layout,
+    meta: { text: "Healthy", icon: "mdi-spa" },
+    redirt
     children: [
       {
-        path: "/",
-        name: "About",
+        path: "/healthy/sleep",
+        name: "Sleep",
         component: () => import("@/views/About")
       }
     ]
