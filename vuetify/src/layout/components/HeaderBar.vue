@@ -5,7 +5,7 @@
     color="blue darken-3"
     dark
   >
-    <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
+    <v-app-bar-nav-icon @click.stop="handleClick" />
     <v-toolbar-title style="width: 300px" class="ml-0 pl-4">
       <span class="hidden-sm-and-down">Mirror</span>
     </v-toolbar-title>
@@ -29,17 +29,25 @@
         <v-img
           src="https://cdn.vuetifyjs.com/images/logos/logo.svg"
           alt="Vuetify"
-      /></v-avatar>
+        />
+      </v-avatar>
     </v-btn>
   </v-app-bar>
 </template>
 
 <script>
+import { bus } from "@/utils/bus";
 export default {
   data: function() {
     return {
-      drawer: null
+      navShow: null
     };
+  },
+  methods: {
+    handleClick() {
+      this.navShow = !this.navShow;
+      bus.$emit("nav-show", this.navShow);
+    }
   }
 };
 </script>

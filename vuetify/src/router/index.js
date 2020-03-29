@@ -30,19 +30,33 @@ const routes = [
     path: "/healthy",
     name: "Healthy",
     component: Layout,
-    meta: { text: "Healthy", icon: "mdi-spa" },
+    meta: { text: "Healthy", icon: "mdi-hand-heart" },
     children: [
       {
         path: "sleep",
         name: "Sleep",
         component: () => import("@/views/home/index"),
-        meta: { text: "Sleep", icon: "mdi-alarm" }
+        meta: { text: "Sleep", icon: "mdi-power-sleep" }
       },
       {
         path: "weight",
         name: "Weight",
         component: () => import("@/views/home/index"),
-        meta: { text: "Weight", icon: "mdi-spa" }
+        meta: { text: "Weight", icon: "mdi-weight-kilogram" }
+      }
+    ]
+  },
+  {
+    path: "/wiki",
+    name: "Wiki",
+    component: Layout,
+    meta: { text: "Wiki", icon: "mdi-wikipedia" },
+    children: [
+      {
+        path: "page",
+        name: "Wiki",
+        component: () => import("@/views/wiki/index"),
+        meta: { text: "Wiki", icon: "mdi-wikipedia" }
       }
     ]
   }

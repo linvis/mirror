@@ -1,8 +1,10 @@
 <template>
   <v-navigation-drawer
-    v-model="drawer"
+    ref="drawer"
+    v-model="navigation.show"
     :clipped="$vuetify.breakpoint.lgAndUp"
     app
+    :width="navigation.width"
   >
     <v-list dense>
       <template v-for="item in routes">
@@ -37,9 +39,9 @@
               <v-icon>{{ item.children[0].meta.icon }}</v-icon>
             </v-list-item-action>
             <v-list-item-content>
-              <v-list-item-title>{{
-                item.children[0].meta.text
-              }}</v-list-item-title>
+              <v-list-item-title>
+                {{ item.children[0].meta.text }}
+              </v-list-item-title>
             </v-list-item-content>
           </v-list-item>
         </div>
@@ -49,6 +51,8 @@
 </template>
 
 <script>
+import { bus } from "@/utils/bus";
+
 export default {
   name: "SideBar",
   computed: {
@@ -61,10 +65,26 @@ export default {
     source: String
   },
   data: () => ({
-    dialog: false,
-    drawer: null
+    navigation: {
+      show: true,
+      width: 256,
+      borderSize: 3
+    }
   }),
+  created() {
+    bus.$on("nav-show", this.updateNavShow);
+  },
+  mounted() {
+    this.setBorderWidth();
+    this.setEvents();
+  },
+  beforeDestroy() {
+    bus.$off("nav-show", this.updateNavShow);
+  },
   methods: {
+    updateNavShow(show) {
+      this.navigation.show = show;
+    },
     isMenuItemValid(item) {
       if (item.hidden) {
         return false;
@@ -81,8 +101,58 @@ export default {
     },
     getFullPath(item, child) {
       var urljoin = require("url-join");
-      console.log(urljoin(item.path, child.path));
       return urljoin(item.path, child.path);
+    },
+    setBorderWidth() {
+      let i = this.$refs.drawer.$el.querySelector(
+        ".v-navigation-drawer__border"
+      );
+      i.style.width = this.navigation.borderSize + "px";
+      i.style.cursor = "ew-resize";
+      // i.style.backgroundColor = "#e7e7e7";
+    },
+    setEvents() {
+      const minSize = this.navigation.borderSize;
+      const el = this.$refs.drawer.$el;
+      const drawerBorder = el.querySelector(".v-navigation-drawer__border");
+      const direction = el.classList.contains("v-navigation-drawer--right")
+        ? "right"
+        : "left";
+
+      function resize(e) {
+        document.body.style.cursor = "ew-resize";
+        let f =
+          direction === "right"
+            ? document.body.scrollWidth - e.clientX
+            : e.clientX;
+        el.style.width = f + "px";
+      }
+
+      drawerBorder.addEventListener(
+        "mousedown",
+        e => {
+          if (e.offsetX < minSize) {
+            el.style.transition = "initial";
+            document.addEventListener("mousemove", resize, false);
+          }
+          drawerBorder.style.backgroundColor = "blue";
+        },
+        false
+      );
+
+      document.addEventListener(
+        "mouseup",
+        () => {
+          el.style.transition = "";
+          this.navigation.width = el.style.width;
+          document.body.style.cursor = "";
+          document.removeEventListener("mousemove", resize, false);
+          drawerBorder.style.backgroundColor = "#e7e7e7";
+
+          // bus.$emit("nav-width-change", this.navigation.width);
+        },
+        false
+      );
     }
   }
 };
