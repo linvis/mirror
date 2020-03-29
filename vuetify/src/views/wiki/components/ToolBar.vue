@@ -15,7 +15,7 @@
 
     <v-tooltip bottom>
       <template v-slot:activator="{ on }">
-        <v-btn icon v-on="on" @click="handleClickHome">
+        <v-btn icon v-on="on" @click="edit">
           <v-icon>mdi-pencil</v-icon>
         </v-btn>
       </template>
@@ -83,6 +83,9 @@ export default {
     handleClickHome() {
       bus.$emit("editor-show", false);
       bus.$emit("reminder-show", true);
+    },
+    edit() {
+      bus.$emit("editor-edit");
     }
   }
 };

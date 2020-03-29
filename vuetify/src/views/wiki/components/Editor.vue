@@ -5,6 +5,13 @@
 </template>
 
 <script>
+import Prism from "prismjs";
+import "prismjs/themes/prism-okaidia.css";
+// import Prism from "@/plugins/prism";
+// import "@/assets/prism.css";
+
+Prism.highlightAll();
+
 import Stackedit from "stackedit-js";
 import { bus } from "@/utils/bus";
 
@@ -14,20 +21,23 @@ export default {
       editorShow: true,
       eleContent: null,
       stackedit: null,
-      activeNode: null,
       title: "",
-      contentHTML: "",
-      contentText: ""
+      html: "",
+      contentText: "",
+      observer: null
     };
   },
   created() {
     bus.$on("editor-show", this.updateShow);
+    bus.$on("editor-edit", this.edit);
   },
   mounted() {
     this.initEditor();
+    // this.renderCodeBlock();
   },
   beforeDestroy() {
     bus.$off("editor-show", this.updateShow);
+    bus.$off("editor-edit", this.edit);
   },
   methods: {
     updateShow(show) {
@@ -39,8 +49,8 @@ export default {
       this.eleContent.innerHTML = "Hello Jarvis！";
       // this.edit();
     },
-    setContent(html) {
-      this.contentHTML = html;
+    setHTML(html) {
+      this.html = html;
       this.eleContent.innerHTML = html;
     },
     updateContent(content) {
@@ -55,17 +65,55 @@ export default {
         }
       });
       this.stackedit.on("fileChange", file => {
-        // el.value = file.content.text
-        this.contentHTML = file.content.html;
+        this.setHTML(file.content.html);
         this.contentText = file.content.text;
-        console.log(file.content.text);
-        console.log(file.content.html);
+        console.log(this.contentText);
       });
       this.stackedit.on("close", () => {
         console.log("close");
-        this.eleContent.innerHTML = this.contentHTML;
-        console.log(this.contentText);
-        console.log(this.contentHTML);
+        Prism.highlightAll();
+        // this.eleContent.innerHTML = this.contentHTML;
+      });
+    },
+    renderCodeBlock() {
+      const languages = [
+          "html",
+          "css",
+          "javascript",
+          "bash",
+          "c",
+          "python",
+          "go",
+          "sql",
+          "latex"
+        ],
+        content = document.getElementById("editor"),
+        codeNodes = content.getElementsByTagName("code");
+
+      this.observer = new MutationObserver(() => {
+        let nodesLength = codeNodes.length,
+          codeNode,
+          language;
+
+        while (nodesLength--) {
+          codeNode = codeNodes[nodesLength];
+          console.log(codeNode);
+          language = codeNode.className.split("-")[1];
+          if (languages.includes(language)) {
+            codeNode.innerHTML = Prism.highlight(
+              codeNode.innerText,
+              Prism.languages[language],
+              language
+            );
+          }
+        }
+        // this.html = content.innerHTML;
+        this.setHTML(content.innerHTML);
+      });
+
+      this.observer.observe(content, {
+        childList: true,
+        characterData: true
       });
     }
   }

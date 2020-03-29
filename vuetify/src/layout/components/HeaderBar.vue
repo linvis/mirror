@@ -36,17 +36,16 @@
 </template>
 
 <script>
-import { bus } from "@/utils/bus";
 export default {
   data: function() {
     return {
-      navShow: null
+      navShow: true
     };
   },
   methods: {
     handleClick() {
       this.navShow = !this.navShow;
-      bus.$emit("nav-show", this.navShow);
+      this.$store.state.show.config.nav = this.navShow;
     }
   }
 };

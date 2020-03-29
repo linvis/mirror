@@ -17,6 +17,10 @@ export default {
     ToolBar,
     Editor,
     Reminder
+  },
+  mounted() {
+    this.$store.state.show.config.menu = false;
+    this.$store.state.show.config.tree = true;
   }
 };
 </script>
