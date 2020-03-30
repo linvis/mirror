@@ -13,7 +13,12 @@
               <v-list-item-title>{{ item.meta.text }}</v-list-item-title>
             </v-list-item-content>
           </template>
-          <v-list-item v-for="(child, i) in item.children" :key="i" link>
+          <v-list-item
+            v-for="(child, i) in item.children"
+            :key="i"
+            link
+            @click="handleItemClick(child.meta.text)"
+          >
             <v-list-item-action v-if="child.meta.icon">
               <v-icon>{{ child.meta.icon }}</v-icon>
             </v-list-item-action>
@@ -27,6 +32,7 @@
           :key="item.name"
           :to="getFullPath(item, item.children[0])"
           link
+          @click="handleItemClick(item.children[0].meta.text)"
         >
           <v-list-item-action>
             <v-icon>{{ item.children[0].meta.icon }}</v-icon>
@@ -78,6 +84,10 @@ export default {
     getFullPath(item, child) {
       var urljoin = require("url-join");
       return urljoin(item.path, child.path);
+    },
+    handleItemClick(text) {
+      this.$log.debug(text);
+      this.$store.state.menu.activeMenu = text;
     }
   }
 };

@@ -9,9 +9,8 @@
         <app-main height="100%" width="100%" />
       </v-container>
     </v-content>
-    <v-btn bottom color="pink" dark fab fixed right>
-      <v-icon>mdi-plus</v-icon>
-    </v-btn>
+
+    <dialog-button />
   </v-app>
 </template>
 
@@ -19,6 +18,7 @@
 import AppMain from "./components/AppMain";
 import HeaderBar from "./components/HeaderBar";
 import SideBar from "./components/SideBar";
+import DialogButton from "./components/DialogButton";
 
 // import { bus } from "@/utils/bus";
 
@@ -27,7 +27,8 @@ export default {
   components: {
     AppMain,
     HeaderBar,
-    SideBar
+    SideBar,
+    DialogButton
   },
   props: {
     source: String

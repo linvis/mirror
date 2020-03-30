@@ -9,7 +9,7 @@ import Prism from "prismjs";
 import "katex/dist/katex.css";
 // import "prismjs/themes/prism-okaidia.css";
 // import Prism from "@/plugins/prism";
-import "@/assets/prism.css";
+// import "@/assets/prism.css";
 
 Prism.highlightAll();
 
