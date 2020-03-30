@@ -4,7 +4,8 @@ const state = {
     menu: true,
     tree: false,
     editor: true,
-    reminder: false
+    reminder: false,
+    dialogSleep: false
   }
 };
 

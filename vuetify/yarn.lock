@@ -4079,6 +4079,11 @@ hex-color-regex@^1.1.0:
   resolved "https://registry.npm.taobao.org/hex-color-regex/download/hex-color-regex-1.1.0.tgz#4c06fccb4602fe2602b3c93df82d7e7dbf1a8a8e"
   integrity sha1-TAb8y0YC/iYCs8k9+C1+fb8aio4=
 
+highcharts@^8.0.4:
+  version "8.0.4"
+  resolved "https://registry.npm.taobao.org/highcharts/download/highcharts-8.0.4.tgz#a717434012bd5f9b82b94b737d62acec501d360c"
+  integrity sha1-pxdDQBK9X5uCuUtzfWKs7FAdNgw=
+
 highlight.js@^9.6.0:
   version "9.18.1"
   resolved "https://registry.npm.taobao.org/highlight.js/download/highlight.js-9.18.1.tgz#ed21aa001fe6252bb10a3d76d47573c6539fe13c"
@@ -4770,6 +4775,11 @@ jest-worker@^25.1.0:
     merge-stream "^2.0.0"
     supports-color "^7.0.0"
 
+js-cookie@^2.2.1:
+  version "2.2.1"
+  resolved "https://registry.npm.taobao.org/js-cookie/download/js-cookie-2.2.1.tgz#69e106dc5d5806894562902aa5baec3744e9b2b8"
+  integrity sha1-aeEG3F1YBolFYpAqpbrsN0Tpsrg=
+
 js-message@1.0.5:
   version "1.0.5"
   resolved "https://registry.npm.taobao.org/js-message/download/js-message-1.0.5.tgz#2300d24b1af08e89dd095bc1a4c9c9cfcb892d15"
@@ -5339,6 +5349,11 @@ mkdirp@^0.5.1, mkdirp@^0.5.3, mkdirp@~0.5.1:
   integrity sha1-/QFQSmeX7Fyb6B/0PSBJYe1kpRI=
   dependencies:
     minimist "^1.2.5"
+
+moment@^2.24.0:
+  version "2.24.0"
+  resolved "https://registry.npm.taobao.org/moment/download/moment-2.24.0.tgz#0d055d53f5052aa653c9f6eb68bb5d12bf5c2b5b"
+  integrity sha1-DQVdU/UFKqZTyfbraLtdEr9cK1s=
 
 move-concurrently@^1.0.1:
   version "1.0.1"
@@ -8145,6 +8160,18 @@ vue-loader@^15.8.3:
     loader-utils "^1.1.0"
     vue-hot-reload-api "^2.3.0"
     vue-style-loader "^4.1.0"
+
+vue-msgbox@^0.2.14:
+  version "0.2.14"
+  resolved "https://registry.npm.taobao.org/vue-msgbox/download/vue-msgbox-0.2.14.tgz#daf027faf2eeca798de3248e85ae802c87c38540"
+  integrity sha1-2vAn+vLuynmN4ySOha6ALIfDhUA=
+  dependencies:
+    vue-popup "^0.1.13"
+
+vue-popup@^0.1.13:
+  version "0.1.13"
+  resolved "https://registry.npm.taobao.org/vue-popup/download/vue-popup-0.1.13.tgz#fc03251ec17751b520c79c41ad4c69f8889833db"
+  integrity sha1-/AMlHsF3UbUgx5xBrUxp+IiYM9s=
 
 vue-router@^3.1.5:
   version "3.1.6"

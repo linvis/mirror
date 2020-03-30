@@ -46,7 +46,8 @@ service.interceptors.response.use(
     const res = response.data;
 
     // no code response
-    if (res.hasOwnProperty("code") === false) {
+    // if (res.hasOwnProperty("code") === false) {
+    if (Object.prototype.hasOwnProperty.call(res, "code") === false) {
       return res;
     }
 

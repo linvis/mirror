@@ -18,6 +18,7 @@
             :key="i"
             link
             @click="handleItemClick(child.meta.text)"
+            :to="getFullPath(item, child)"
           >
             <v-list-item-action v-if="child.meta.icon">
               <v-icon>{{ child.meta.icon }}</v-icon>

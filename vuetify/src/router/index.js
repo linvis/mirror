@@ -35,7 +35,7 @@ const routes = [
       {
         path: "sleep",
         name: "Sleep",
-        component: () => import("@/views/home/index"),
+        component: () => import("@/views/healthy/sleep"),
         meta: { text: "Sleep", icon: "mdi-power-sleep" }
       },
       {
