@@ -6,9 +6,10 @@
 
 <script>
 import Prism from "prismjs";
-import "prismjs/themes/prism-okaidia.css";
+import "katex/dist/katex.css";
+// import "prismjs/themes/prism-okaidia.css";
 // import Prism from "@/plugins/prism";
-// import "@/assets/prism.css";
+import "@/assets/prism.css";
 
 Prism.highlightAll();
 
@@ -68,6 +69,7 @@ export default {
         this.setHTML(file.content.html);
         this.contentText = file.content.text;
         console.log(this.contentText);
+        console.log(file.content.html);
       });
       this.stackedit.on("close", () => {
         console.log("close");

@@ -1,17 +1,28 @@
 {
-    "plugins": [
-        [
-            "prismjs",
-            {
-                "languages": [
-                    "html",
-                    "css",
-                    "javascript",
-                    "bash",
-                    "sql"
-                ],
-                "theme": "okaidia"
-            }
-        ]
+  "plugins": [
+    [
+      "prismjs",
+      {
+        "languages": [
+          "javascript",
+          "css",
+          "markup",
+          "c",
+          "go",
+          "python",
+          "sql",
+          "latex"
+        ],
+        "plugins": [
+          "line-numbers",
+          "show-language",
+          "highlight-keywords",
+          "toolbar",
+          "copy-to-clipboard"
+        ],
+        "theme": "okaidia",
+        "css": true
+      }
     ]
+  ]
 }
