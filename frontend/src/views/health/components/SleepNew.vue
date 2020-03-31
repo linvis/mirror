@@ -48,9 +48,8 @@
 </template>
 
 <script>
-
-import { submitSleepRec } from '@/api/sleep'
-import { bus } from '@/utils/bus'
+import { submitSleepRec } from '@/api/sleep';
+import { bus } from '@/utils/bus';
 
 export default {
   data() {
@@ -67,9 +66,7 @@ export default {
         }
       },
       record_date: new Date(),
-      form: {
-
-      }
+      form: {}
     }
   },
   created() {
@@ -78,7 +75,8 @@ export default {
   },
   methods: {
     handleStartTimeChange(time) {
-      this.start_time = this.start_utc.getHours() * 60 + this.start_utc.getMinutes()
+      this.start_time =
+        this.start_utc.getHours() * 60 + this.start_utc.getMinutes()
 
       if (this.end_time === 0) {
         return
@@ -87,8 +85,14 @@ export default {
       var timeToString = function(time) {
         var hour = parseInt(time / 60)
         var min = parseInt(time % 60)
-        return parseInt(hour / 10).toString() + (hour % 10).toString() + ':' + parseInt(min / 10).toString() + (min % 10).toString()
-      }
+        return (
+          parseInt(hour / 10).toString() +
+          (hour % 10).toString() +
+          ':' +
+          parseInt(min / 10).toString() +
+          (min % 10).toString()
+        )
+      };
 
       if (this.start_time > this.end_time) {
         this.start_time = this.start_time - 24 * 60
@@ -103,8 +107,14 @@ export default {
       var timeToString = function(time) {
         var hour = parseInt(time / 60)
         var min = parseInt(time % 60)
-        return parseInt(hour / 10).toString() + (hour % 10).toString() + ':' + parseInt(min / 10).toString() + (min % 10).toString()
-      }
+        return (
+          parseInt(hour / 10).toString() +
+          (hour % 10).toString() +
+          ':' +
+          parseInt(min / 10).toString() +
+          (min % 10).toString()
+        )
+      };
 
       if (this.start_time === 0) {
         return
@@ -120,13 +130,17 @@ export default {
     handleSubmit: function(event) {
       // var utcDate = Date.UTC(this.record_date.getFullYear(), this.record_date.getMonth(), this.record_date.getDate()) +
       // this.record_date.getTimezoneOffset() * 60 * 1000
-      var utcDate = Date.UTC(this.record_date.getFullYear(), this.record_date.getMonth(), this.record_date.getDate())
+      var utcDate = Date.UTC(
+        this.record_date.getFullYear(),
+        this.record_date.getMonth(),
+        this.record_date.getDate()
+      )
       console.log(this.record_date.getTimezoneOffset())
       var record = {
-        'record_date': utcDate,
-        'start_time': this.start_time,
-        'end_time': this.end_time,
-        'duration': this.duration
+        record_date: utcDate,
+        start_time: this.start_time,
+        end_time: this.end_time,
+        duration: this.duration
       }
       submitSleepRec(record).then(response => {
         this.$notify({
@@ -135,7 +149,7 @@ export default {
           type: 'success',
           duration: 800
         })
-        bus.$emit('update-sleep-record')
+        // bus.$emit('update-sleep-record')
       })
     }
   }
