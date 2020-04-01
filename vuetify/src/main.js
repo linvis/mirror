@@ -4,6 +4,7 @@ import router from "./router";
 import store from "./store";
 import vuetify from "./plugins/vuetify";
 import VueLogger from "vuejs-logger";
+import { Tree } from "element-ui";
 
 const isProduction = process.env.NODE_ENV === "production";
 
@@ -21,6 +22,7 @@ const options = {
 };
 
 Vue.use(VueLogger, options);
+Vue.use(Tree);
 
 new Vue({
   router,

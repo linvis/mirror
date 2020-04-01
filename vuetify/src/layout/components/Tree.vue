@@ -19,9 +19,20 @@
         <div
           @click="openNote(item)"
           @contextmenu="handleShowMenu($event, item)"
+          v-show="!item.isEdit"
         >
           {{ item.metadata.title }}
         </div>
+
+        <v-text-field
+          :ref="item.key"
+          v-model="item.metadata.title"
+          autofocus
+          @blur.stop="NodeBlur(item)"
+          @keyup.enter.native="NodeBlur(item)"
+          v-show="item.isEdit"
+          single-line
+        ></v-text-field>
       </template>
       <template v-slot:prepend="{ item, open }">
         <v-icon v-if="item.metadata.filetype === 'nb'">
@@ -44,7 +55,7 @@
         <v-list-item
           v-for="menuItem in menuItems"
           :key="menuItem"
-          @click="clickAction"
+          @click="clickAction($event, menuItem)"
         >
           <v-list-item-title>{{ menuItem }}</v-list-item-title>
         </v-list-item>
@@ -80,7 +91,8 @@ export default {
     showMenu: false,
     x: 0,
     y: 0,
-    menuItems: ["create file", "create directory"]
+    menuItems: ["New Notebook", "New File", "Rename"],
+    rightActiveItem: null
   }),
   methods: {
     handleBackClick() {
@@ -89,6 +101,7 @@ export default {
     },
     handleShowMenu(e, item) {
       this.$log.debug(e, item);
+      this.rightActiveItem = item;
       e.preventDefault();
       this.showMenu = false;
       this.x = e.clientX;
@@ -97,8 +110,43 @@ export default {
         this.showMenu = true;
       });
     },
-    clickAction(e) {
-      alert("clicked");
+    clickAction(e, menuItem) {
+      if (menuItem === "Rename") {
+        this.handleRename(this.rightActiveItem);
+      } else if (menuItem === "Delete") {
+        this.handleDelete(this.rightActiveItem);
+      }
+    },
+    NodeBlur(item) {
+      // 输入框失焦
+      this.$log.debug("lose focus", item);
+
+      if (item.isEdit) {
+        this.$set(item, "isEdit", false);
+      }
+
+      this.$store.dispatch("editor/updateCatalog", this.catalog);
+    },
+    handleRename(item) {
+      this.$log.debug(item);
+
+      if (!item.isEdit) {
+        this.$set(item, "isEdit", true);
+      }
+      this.$nextTick(() => {
+        this.$refs[item.key].$refs.input.focus();
+      });
+    },
+    handleDelete(item) {
+      this.$log.debug(item);
+
+      //   const parent = item.parent;
+      //   var data = node.data;
+      //   const children = parent.data.children || parent.data;
+      //   const index = children.findIndex(d => d.id === data.id);
+      //   children.splice(index, 1);
+
+      //   this.$store.dispatch("editor/submitCatalog", this.catalog);
     },
     openNote(item) {
       this.$log.debug(item);

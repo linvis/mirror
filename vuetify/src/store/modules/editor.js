@@ -86,7 +86,7 @@ const mutations = {
   CHANGE_FILECONTENT: (state, { key, content }) => {
     state.contents[key] = content;
   },
-  SUBMIT_CATALOG: state => {
+  UPDATE_CATALOG: state => {
     updateEditorCatalog(state.catalog).then(response => {});
   }
 };
@@ -97,8 +97,8 @@ const actions = {
   changeActiveNote({ commit }, data) {
     commit("CHANGE_ACTIVENOTE", data);
   },
-  submitCatalog({ commit }) {
-    commit("SUBMIT_CATALOG");
+  updateCatalog({ commit }) {
+    commit("UPDATE_CATALOG");
   },
   changeFileContent({ commit }, data) {
     commit("CHANGE_FILECONTENT", data);
