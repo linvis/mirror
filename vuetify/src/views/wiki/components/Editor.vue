@@ -7,9 +7,6 @@
 <script>
 import Prism from "prismjs";
 import "katex/dist/katex.css";
-// import "prismjs/themes/prism-okaidia.css";
-// import Prism from "@/plugins/prism";
-// import "@/assets/prism.css";
 
 Prism.highlightAll();
 
@@ -76,54 +73,9 @@ export default {
         Prism.highlightAll();
         // this.eleContent.innerHTML = this.contentHTML;
       });
-    },
-    renderCodeBlock() {
-      const languages = [
-          "html",
-          "css",
-          "javascript",
-          "bash",
-          "c",
-          "python",
-          "go",
-          "sql",
-          "latex"
-        ],
-        content = document.getElementById("editor"),
-        codeNodes = content.getElementsByTagName("code");
-
-      this.observer = new MutationObserver(() => {
-        let nodesLength = codeNodes.length,
-          codeNode,
-          language;
-
-        while (nodesLength--) {
-          codeNode = codeNodes[nodesLength];
-          console.log(codeNode);
-          language = codeNode.className.split("-")[1];
-          if (languages.includes(language)) {
-            codeNode.innerHTML = Prism.highlight(
-              codeNode.innerText,
-              Prism.languages[language],
-              language
-            );
-          }
-        }
-        // this.html = content.innerHTML;
-        this.setHTML(content.innerHTML);
-      });
-
-      this.observer.observe(content, {
-        childList: true,
-        characterData: true
-      });
     }
   }
 };
 </script>
 
-<style>
-.editor {
-  /* padding-left: 16px; */
-}
-</style>
+<style></style>

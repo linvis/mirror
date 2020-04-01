@@ -56,7 +56,7 @@ const state = {
       ]
     }
   ],
-  activeFile: {
+  activeNote: {
     id: 1,
     key: "1",
     parent: "0",
@@ -80,8 +80,8 @@ const mutations = {
   CHANGE_CATALOG: (state, catalog) => {
     state.catalog = catalog;
   },
-  CHANGE_ACTIVEFILE: (state, activeFile) => {
-    state.activeFile = activeFile;
+  CHANGE_ACTIVENOTE: (state, activeFile) => {
+    state.activeNote = activeFile;
   },
   CHANGE_FILECONTENT: (state, { key, content }) => {
     state.contents[key] = content;
@@ -94,8 +94,8 @@ const actions = {
   changeCatalog({ commit }, data) {
     commit("CHANGE_CATALOG", data);
   },
-  changeActiveFile({ commit }, data) {
-    commit("CHANGE_ACTIVEFILE", data);
+  changeActiveNote({ commit }, data) {
+    commit("CHANGE_ACTIVENOTE", data);
   },
   submitCatalog({ commit }) {
     commit("SUBMIT_CATALOG");

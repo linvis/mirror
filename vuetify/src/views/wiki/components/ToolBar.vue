@@ -1,6 +1,17 @@
 <template>
   <v-toolbar dense width="100%" flat>
-    <v-breadcrumbs :items="items" class="pa-0"></v-breadcrumbs>
+    <!-- <v-breadcrumbs :items="items" class="pa-0"></v-breadcrumbs> -->
+    <v-chip
+      v-if="activeNote.reminder.enable === false"
+      label
+      color="grey"
+      outlined
+    >
+      Not Reviewed
+    </v-chip>
+    <v-chip v-else label color="grey" outlined>
+      Reviewed
+    </v-chip>
 
     <v-spacer></v-spacer>
 
@@ -56,33 +67,32 @@ import { bus } from "@/utils/bus";
 
 export default {
   data: () => ({
-    items: [
-      {
-        text: "Dashboard",
-        disabled: false,
-        href: "breadcrumbs_dashboard"
-      },
-      {
-        text: "Link 1",
-        disabled: false,
-        href: "breadcrumbs_link_1"
-      },
-      {
-        text: "Link 2",
-        disabled: true,
-        href: "breadcrumbs_link_2"
-      }
-    ],
+    showTagInput: false,
+    newTag: null,
+    showInput: false,
     dropItems: [
       { title: "Reviewd" },
       { title: "Later" },
       { title: "Start Review" }
     ]
   }),
+  computed: {
+    activeNote() {
+      return this.$store.state.editor.activeNote;
+    }
+  },
   methods: {
+    remove(item) {
+      this.chips.splice(this.chips.indexOf(item), 1);
+      this.chips = [...this.chips];
+    },
     handleClickHome() {
       bus.$emit("editor-show", false);
       bus.$emit("reminder-show", true);
+    },
+    handleTagInput() {
+      this.showTagInput = true;
+      this.$refs.tagInput.$refs.input.focus();
     },
     edit() {
       bus.$emit("editor-edit");

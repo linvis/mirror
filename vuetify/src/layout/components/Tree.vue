@@ -102,6 +102,7 @@ export default {
     },
     openNote(item) {
       this.$log.debug(item);
+      this.$store.state.editor.activeNote = item;
     }
   }
 };
