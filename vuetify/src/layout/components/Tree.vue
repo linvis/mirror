@@ -8,7 +8,7 @@
       <v-toolbar-title class="pa-0">Library</v-toolbar-title>
     </v-toolbar>
 
-    <el-tree
+    <!-- <el-tree
       ref="tree"
       :data="catalog"
       :props="defaultProps"
@@ -21,7 +21,7 @@
       @node-drop="handleDrop"
     >
       <span slot-scope="{ node, data }" class="custom-tree-node">
-        <span v-show="!data.isEdit">
+        <span v-show="!node.isEdit">
           <v-icon v-if="data.metadata.filetype === 'nb'">mdi-folder</v-icon>
           <v-icon v-else>mdi-note-text</v-icon>
           <span style="margin-left:10px;">{{ data.metadata.title }}</span>
@@ -30,14 +30,14 @@
           :ref="data.key"
           v-model="data.metadata.title"
           autofocus
-          @blur.stop="NodeBlur(data)"
-          @keyup.enter.native="NodeBlur(data)"
-          v-show="data.isEdit"
+          @blur.stop="NodeBlur(node)"
+          @keyup.enter.native="NodeBlur(node)"
+          v-show="node.isEdit"
           single-line
         ></v-text-field>
       </span>
-    </el-tree>
-    <!-- <v-treeview
+    </el-tree> -->
+    <v-treeview
       v-model="tree"
       :open="open"
       :items="catalog"
@@ -72,9 +72,15 @@
           {{ "mdi-note-text" }}
         </v-icon>
       </template>
-    </v-treeview>-->
+    </v-treeview>
 
-    <v-menu v-model="showMenu" :position-x="x" :position-y="y" absolute offset-y>
+    <v-menu
+      v-model="showMenu"
+      :position-x="x"
+      :position-y="y"
+      absolute
+      offset-y
+    >
       <v-list>
         <v-list-item
           v-for="menuItem in menuItems"
@@ -89,6 +95,7 @@
 </template>
 
 <script>
+import { v4 as uuidv4 } from "uuid";
 export default {
   computed: {
     show: {
@@ -115,78 +122,35 @@ export default {
     showMenu: false,
     x: 0,
     y: 0,
-    menuItems: ["New Notebook", "New File", "Rename"],
-    rightActiveItem: null,
-    data: [
-      {
-        label: "一级 1",
-        children: [
-          {
-            label: "二级 1-1",
-            children: [
-              {
-                label: "三级 1-1-1"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        label: "一级 2",
-        children: [
-          {
-            label: "二级 2-1",
-            children: [
-              {
-                label: "三级 2-1-1"
-              }
-            ]
-          },
-          {
-            label: "二级 2-2",
-            children: [
-              {
-                label: "三级 2-2-1"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        label: "一级 3",
-        children: [
-          {
-            label: "二级 3-1",
-            children: [
-              {
-                label: "三级 3-1-1"
-              }
-            ]
-          },
-          {
-            label: "二级 3-2",
-            children: [
-              {
-                label: "三级 3-2-1"
-              }
-            ]
-          }
-        ]
-      }
-    ],
-    defaultProps: {
-      children: "children",
-      label: "label"
-    }
+    menuItems: ["New Notebook", "New File", "Rename", "Delete"],
+    rightActiveItem: null
   }),
   methods: {
+    newRandomKey() {
+      var uuid = uuidv4();
+      return uuid.split("-").join("");
+    },
+    findItem(items, key) {
+      for (var i = 0; i < items.length; i++) {
+        if (items[i].key === key) {
+          return items[i];
+        } else {
+          var item = this.findItem(items[i].children, key);
+          if (item !== null) {
+            return item;
+          }
+        }
+      }
+
+      return null;
+    },
     handleBackClick() {
       this.$store.state.show.config.menu = true;
       this.$store.state.show.config.tree = false;
     },
-    handleShowMenu(e, obj, node, components) {
-      this.$log.debug(e, node);
-      this.rightActiveItem = node.data;
+    handleShowMenu(e, item) {
+      this.$log.debug(e, item);
+      this.rightActiveItem = item;
       e.preventDefault();
       this.showMenu = false;
       this.x = e.clientX;
@@ -198,6 +162,12 @@ export default {
     clickAction(e, menuItem) {
       if (menuItem === "Rename") {
         this.handleRename(this.rightActiveItem);
+      } else if (menuItem === "Delete") {
+        this.handleDelete(this.rightActiveItem);
+      } else if (menuItem === "New Notebook") {
+        this.handleNewNoteBook(this.rightActiveItem);
+      } else if (menuItem === "New File") {
+        this.handleNewFile(this.rightActiveItem);
       } else if (menuItem === "Delete") {
         this.handleDelete(this.rightActiveItem);
       }
@@ -212,6 +182,78 @@ export default {
 
       this.$store.dispatch("editor/updateCatalog", this.catalog);
     },
+    handleNewFile(item) {
+      this.$log.debug(item);
+
+      var data = item;
+      var key = this.newRandomKey();
+
+      const newChild = {
+        id: key,
+        key: key,
+        parent: data.key,
+        metadata: {
+          title: "untitle",
+          level: data.level + 1,
+          filetype: "md",
+          tag: []
+        },
+        reminder: {
+          enable: false,
+          count: 0,
+          last_time: 0,
+          next_time: 0
+        },
+        children: []
+      };
+      if (!data.children) {
+        this.$set(data, "children", []);
+      }
+      data.children.push(newChild);
+
+      this.$store.dispatch("editor/updateCatalog", this.catalog);
+
+      //   bus.$emit("show-reminder", false);
+      //   bus.$emit("open-new-doc", newChild);
+    },
+    handleNewNoteBook(item) {
+      var data = item;
+
+      if (data.metadata.level >= 2) {
+        this.$message({
+          message: "仅支持2级nodebook",
+          type: "warning"
+        });
+        return;
+      }
+
+      var key = this.newRandomKey();
+
+      const newChild = {
+        id: key,
+        key: key,
+        parent: data.key,
+        metadata: {
+          title: "nodebook",
+          level: data.level + 1,
+          filetype: "nb",
+          tag: []
+        },
+        reminder: {
+          enable: false,
+          count: 0,
+          last_time: 0,
+          next_time: 0
+        },
+        children: []
+      };
+      if (!data.children) {
+        this.$set(data, "children", []);
+      }
+      data.children.push(newChild);
+
+      //   this.$store.dispatch("editor/updateCatalog", this.catalog);
+    },
     handleRename(item) {
       this.$log.debug(item);
 
@@ -225,17 +267,35 @@ export default {
     handleDelete(item) {
       this.$log.debug(item);
 
-      //   const parent = item.parent;
-      //   var data = node.data;
-      //   const children = parent.data.children || parent.data;
-      //   const index = children.findIndex(d => d.id === data.id);
-      //   children.splice(index, 1);
+      var parent = this.findItem(this.catalog, item.parent);
+      const children = parent.children || parent;
+      const index = children.findIndex(d => d.id === item.id);
+      children.splice(index, 1);
 
-      //   this.$store.dispatch("editor/submitCatalog", this.catalog);
+      //   this.$store.dispatch("editor/updateCatalog", this.catalog);
     },
     openNote(item) {
       this.$log.debug(item);
       this.$store.state.editor.activeNote = item;
+    },
+    handleNodeClick(data, node) {
+      // node edit toggle click
+      this.$log.debug(node);
+      if (
+        Object.prototype.hasOwnProperty.call(node, "isEdit") === true &&
+        node.isEdit === true
+      ) {
+        return;
+      }
+
+      if (data.metadata.filetype === "md") {
+        // bus.$emit("show-reminder", false);
+        // bus.$emit("show-editor", true);
+        // bus.$emit("open-document", data);
+      }
+    },
+    handleDrop(draggingNode, dropNode, dropType, ev) {
+      this.$store.dispatch("editor/submitCatalog", this.catalog);
     }
   }
 };
@@ -245,10 +305,8 @@ export default {
 .el-tree-node__label {
   font-size: 16px;
 }
-.treeitem {
-  height: 24px;
-  width: 24px;
-  margin: 6px;
+.el-tree-node__content {
+  margin: 4px;
   padding: 8px;
 }
 </style>
