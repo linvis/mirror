@@ -222,3 +222,15 @@ export default {
   }
 };
 </script>
+
+<style>
+.el-tree-node__label {
+  font-size: 16px;
+}
+.treeitem {
+  height: 24px;
+  width: 24px;
+  margin: 6px;
+  padding: 8px;
+}
+</style>
