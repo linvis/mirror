@@ -9,10 +9,34 @@
     </v-toolbar>
 
     <el-tree
-      :data="data"
+      ref="tree"
+      :data="catalog"
       :props="defaultProps"
+      class="tree"
+      :highlight-current="true"
+      :expand-on-click-node="true"
+      :draggable="isDrag"
+      @node-contextmenu="handleShowMenu"
       @node-click="handleNodeClick"
-    ></el-tree>
+      @node-drop="handleDrop"
+    >
+      <span slot-scope="{ node, data }" class="custom-tree-node">
+        <span v-show="!data.isEdit">
+          <v-icon v-if="data.metadata.filetype === 'nb'">mdi-folder</v-icon>
+          <v-icon v-else>mdi-note-text</v-icon>
+          <span style="margin-left:10px;">{{ data.metadata.title }}</span>
+        </span>
+        <v-text-field
+          :ref="data.key"
+          v-model="data.metadata.title"
+          autofocus
+          @blur.stop="NodeBlur(data)"
+          @keyup.enter.native="NodeBlur(data)"
+          v-show="data.isEdit"
+          single-line
+        ></v-text-field>
+      </span>
+    </el-tree>
     <!-- <v-treeview
       v-model="tree"
       :open="open"
@@ -48,15 +72,9 @@
           {{ "mdi-note-text" }}
         </v-icon>
       </template>
-    </v-treeview> -->
+    </v-treeview>-->
 
-    <v-menu
-      v-model="showMenu"
-      :position-x="x"
-      :position-y="y"
-      absolute
-      offset-y
-    >
+    <v-menu v-model="showMenu" :position-x="x" :position-y="y" absolute offset-y>
       <v-list>
         <v-list-item
           v-for="menuItem in menuItems"
@@ -166,9 +184,9 @@ export default {
       this.$store.state.show.config.menu = true;
       this.$store.state.show.config.tree = false;
     },
-    handleShowMenu(e, item) {
-      this.$log.debug(e, item);
-      this.rightActiveItem = item;
+    handleShowMenu(e, obj, node, components) {
+      this.$log.debug(e, node);
+      this.rightActiveItem = node.data;
       e.preventDefault();
       this.showMenu = false;
       this.x = e.clientX;
