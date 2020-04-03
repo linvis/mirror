@@ -1,5 +1,5 @@
 <template>
-  <v-container v-show="editorShow" height="100%" width="100%" class="pt-2 pl-4">
+  <v-container v-show="show" height="100%" width="100%" class="pt-2 pl-4">
     <div id="editor" />
   </v-container>
 </template>
@@ -12,6 +12,7 @@ Prism.highlightAll();
 
 import Stackedit from "stackedit-js";
 import { bus } from "@/utils/bus";
+import { queryDocumentByID } from "@/api/editor";
 
 export default {
   data() {
@@ -21,26 +22,37 @@ export default {
       stackedit: null,
       title: "",
       html: "",
-      contentText: "",
+      content: "",
       observer: null
     };
   },
+  computed: {
+    activeNote: {
+      get() {
+        return this.$store.state.editor.activeNote;
+      },
+      set(newVal) {
+        this.$store.state.editor.activeNote = newVal;
+      }
+    },
+    show() {
+      return this.$store.state.show.config.editor;
+    }
+  },
   created() {
-    bus.$on("editor-show", this.updateShow);
-    bus.$on("editor-edit", this.edit);
+    bus.$on("open-file", this.openFile);
+    bus.$on("open-new-file", this.openNewFile);
+    bus.$on("edit-file", this.edit);
   },
   mounted() {
     this.initEditor();
-    // this.renderCodeBlock();
   },
   beforeDestroy() {
-    bus.$off("editor-show", this.updateShow);
-    bus.$off("editor-edit", this.edit);
+    bus.$off("open-file", this.openFile);
+    bus.$off("open-new-file", this.openNewFile);
+    bus.$off("edit-file", this.edit);
   },
   methods: {
-    updateShow(show) {
-      this.editorShow = show;
-    },
     initEditor() {
       this.stackedit = new Stackedit();
       this.eleContent = document.getElementById("editor");
@@ -54,23 +66,45 @@ export default {
     updateContent(content) {
       this.contents = content;
     },
+    openFile(item) {
+      queryDocumentByID(item.id).then(response => {
+        var docs = response.data;
+        this.$log.debug("update markdown from remote", docs.content);
+        this.open(item.metadata.title, docs.content);
+        this.$store.state.editor.content[item.key] = docs.content;
+      });
+      this.activeNote = item;
+      this.open(item.metadata.title, "Hello **Markdown** writer!");
+      this.$store.state.editor.contents[item.key] =
+        "Hello **Markdown** writer!";
+    },
+    openNewFile(item) {
+      this.activeNote = item;
+      this.open(item.metadata.title, "");
+    },
     edit() {
+      var item = this.activeNote;
+      var content = this.$store.state.editor.contents[item.key];
+      this.open(item.metadata.title, content);
+    },
+    open(file, content) {
       this.stackedit.openFile({
-        name: "Filename", // with a filename
+        name: file, // with a filename
         content: {
-          // text: this.contentText // and the Markdown content.
-          text: "Hello **Markdown** writer!"
+          text: content // and the Markdown content.
+          // text: "Hello **Markdown** writer!"
         }
       });
       this.stackedit.on("fileChange", file => {
         this.setHTML(file.content.html);
-        this.contentText = file.content.text;
-        console.log(this.contentText);
+        this.content = file.content.text;
+        console.log(this.content);
         console.log(file.content.html);
       });
       this.stackedit.on("close", () => {
         console.log("close");
         Prism.highlightAll();
+        this.$store.state.editor.contents[this.activeNote.key] = this.content;
         // this.eleContent.innerHTML = this.contentHTML;
       });
     }

@@ -87,15 +87,17 @@ export default {
       this.chips = [...this.chips];
     },
     handleClickHome() {
-      bus.$emit("editor-show", false);
-      bus.$emit("reminder-show", true);
+      this.$store.state.show.config.editor = !this.$store.state.show.config
+        .editor;
+      this.$store.state.show.config.reminder = !this.$store.state.show.config
+        .reminder;
     },
     handleTagInput() {
       this.showTagInput = true;
       this.$refs.tagInput.$refs.input.focus();
     },
     edit() {
-      bus.$emit("editor-edit");
+      bus.$emit("edit-file");
     }
   }
 };

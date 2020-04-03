@@ -96,6 +96,7 @@
 
 <script>
 import { v4 as uuidv4 } from "uuid";
+import { bus } from "@/utils/bus";
 export default {
   computed: {
     show: {
@@ -214,7 +215,7 @@ export default {
       this.$store.dispatch("editor/updateCatalog", this.catalog);
 
       //   bus.$emit("show-reminder", false);
-      //   bus.$emit("open-new-doc", newChild);
+      bus.$emit("open-new-file", newChild);
     },
     handleNewNoteBook(item) {
       var data = item;
@@ -276,7 +277,9 @@ export default {
     },
     openNote(item) {
       this.$log.debug(item);
-      this.$store.state.editor.activeNote = item;
+      if (item.metadata.filetype === "md") {
+        bus.$emit("open-file", item);
+      }
     },
     handleNodeClick(data, node) {
       // node edit toggle click

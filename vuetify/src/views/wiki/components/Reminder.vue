@@ -4,7 +4,7 @@
     :items="desserts"
     sort-by="overdue"
     class="elevation-1"
-    v-show="reminderShow"
+    v-show="show"
   >
     <template v-slot:top>
       <v-toolbar flat color="white">
@@ -41,20 +41,19 @@ export default {
     desserts: [],
     editedIndex: -1
   }),
+  computed: {
+    show() {
+      return this.$store.state.show.config.reminder;
+    }
+  },
 
   created() {
-    bus.$on("reminder-show", this.udpateShow);
     this.initialize();
   },
 
-  beforeDestroy() {
-    bus.$off("reminder-show", this.udpateShow);
-  },
+  beforeDestroy() {},
 
   methods: {
-    udpateShow(show) {
-      this.reminderShow = show;
-    },
     initialize() {
       this.desserts = [
         {
