@@ -4,11 +4,13 @@ import router from "./router";
 import store from "./store";
 import vuetify from "./plugins/vuetify";
 import VueLogger from "vuejs-logger";
-import { Tree } from "element-ui";
+import Notifications from "vue-notification";
 
 const isProduction = process.env.NODE_ENV === "production";
 
 Vue.config.productionTip = false;
+
+import "@/permission"; // permission control
 
 // logger
 const options = {
@@ -21,8 +23,13 @@ const options = {
   showConsoleColors: true
 };
 
+import { mockXHR } from "../mock";
+if (process.env.NODE_ENV === "development") {
+  mockXHR();
+}
+
+Vue.use(Notifications);
 Vue.use(VueLogger, options);
-Vue.use(Tree);
 
 new Vue({
   router,

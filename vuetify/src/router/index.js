@@ -8,8 +8,19 @@ import Layout from "@/layout";
 
 const routes = [
   {
+    path: "/login",
+    component: () => import("@/views/login/index"),
+    hidden: true
+  },
+  {
+    path: "/404",
+    component: () => import("@/views/404"),
+    hidden: true
+  },
+  {
     path: "/",
     name: "root",
+    redirect: "/home",
     component: Layout,
     hidden: true
   },
@@ -59,13 +70,41 @@ const routes = [
         meta: { text: "Wiki", icon: "mdi-wikipedia" }
       }
     ]
-  }
+  },
+  {
+    path: "/program",
+    name: "Program",
+    component: Layout,
+    meta: { text: "Program", icon: "mdi-wikipedia" },
+    children: [
+      {
+        path: "sumary",
+        name: "sumary",
+        component: () => import("@/views/program/index"),
+        meta: { text: "Program", icon: "mdi-wikipedia" }
+      }
+    ]
+  },
+  {
+    path: "/settings",
+    name: "Settings",
+    component: Layout,
+    meta: { text: "Settings", icon: "mdi-wikipedia" },
+    children: [
+      {
+        path: "",
+        name: "",
+        component: () => import("@/views/settings/index"),
+        meta: { text: "settings", icon: "mdi-wikipedia" }
+      }
+    ]
+  },
+  { path: "*", redirect: "/404", hidden: true }
 ];
 
 const router = new VueRouter({
-  mode: "history",
-  base: process.env.BASE_URL,
-  routes
+  scrollBehavior: () => ({ y: 0 }),
+  routes: routes
 });
 
 export default router;

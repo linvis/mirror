@@ -35,7 +35,7 @@
 
     <v-tooltip bottom>
       <template v-slot:activator="{ on }">
-        <v-btn icon v-on="on" @click="handleClickHome">
+        <v-btn icon v-on="on" @click="startReview">
           <v-icon>mdi-calendar-clock</v-icon>
         </v-btn>
       </template>
@@ -44,7 +44,7 @@
 
     <v-tooltip bottom>
       <template v-slot:activator="{ on }">
-        <v-btn icon v-on="on" @click="handleClickHome">
+        <v-btn icon v-on="on" @click="reviewLater">
           <v-icon>mdi-calendar-remove</v-icon>
         </v-btn>
       </template>
@@ -53,7 +53,7 @@
 
     <v-tooltip bottom>
       <template v-slot:activator="{ on }">
-        <v-btn icon v-on="on" @click="handleClickHome">
+        <v-btn icon v-on="on" @click="reviewDone">
           <v-icon>mdi-calendar-check</v-icon>
         </v-btn>
       </template>
@@ -65,6 +65,7 @@
 <script>
 import { bus } from "@/utils/bus";
 
+const reviewDay = [1, 3, 5, 7, 14, 30];
 export default {
   data: () => ({
     showTagInput: false,
@@ -82,6 +83,11 @@ export default {
     }
   },
   methods: {
+    addDays(days) {
+      var date = new Date();
+      date.setDate(date.getDate() + days);
+      return date.getTime();
+    },
     remove(item) {
       this.chips.splice(this.chips.indexOf(item), 1);
       this.chips = [...this.chips];
@@ -98,6 +104,31 @@ export default {
     },
     edit() {
       bus.$emit("edit-file");
+    },
+    startReview() {
+      this.activeNote.reminder.enable = true;
+      this.activeNote.reminder.count = 1;
+      this.activeNote.reminder.last_time = 0;
+      this.activeNote.reminder.next_time = this.addDays(
+        reviewDay[this.activeFile.reminder.count - 1]
+      );
+    },
+    reviewLater() {
+      this.activeNote.reminder.next_time = this.addDays(
+        reviewDay[this.activeNote.reminder.count - 1]
+      );
+    },
+    reviewDone() {
+      this.activeNote.reminder.count++;
+      if (this.activeNote.reminder.count >= reviewDay.length) {
+        this.activeNote.reminder.count = reviewDay.length - 1;
+      }
+      this.activeNote.reminder.last_time = this.addDays(0);
+      this.activeNote.reminder.next_time = this.addDays(
+        reviewDay[this.activeNote.reminder.count - 1]
+      );
+      this.$store.dispatch("editor/updateCatalog");
+      bus.$emit("update-reminder");
     }
   }
 };

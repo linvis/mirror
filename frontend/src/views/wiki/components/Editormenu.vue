@@ -1,7 +1,17 @@
 <template>
   <div class="menu">
-    <el-button type="text" icon="el-icon-s-home" class="menu-button" @click="backHome" />
-    <el-button type="text" icon="el-icon-upload" class="menu-button" @click="save" />
+    <el-button
+      type="text"
+      icon="el-icon-s-home"
+      class="menu-button"
+      @click="backHome"
+    />
+    <el-button
+      type="text"
+      icon="el-icon-upload"
+      class="menu-button"
+      @click="save"
+    />
     <el-dropdown @command="handleReminder">
       <el-button type="text" icon="el-icon-bell" class="menu-button" />
       <el-dropdown-menu slot="dropdown">
@@ -14,26 +24,22 @@
 </template>
 
 <script>
-
-import { bus } from '@/utils/bus'
-import { saveDocument } from '@/api/editor'
+import { bus } from '@/utils/bus';
+import { saveDocument } from '@/api/editor';
 
 const reviewDay = [1, 3, 5, 7, 14, 30]
 
 export default {
   data() {
-    return {
-    }
+    return {}
   },
   computed: {
     activeFile() {
       return this.$store.state.editor.activeFile
     }
   },
-  created() {
-  },
-  beforeDestroy() {
-  },
+  created() {},
+  beforeDestroy() {},
   methods: {
     backHome(event) {
       bus.$emit('show-reminder', true)
@@ -51,16 +57,22 @@ export default {
         this.activeFile.reminder.enable = true
         this.activeFile.reminder.count = 1
         this.activeFile.reminder.last_time = 0
-        this.activeFile.reminder.next_time = this.addDays(reviewDay[this.activeFile.reminder.count - 1])
+        this.activeFile.reminder.next_time = this.addDays(
+          reviewDay[this.activeFile.reminder.count - 1]
+        )
       } else if (command === 'reviewed') {
         this.activeFile.reminder.count++
         if (this.activeFile.reminder.count >= reviewDay.length) {
           this.activeFile.reminder.count = reviewDay.length - 1
         }
         this.activeFile.reminder.last_time = this.activeFile.reminder.next_time
-        this.activeFile.reminder.next_time = this.addDays(reviewDay[this.activeFile.reminder.count - 1])
+        this.activeFile.reminder.next_time = this.addDays(
+          reviewDay[this.activeFile.reminder.count - 1]
+        )
       } else {
-        this.activeFile.reminder.next_time = this.addDays(reviewDay[this.activeFile.reminder.count - 1])
+        this.activeFile.reminder.next_time = this.addDays(
+          reviewDay[this.activeFile.reminder.count - 1]
+        )
       }
       this.$log.debug(this.$store.state.editor.activeFile)
       this.$log.debug(this.$store.state.editor.catalog)
@@ -71,10 +83,10 @@ export default {
     save(event) {
       var content = this.$store.state.editor.contents[this.activeFile.key]
       var doc = {
-        'id': this.activeFile.id,
-        'doc_key': this.activeFile.key,
-        'content': content,
-        'html': this.html
+        id: this.activeFile.id,
+        doc_key: this.activeFile.key,
+        content: content,
+        html: this.html
       }
 
       this.$log.debug('udpate tree', this.activeFile)
@@ -101,7 +113,6 @@ export default {
         })
       })
     }
-
   }
 }
 </script>

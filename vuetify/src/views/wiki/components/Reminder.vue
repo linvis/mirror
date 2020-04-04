@@ -1,32 +1,48 @@
 <template>
   <v-data-table
     :headers="headers"
-    :items="desserts"
-    sort-by="overdue"
+    :items="reminderList"
+    :sort-by="['overdue']"
+    :sort-desc="[true]"
     class="elevation-1"
     v-show="show"
   >
     <template v-slot:top>
       <v-toolbar flat color="white">
-        <v-toolbar-title>View</v-toolbar-title>
+        <v-toolbar-title>Review</v-toolbar-title>
         <v-divider class="mx-4" inset vertical></v-divider>
         <v-spacer></v-spacer>
       </v-toolbar>
     </template>
     <template v-slot:item.actions="{ item }">
-      <v-icon small class="mr-2" @click="editItem(item)">mdi-pencil</v-icon>
-      <v-icon small @click="deleteItem(item)">mdi-delete</v-icon>
+      <!-- <v-icon small class="mr-2" @click="openFile(item)" color="red">
+        "mdi-close-circle-outline"
+      </v-icon>
+      <v-icon @click="openFile(item)" color="green">
+        "mdi-check-circle-outline"
+      </v-icon> -->
+      <v-icon
+        small
+        v-show="!item.checked"
+        class="mr-2"
+        @click="openFile(item)"
+        color="red"
+      >
+        mdi-close-circle-outline
+      </v-icon>
+      <v-icon small v-show="item.checked" @click="openFile(item)" color="green">
+        mdi-check-circle-outline
+      </v-icon>
     </template>
   </v-data-table>
 </template>
 
 <script>
 import { bus } from "@/utils/bus";
+import moment from "moment";
 
 export default {
   data: () => ({
-    reminderShow: false,
-    dialog: false,
     headers: [
       {
         text: "File",
@@ -35,62 +51,98 @@ export default {
         value: "name"
       },
       { text: "Overdue", value: "overdue" },
-      { text: "Next-time", value: "nextTime" },
+      { text: "Reviewd-time", value: "reviewed" },
       { text: "Actions", value: "actions", sortable: false }
     ],
-    desserts: [],
-    editedIndex: -1
+    reminderList: []
   }),
   computed: {
     show() {
       return this.$store.state.show.config.reminder;
+    },
+    catalog() {
+      return this.$store.state.editor.catalog;
+    }
+  },
+
+  watch: {
+    catalog: function(newValue, oldValue) {
+      this.reminderList = this.filterReminder(newValue);
     }
   },
 
   created() {
-    this.initialize();
+    bus.$on("update-reminder", this.updateReminder);
+    this.updateReminder();
   },
 
-  beforeDestroy() {},
+  beforeDestroy() {
+    bus.$off("update-reminder", this.updateReminder);
+  },
 
   methods: {
-    initialize() {
-      this.desserts = [
-        {
-          name: "Frozen Yogurt",
-          overdue: 2,
-          nextTime: 6.0
-        }
-      ];
+    updateReminder() {
+      this.reminderList = this.filterReminder(this.catalog);
+      this.$log.debug(this.reminderList);
     },
-
-    editItem(item) {
-      this.editedIndex = this.desserts.indexOf(item);
-      this.editedItem = Object.assign({}, item);
-      this.dialog = true;
-    },
-
-    deleteItem(item) {
-      const index = this.desserts.indexOf(item);
-      confirm("Are you sure you want to delete this item?") &&
-        this.desserts.splice(index, 1);
-    },
-
-    close() {
-      this.dialog = false;
-      setTimeout(() => {
-        this.editedItem = Object.assign({}, this.defaultItem);
-        this.editedIndex = -1;
-      }, 300);
-    },
-
-    save() {
-      if (this.editedIndex > -1) {
-        Object.assign(this.desserts[this.editedIndex], this.editedItem);
-      } else {
-        this.desserts.push(this.editedItem);
+    diffDay(timestamp) {
+      if (timestamp === "0") {
+        return 1;
       }
-      this.close();
+      var reviewTime = moment(parseInt(timestamp));
+      var today = moment();
+
+      return reviewTime.diff(today, "days");
+    },
+    filterReminder(catalog) {
+      var list = [];
+
+      if (catalog === null || typeof catalog === "undefined") {
+        return list;
+      }
+
+      this.$log.debug(catalog);
+      for (var i = 0; i < catalog.length; i++) {
+        if (catalog[i].reminder.enable === true) {
+          var next = this.diffDay(catalog[i].reminder.next_time);
+          var last = this.diffDay(catalog[i].reminder.last_time);
+
+          if (next <= 0) {
+            list.push({
+              name: catalog[i].metadata.title,
+              overdue: -next,
+              reviewed: catalog[i].reminder.count,
+              file: catalog[i],
+              checked: false
+            });
+          }
+
+          if (last === 0) {
+            list.push({
+              name: catalog[i].metadata.title,
+              overdue: 0,
+              reviewed: catalog[i].reminder.count,
+              file: catalog[i],
+              checked: true
+            });
+          }
+        }
+        if ("children" in catalog[i]) {
+          var subList = this.filterReminder(catalog[i].children);
+          list = list.concat(subList);
+        }
+      }
+
+      return list;
+    },
+
+    openFile(item) {
+      this.$log.debug(item);
+      this.$store.state.show.config.editor = !this.$store.state.show.config
+        .editor;
+      this.$store.state.show.config.reminder = !this.$store.state.show.config
+        .reminder;
+      bus.$emit("open-file", item.file);
     }
   }
 };

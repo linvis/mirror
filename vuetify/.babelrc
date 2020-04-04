@@ -11,7 +11,8 @@
           "go",
           "python",
           "sql",
-          "latex"
+          "latex",
+          "markup"
         ],
         "plugins": [
           "line-numbers",
@@ -22,13 +23,6 @@
         ],
         "theme": "okaidia",
         "css": true
-      }
-    ],
-    [
-      "component",
-      {
-        "libraryName": "element-ui",
-        "styleLibraryName": "theme-chalk"
       }
     ]
   ]

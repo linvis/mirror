@@ -13,6 +13,7 @@ Prism.highlightAll();
 import Stackedit from "stackedit-js";
 import { bus } from "@/utils/bus";
 import { queryDocumentByID } from "@/api/editor";
+import { saveDocument } from "@/api/editor";
 
 export default {
   data() {
@@ -69,14 +70,15 @@ export default {
     openFile(item) {
       queryDocumentByID(item.id).then(response => {
         var docs = response.data;
+        this.$log.debug("item", item);
         this.$log.debug("update markdown from remote", docs.content);
         this.open(item.metadata.title, docs.content);
-        this.$store.state.editor.content[item.key] = docs.content;
+        this.$store.state.editor.contents[item.key] = docs.content;
       });
       this.activeNote = item;
-      this.open(item.metadata.title, "Hello **Markdown** writer!");
-      this.$store.state.editor.contents[item.key] =
-        "Hello **Markdown** writer!";
+      //   this.open(item.metadata.title, "Hello **Markdown** writer!");
+      //   this.$store.state.editor.contents[item.key] =
+      //     "Hello **Markdown** writer!";
     },
     openNewFile(item) {
       this.activeNote = item;
@@ -106,6 +108,39 @@ export default {
         Prism.highlightAll();
         this.$store.state.editor.contents[this.activeNote.key] = this.content;
         // this.eleContent.innerHTML = this.contentHTML;
+        this.save();
+      });
+    },
+    save() {
+      var content = this.$store.state.editor.contents[this.activeNote.key];
+      var doc = {
+        id: this.activeNote.id,
+        doc_key: this.activeNote.key,
+        content: content,
+        html: this.html
+      };
+
+      saveDocument(doc).then(response => {
+        this.activeNote.id = response.data.id;
+        // var title = this.activeFile.metadata.title;
+        // if (this.activeFile.metadata.title === "untitle") {
+        //   if (content.includes("\n")) {
+        //     title = content.split("\n")[0];
+        //     if (title.includes("#")) {
+        //       title = title.split("#")[1];
+        //     }
+        //   }
+        // }
+        // this.activeFile.metadata.title = title;
+
+        // this.$store.dispatch("editor/submitCatalog");
+
+        // this.$notify({
+        //   title: "成功",
+        //   message: "",
+        //   type: "success",
+        //   duration: 800
+        // });
       });
     }
   }

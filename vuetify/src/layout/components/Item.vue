@@ -50,6 +50,7 @@
 </template>
 
 <script>
+import { bus } from "@/utils/bus";
 export default {
   name: "Item",
   computed: {
@@ -89,6 +90,11 @@ export default {
     handleItemClick(text) {
       this.$log.debug(text);
       this.$store.state.menu.activeMenu = text;
+      if (text === "Wiki") {
+        bus.$emit("get-catalog");
+        this.$store.state.show.config.menu = false;
+        this.$store.state.show.config.tree = true;
+      }
     }
   }
 };

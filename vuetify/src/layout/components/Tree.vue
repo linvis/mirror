@@ -97,6 +97,7 @@
 <script>
 import { v4 as uuidv4 } from "uuid";
 import { bus } from "@/utils/bus";
+import { queryEditorCatalog } from "@/api/editor";
 export default {
   computed: {
     show: {
@@ -126,7 +127,21 @@ export default {
     menuItems: ["New Notebook", "New File", "Rename", "Delete"],
     rightActiveItem: null
   }),
+  mounted() {
+    this.getEditorCatalog();
+    bus.$on("get-catalog", this.getEditorCatalog);
+  },
+  beforeDestroy() {
+    bus.$off("get-catalog", this.getEditorCatalog);
+  },
   methods: {
+    getEditorCatalog() {
+      queryEditorCatalog().then(response => {
+        // this.catalog = response.data
+        this.$store.dispatch("editor/changeCatalog", response.data);
+      });
+      // bus.$emit('get-catalog', this.catalog)
+    },
     newRandomKey() {
       var uuid = uuidv4();
       return uuid.split("-").join("");

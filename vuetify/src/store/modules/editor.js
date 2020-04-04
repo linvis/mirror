@@ -31,9 +31,9 @@ const state = {
           },
           reminder: {
             enable: true,
-            count: 0,
+            count: 1,
             last_time: 0,
-            next_time: 0
+            next_time: 1585980012000
           }
         },
         {
@@ -47,10 +47,10 @@ const state = {
             tag: []
           },
           reminder: {
-            enable: false,
+            enable: true,
             count: 0,
-            last_time: 0,
-            next_time: 0
+            last_time: 1585980012000,
+            next_time: 1588399212000
           }
         }
       ]
