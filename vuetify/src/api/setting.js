@@ -8,9 +8,9 @@ export function submitSettingProgram(data) {
   });
 }
 
-export function querySettingProgram(evt, token) {
+export function querySettingProgram(token) {
   return request({
-    url: "/setting/program/",
+    url: "/setting/program",
     method: "get",
     params: { token }
   });

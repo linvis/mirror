@@ -12,10 +12,12 @@ func InitRouterGroup(engine *gin.Engine, env string) {
 	engine.GET("/", api.Home)
 	engine.Use()
 
+	engine.POST("/user/login", api.LoginIn)
+	engine.POST("/user/logout", api.Logout)
+
 	user := engine.Group(env + "/user")
 	{
-		user.POST("/login", api.LoginIn)
-		user.POST("/logout", api.Logout)
+		user.Use(middleware.BaseAuth())
 		user.GET("/info", api.GetUserInfo)
 	}
 

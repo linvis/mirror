@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"time"
 
 	"github.com/go-redis/redis/v7"
 )
@@ -19,6 +20,14 @@ type RedisConfig struct {
 var (
 	r *redis.Client
 )
+
+func SetToRedis(key string, val interface{}, timeout time.Duration) error {
+	return r.Set(key, val, timeout).Err()
+}
+
+func GetFromRedis(key string) (string, error) {
+	return r.Get(key).Result()
+}
 
 func loadRedisConfig(file string) (*RedisConfig, error) {
 	var config RedisConfig

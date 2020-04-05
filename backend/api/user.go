@@ -3,10 +3,11 @@ package api
 import (
 	"fmt"
 	"mirror/db"
+	"mirror/middleware"
 	"net/http"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/prometheus/common/log"
 )
 
 type LoginInfo struct {
@@ -38,14 +39,18 @@ func LoginIn(c *gin.Context) {
 		return
 	}
 	if user.Password != info.Password {
+		log.Warnf("login fail, input pw:%s, need pw: %s", user.Password, info.Password)
 		c.JSON(http.StatusOK, gin.H{"code": 60204, "message": "Account and password are incorrect."})
 		return
 	}
 
-	token := gin.H{"token": strconv.Itoa(user.UserID)}
+	// token := gin.H{"token": strconv.Itoa(user.UserID)}
+	token := middleware.SetToken(info.Username, info.Password, user.UserID)
+
+	c.SetCookie("mirror", token, 24*3600, "/", "localhost", false, true)
 
 	// c.JSON(http.StatusOK, gin.H{"code": 60204, "message": "Account and password are incorrect."})
-	c.JSON(http.StatusOK, gin.H{"code": 20000, "data": &token})
+	c.JSON(http.StatusOK, gin.H{"code": 20000, "data": "success"})
 }
 
 func GetUserInfo(c *gin.Context) {
@@ -68,8 +73,8 @@ func Logout(c *gin.Context) {
 }
 
 func GetUserID(c *gin.Context) int {
-	cookie, _ := c.Cookie("mirror_token")
-	id, _ := strconv.Atoi(cookie)
 
-	return id
+	val, _ := c.Get("userID")
+
+	return val.(int)
 }

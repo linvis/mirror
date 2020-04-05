@@ -53,6 +53,8 @@
 </template>
 
 <script>
+import md5 from "blueimp-md5";
+
 export default {
   data() {
     return {
@@ -82,8 +84,11 @@ export default {
     handleLogin() {
       this.overlay = true;
       this.$log.debug(this.loginForm);
+      this.$log.debug("fuck");
+
+      var password = md5(this.loginForm.password);
       this.$store
-        .dispatch("user/login", this.loginForm)
+        .dispatch("user/login", { username: this.loginForm.username, password })
         .then(() => {
           this.$router.push({ path: this.redirect || "/" });
           this.overlay = false;

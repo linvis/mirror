@@ -23,10 +23,10 @@ const options = {
   showConsoleColors: true
 };
 
-import { mockXHR } from "../mock";
-if (process.env.NODE_ENV === "development") {
-  mockXHR();
-}
+// import { mockXHR } from "../mock";
+// if (process.env.NODE_ENV === "development") {
+//   mockXHR();
+// }
 
 Vue.use(Notifications);
 Vue.use(VueLogger, options);
