@@ -11,6 +11,7 @@
     "axios": "^0.19.2",
     "babel-loader": "^8.1.0",
     "babel-plugin-prismjs": "^2.0.1",
+    "blueimp-md5": "^2.13.0",
     "cal-heatmap": "^3.6.2",
     "core-js": "^3.6.4",
     "highcharts": "^8.0.4",
