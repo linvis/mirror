@@ -1,6 +1,5 @@
 <template>
-  <!-- <div id="editor" height="100%" width="100%" /> -->
-  <v-container height="100%" width="100%">
+  <v-container height="100%" width="100%" flex>
     <tool-bar />
     <reminder />
     <editor />

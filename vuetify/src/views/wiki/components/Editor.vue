@@ -1,23 +1,10 @@
 <template>
-  <v-container v-show="show" height="100%" width="100%" class="pt-2 pl-4">
+  <v-container v-show="show" height="100%" width="100%" class="pt-2 pl-4" flex>
     <v-row>
       <v-col cols="22">
         <div id="editor" />
       </v-col>
       <v-col cols="2">
-        <!-- <v-navigation-drawer ref="drawer" :right="true" clipped :width="256">
-          <div id="toc"></div>
-          <ol>
-            <a href="#hh" class="toc-level1">
-              hh
-            </a>
-          </ol>
-          <ol>
-            <a href="#hh" class="toc-level2">
-              hh
-            </a>
-          </ol>
-        </v-navigation-drawer> -->
         <toc />
       </v-col>
     </v-row>
@@ -112,27 +99,24 @@ export default {
     updateContent(content) {
       this.contents = content;
     },
-    generateToc(content) {
-      var regex = /#+.*\n/g;
-      // content = "# AAA\n## BBB\n### CCC\nfoo\nbar\nbaz ## DD\n"
-      var tocList = content.match(regex);
-      if (tocList.length <= 0) {
-        return;
-      }
-    },
     openFile(item) {
       queryDocumentByID(item.id).then(response => {
         var docs = response.data;
         this.$log.debug("item", item);
-        this.$log.debug("update markdown from remote", docs.content);
-        // this.open(item.metadata.title, docs.content);
-        this.setHTML(docs.content);
+        this.setHTML(docs.html);
+        Prism.highlightAll();
         this.$store.state.editor.contents[item.key] = docs.content;
+        this.generateToc();
       });
       this.activeNote = item;
       //   this.open(item.metadata.title, "Hello **Markdown** writer!");
       //   this.$store.state.editor.contents[item.key] =
       //     "Hello **Markdown** writer!";
+    },
+    generateToc() {
+      var header = this.eleContent.querySelectorAll("h1, h2, h3");
+      this.$log.debug(header);
+      bus.$emit("update-toc", header);
     },
     openNewFile(item) {
       this.activeNote = item;
@@ -162,6 +146,7 @@ export default {
         Prism.highlightAll();
         this.$store.state.editor.contents[this.activeNote.key] = this.content;
         // this.eleContent.innerHTML = this.contentHTML;
+        this.generateToc();
         this.save();
       });
     },

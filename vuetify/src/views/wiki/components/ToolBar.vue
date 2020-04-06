@@ -1,6 +1,5 @@
 <template>
   <v-toolbar dense width="100%" flat>
-    <!-- <v-breadcrumbs :items="items" class="pa-0"></v-breadcrumbs> -->
     <v-chip
       v-if="activeNote.reminder.enable === false"
       label

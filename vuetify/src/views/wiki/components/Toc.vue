@@ -1,14 +1,12 @@
 <template>
   <v-navigation-drawer
     id="documentation-toc"
-    v-scroll="onScroll"
-    :floating="structure === false"
+    :floating="false"
     :right="true"
     clipped
-    color="transparent"
   >
-    <template v-if="structure !== false">
-      <ul class="pt-8 mb-6 documentation-toc">
+    <template>
+      <ul class="pt-0 mb-6 documentation-toc">
         <li class="mb-2">
           <h3 class="body-1 text--primary">
             Contents
@@ -20,16 +18,12 @@
             v-if="item.visible"
             :key="i"
             :class="[
-              `documentation-toc__link--${item.header}`,
+              `documentation-toc__link--${item.level}`,
               {
                 'mb-2': i + 1 !== internalToc.length,
-                'primary--text': activeIndex === i,
-                'text--disabled': activeIndex !== i
+                'text--disabled': true
               }
             ]"
-            :style="{
-              borderColor: activeIndex === i ? 'currentColor' : undefined
-            }"
             class="documentation-toc__link"
           >
             <a
@@ -54,120 +48,45 @@ import { bus } from "@/utils/bus";
 export default {
   name: "DocumentationToc",
   data: () => ({
-    activeIndex: 0,
-    currentOffset: 0,
-    internalToc: [
-      {
-        id: kebabCase("AA"),
-        header: "header1",
-        text: "AA",
-        visible: true
-      }
-    ],
-    tocTimeout: 0
+    internalToc: []
   }),
-  computed: {
-    // ...get("documentation", ["headings", "namespace", "page"]),
-    structure: true,
-    toc() {
-      //   const t = string => this.$t(`${this.namespace}.${this.page}.${string}`);
-      return "AA"
-        .map(h => {
-          //   const translation = h.indexOf(".") > -1 ? this.$t(h) : t(h);
-          //   let text = translation.split(" ");
-          //   text.shift();
-          //   text = text.join(" ");
-          //   const isSubheading = translation.substring(0, 3) === "###";
-          //   const isHeading =
-          //     !isSubheading && translation.substring(0, 2) === "##";
-          //   const isIntroduction = !isHeading && translation.charAt(0) === "#";
-          return {
-            // id: kebabCase(text),
-            // subheader: isSubheading,
-            // text,
-            // visible: isSubheading || isHeading || isIntroduction
-            id: kebabCase("AA"),
-            subheader: true,
-            text: "AA",
-            visible: true
-          };
-        })
-        .filter(h => h.visible);
-    }
-  },
-  watch: {
-    toc: {
-      immediate: true,
-      handler(val) {
-        if (!val.length) return;
-        this.$nextTick(() => (this.internalToc = this.toc.slice()));
-      }
-    }
-  },
   created() {
     bus.$on("update-toc", this.updateToc);
+    this.updateToc("");
   },
   beforeDestroy() {
     bus.$off("update-toc", this.updateToc);
   },
   methods: {
     goTo,
-    findActiveIndex() {
-      if (this.currentOffset < 100) {
-        this.activeIndex = 0;
-        return;
-      }
-      const list = this.toc.slice().reverse();
-      const index = list.findIndex(item => {
-        const section = document.getElementById(item.id);
-        if (!section) return false;
-        return section.offsetTop - 100 < this.currentOffset;
-      });
-      const lastIndex = list.length - 1;
-      this.activeIndex = index > -1 ? lastIndex - index : lastIndex;
-    },
-    onScroll() {
-      this.currentOffset =
-        window.pageYOffset || document.documentElement.offsetTop || 0;
-      clearTimeout(this.timeout);
-      this.timeout = setTimeout(this.findActiveIndex, 50);
-    },
-    updateToc(content) {
-      var regex = /#+.*\n/g;
-      // content = "# AAA\n## BBB\n### CCC\nfoo\nbar\nbaz ## DD\n"
-      var header = content.match(regex);
-      if (header.length <= 0) {
-        return;
-      }
-      header = header.map(h => {
-        let text = h.split(" ");
-        text.shift();
-        text = text.join(" ");
-
-        var level = "level";
-
-        if (h.substring(0, 3) === "###" && level === "level") {
+    updateToc(header) {
+      this.internalToc = [];
+      for (var i = 0; i < header.length; i++) {
+        var text = "";
+        var level = "";
+        console.log("Tag name: " + header[i].textContent);
+        if (header[i].tagName === "H1") {
+          level = "level1";
+          text = header[i].textContent;
+        }
+        if (header[i].tagName === "H2") {
+          level = "level2";
+          text = header[i].textContent;
+        }
+        if (header[i].tagName === "H3") {
           level = "level3";
+          text = header[i].textContent;
         }
-        if (h.substring(0, 2) === "##" && level === "level") {
-          level = "level2";
+        if (level !== "") {
+          this.internalToc.push({
+            id: kebabCase(text),
+            level,
+            text,
+            visible: true
+          });
         }
-        if (h.substring(0, 2) === "##" && level === "level") {
-          level = "level2";
-        }
-        const isSubheading = h.substring(0, 3) === "###";
-        console.log(isSubheading);
-        return {
-          // id: kebabCase(text),
-          // subheader: isSubheading,
-          // text,
-          // visible: isSubheading || isHeading || isIntroduction
-          id: kebabCase("AA"),
-          subheader: true,
-          text: "AA",
-          visible: true
-        };
-      });
+      }
+      this.$log.debug(this.internalToc);
     }
   }
 };
@@ -194,10 +113,10 @@ export default {
     transition: color .1s ease-in
   .supporter-group
     justify-content: flex-start !important
-  .documentation-toc__link--header1
+  .documentation-toc__link--level1
     margin-left: 8px
-  .documentation-toc__link--header2
+  .documentation-toc__link--level2
     margin-left: 16px
-  .documentation-toc__link--header3
+  .documentation-toc__link--level3
     margin-left: 24px
 </style>
