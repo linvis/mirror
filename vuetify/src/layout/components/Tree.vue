@@ -205,7 +205,7 @@ export default {
       var key = this.newRandomKey();
 
       const newChild = {
-        id: key,
+        id: 0,
         key: key,
         parent: data.key,
         metadata: {
@@ -246,7 +246,7 @@ export default {
       var key = this.newRandomKey();
 
       const newChild = {
-        id: key,
+        id: 0,
         key: key,
         parent: data.key,
         metadata: {

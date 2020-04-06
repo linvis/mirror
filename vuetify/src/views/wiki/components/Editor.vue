@@ -122,6 +122,7 @@ export default {
 
       saveDocument(doc).then(response => {
         this.activeNote.id = response.data.id;
+        this.$store.dispatch("editor/updateCatalog");
         // var title = this.activeFile.metadata.title;
         // if (this.activeFile.metadata.title === "untitle") {
         //   if (content.includes("\n")) {
@@ -132,8 +133,6 @@ export default {
         //   }
         // }
         // this.activeFile.metadata.title = title;
-
-        // this.$store.dispatch("editor/submitCatalog");
 
         // this.$notify({
         //   title: "成功",
