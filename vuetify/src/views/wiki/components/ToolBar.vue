@@ -111,11 +111,15 @@ export default {
       this.activeNote.reminder.next_time = this.addDays(
         reviewDay[this.activeFile.reminder.count - 1]
       );
+      this.$store.dispatch("editor/updateCatalog");
+      bus.$emit("update-reminder");
     },
     reviewLater() {
       this.activeNote.reminder.next_time = this.addDays(
         reviewDay[this.activeNote.reminder.count - 1]
       );
+      this.$store.dispatch("editor/updateCatalog");
+      bus.$emit("update-reminder");
     },
     reviewDone() {
       this.activeNote.reminder.count++;
