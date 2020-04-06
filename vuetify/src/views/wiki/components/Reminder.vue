@@ -86,7 +86,7 @@ export default {
       this.$log.debug(this.reminderList);
     },
     diffDay(timestamp) {
-      if (timestamp === "0") {
+      if (timestamp === 0) {
         return 1;
       }
       var reviewTime = moment(parseInt(timestamp));
@@ -106,6 +106,7 @@ export default {
         if (catalog[i].reminder.enable === true) {
           var next = this.diffDay(catalog[i].reminder.next_time);
           var last = this.diffDay(catalog[i].reminder.last_time);
+          this.$log.debug("fuck", next, last, catalog[i].metadata.title);
 
           if (next <= 0) {
             list.push({

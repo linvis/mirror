@@ -63,6 +63,7 @@
 
 <script>
 import { bus } from "@/utils/bus";
+import moment from "moment";
 
 const reviewDay = [1, 3, 5, 7, 14, 30];
 export default {
@@ -83,9 +84,12 @@ export default {
   },
   methods: {
     addDays(days) {
-      var date = new Date();
-      date.setDate(date.getDate() + days);
-      return date.getTime();
+      var day = moment().add(days, "day");
+      day.set("hour", 23);
+      day.set("minute", 59);
+      day.set("second", 59);
+
+      return day.valueOf();
     },
     remove(item) {
       this.chips.splice(this.chips.indexOf(item), 1);
@@ -108,9 +112,7 @@ export default {
       this.activeNote.reminder.enable = true;
       this.activeNote.reminder.count = 1;
       this.activeNote.reminder.last_time = 0;
-      this.activeNote.reminder.next_time = this.addDays(
-        reviewDay[this.activeFile.reminder.count - 1]
-      );
+      this.activeNote.reminder.next_time = this.addDays(1);
       this.$store.dispatch("editor/updateCatalog");
       bus.$emit("update-reminder");
     },
