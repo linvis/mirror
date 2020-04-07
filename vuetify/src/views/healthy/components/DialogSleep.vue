@@ -108,6 +108,7 @@
 <script>
 import moment from "moment";
 import { submitSleepRec } from "@/api/sleep";
+import { bus } from "@/utils/bus";
 
 export default {
   data: () => ({
@@ -123,7 +124,7 @@ export default {
     startTimeMin: 0,
     endTimeMin: 0,
     durationMin: 0,
-    duration: "00:00"
+    duration: "00:00",
   }),
   computed: {
     show: {
@@ -132,8 +133,8 @@ export default {
       },
       set: function(newVal) {
         this.$store.state.show.config.dialogSleep = newVal;
-      }
-    }
+      },
+    },
   },
   methods: {
     handleDateChange() {
@@ -212,30 +213,23 @@ export default {
     save() {
       this.show = false;
 
-      var dateUTC = moment(this.date).valueOf();
-      // var utcDate = Date.UTC(
-      //   this.record_date.getFullYear(),
-      //   this.record_date.getMonth(),
-      //   this.record_date.getDate()
-      // );
-      // console.log(this.record_date.getTimezoneOffset());
+      var utcDate = Date.UTC(
+        new Date().getFullYear(),
+        new Date().getMonth(),
+        new Date().getDate()
+      );
+
       var record = {
-        record_date: dateUTC,
+        record_date: utcDate,
         start_time: this.startTimeMin,
         end_time: this.endTimeMin,
-        duration: this.durationMin
+        duration: this.durationMin,
       };
-      submitSleepRec(record).then(response => {
-        this.$log.debug(response);
-        this.$notify({
-          title: "成功",
-          message: "",
-          type: "success",
-          duration: 800
-        });
-        // bus.$emit("update-sleep-record");
+      this.$log.debug(record);
+      submitSleepRec(record).then((response) => {
+        bus.$emit("update-sleep-record");
       });
-    }
-  }
+    },
+  },
 };
 </script>
