@@ -83,11 +83,17 @@ export default {
     }
   },
   methods: {
-    addDays(days) {
+    addDays(days, op) {
       var day = moment().add(days, "day");
-      day.set("hour", 23);
-      day.set("minute", 59);
-      day.set("second", 59);
+      if (op === 1) {
+        day.set("hour", 23);
+        day.set("minute", 59);
+        day.set("second", 59);
+      } else {
+        day.set("hour", 0);
+        day.set("minute", 0);
+        day.set("second", 0);
+      }
 
       return day.valueOf();
     },
@@ -112,13 +118,14 @@ export default {
       this.activeNote.reminder.enable = true;
       this.activeNote.reminder.count = 1;
       this.activeNote.reminder.last_time = 0;
-      this.activeNote.reminder.next_time = this.addDays(1);
+      this.activeNote.reminder.next_time = this.addDays(1, 1);
       this.$store.dispatch("editor/updateCatalog");
       bus.$emit("update-reminder");
     },
     reviewLater() {
       this.activeNote.reminder.next_time = this.addDays(
-        reviewDay[this.activeNote.reminder.count - 1]
+        reviewDay[this.activeNote.reminder.count - 1],
+        1
       );
       this.$store.dispatch("editor/updateCatalog");
       bus.$emit("update-reminder");
@@ -128,9 +135,10 @@ export default {
       if (this.activeNote.reminder.count >= reviewDay.length) {
         this.activeNote.reminder.count = reviewDay.length - 1;
       }
-      this.activeNote.reminder.last_time = this.addDays(0);
+      this.activeNote.reminder.last_time = this.addDays(0, 0);
       this.activeNote.reminder.next_time = this.addDays(
-        reviewDay[this.activeNote.reminder.count - 1]
+        reviewDay[this.activeNote.reminder.count - 1],
+        1
       );
       this.$store.dispatch("editor/updateCatalog");
       bus.$emit("update-reminder");
