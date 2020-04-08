@@ -9,6 +9,7 @@ import moment from "moment";
 import Highcharts from "highcharts";
 import stockInit from "highcharts/modules/stock";
 import { querySleepRecAnalysis } from "@/api/sleep";
+import { bus } from "@/utils/bus";
 stockInit(Highcharts);
 
 export default {
@@ -20,9 +21,14 @@ export default {
       avgLastMonth: []
     };
   },
-  created() {},
+  created() {
+    bus.$on("update-sleep-analysis", this.getSleepAnalysis);
+  },
   mounted() {
-    this.featchData();
+    this.getSleepAnalysis();
+  },
+  destroyed() {
+    bus.$on("update-sleep-analysis", this.getSleepAnalysis);
   },
   methods: {
     formatTime(duration) {
@@ -35,7 +41,7 @@ export default {
       }
       return time;
     },
-    featchData() {
+    getSleepAnalysis() {
       querySleepRecAnalysis().then(response => {
         this.avgLastWeek = [
           this.formatTime(response.data.duration[0]),
@@ -58,11 +64,6 @@ export default {
         this.$log.debug(this.avgLastMonth);
         this.initChart();
       });
-      // this.avgLastWeek = [this.formatTime(409), this.formatTime(-100), this.formatTime(309)]
-      // this.avgLastTwoWeek = [this.formatTime(409), this.formatTime(-100), this.formatTime(309)]
-      // this.avgLastMonth = [this.formatTime(409), this.formatTime(-100), this.formatTime(309)]
-      // this.$log.debug(this.avgLastWeek)
-      // this.initChart()
     },
     initChart() {
       this.sleep_analysis_chart = Highcharts.chart("sleep_analysis_chart", {

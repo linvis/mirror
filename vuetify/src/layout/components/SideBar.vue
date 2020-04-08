@@ -23,7 +23,7 @@ export default {
   },
   data: () => ({
     navigation: {
-      width: 256,
+      width: 320,
       borderSize: 3
     }
   }),
@@ -38,8 +38,8 @@ export default {
     }
   },
   mounted() {
-    this.setBorderWidth();
-    this.setEvents();
+    // this.setBorderWidth();
+    // this.setEvents();
   },
   methods: {
     setBorderWidth() {

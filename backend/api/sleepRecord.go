@@ -107,6 +107,13 @@ type SleepRecordMsg struct {
 	}
 }
 
+type avgSleep struct {
+	duration int
+	start    int
+	end      int
+	count    int
+}
+
 func GetSleepRecordAnalysis(c *gin.Context) {
 	id := GetUserID(c)
 	timeout := 0
@@ -120,55 +127,57 @@ RETRY:
 			fmt.Println(err)
 		}
 
-		avgDuration := make([]int, 3)
-		avgStartTime := make([]int, 3)
-		avgEndTime := make([]int, 3)
-		count := make([]int, 3)
+		var avgWeek, avgTwoWeek, avgMonth avgSleep
 
+		now := time.Now()
+
+		fmt.Println(now.AddDate(0, 0, -7).Local().Unix())
 		for i := 0; i < len(msg.Data.Date); i++ {
-			if i < 7 {
-				avgDuration[0] += msg.Data.Duration[i]
-				avgStartTime[0] += msg.Data.StartTime[i]
-				avgEndTime[0] += msg.Data.EndTime[i]
-				count[0]++
-			} else if i < 14 {
-				avgDuration[1] += msg.Data.Duration[i]
-				avgStartTime[1] += msg.Data.StartTime[i]
-				avgEndTime[1] += msg.Data.EndTime[i]
-				count[1]++
+
+			if msg.Data.Date[i] >= now.AddDate(0, 0, -7).Local().Unix()*1000 {
+				fmt.Println(msg.Data.Date[i])
+				avgWeek.duration += msg.Data.Duration[i]
+				avgWeek.start += msg.Data.StartTime[i]
+				avgWeek.end += msg.Data.EndTime[i]
+				avgWeek.count++
+			} else if msg.Data.Date[i] >= now.AddDate(0, 0, -14).Local().Unix()*1000 {
+				avgTwoWeek.duration += msg.Data.Duration[i]
+				avgTwoWeek.start += msg.Data.StartTime[i]
+				avgTwoWeek.end += msg.Data.EndTime[i]
+				avgTwoWeek.count++
 			} else {
-				avgDuration[2] += msg.Data.Duration[i]
-				avgStartTime[2] += msg.Data.StartTime[i]
-				avgEndTime[2] += msg.Data.EndTime[i]
-				count[2]++
+				avgMonth.duration += msg.Data.Duration[i]
+				avgMonth.start += msg.Data.StartTime[i]
+				avgMonth.end += msg.Data.EndTime[i]
+				avgMonth.count++
 			}
 		}
 
-		if count[0] <= 0 {
+		if avgMonth.count <= 0 {
 			c.JSON(http.StatusOK, gin.H{"code": 60204, "message": "no data"})
 			return
 		} else {
-			avgDuration[0] /= count[0]
-			avgStartTime[0] /= count[0]
-			avgEndTime[0] /= count[0]
+			avgMonth.duration /= avgMonth.count
+			avgMonth.start /= avgMonth.count
+			avgMonth.end /= avgMonth.count
 		}
-		// last week
-		if count[1] > 0 {
-			avgDuration[1] /= count[1]
-			avgStartTime[1] /= count[1]
-			avgEndTime[1] /= count[1]
+
+		if avgTwoWeek.count > 0 {
+			avgTwoWeek.duration /= avgTwoWeek.count
+			avgTwoWeek.start /= avgTwoWeek.count
+			avgTwoWeek.end /= avgTwoWeek.count
 		}
-		// last month
-		if count[2] > 0 {
-			avgDuration[2] = avgDuration[1]
-			avgStartTime[2] = avgStartTime[1]
-			avgEndTime[2] = avgEndTime[1]
+
+		if avgWeek.count > 0 {
+			avgWeek.duration /= avgWeek.count
+			avgWeek.start /= avgWeek.count
+			avgWeek.end /= avgWeek.count
 		}
 
 		c.JSON(http.StatusOK, gin.H{"code": 20000, "data": map[string][]int{
-			"duration":   avgDuration,
-			"start_time": avgStartTime,
-			"end_time":   avgEndTime,
+			"duration":   []int{avgWeek.duration, avgTwoWeek.duration, avgMonth.duration},
+			"start_time": []int{avgWeek.start, avgTwoWeek.start, avgMonth.start},
+			"end_time":   []int{avgWeek.end, avgTwoWeek.end, avgMonth.end},
 		}})
 		return
 	} else {

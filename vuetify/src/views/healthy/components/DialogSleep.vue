@@ -124,7 +124,7 @@ export default {
     startTimeMin: 0,
     endTimeMin: 0,
     durationMin: 0,
-    duration: "00:00",
+    duration: "00:00"
   }),
   computed: {
     show: {
@@ -133,8 +133,8 @@ export default {
       },
       set: function(newVal) {
         this.$store.state.show.config.dialogSleep = newVal;
-      },
-    },
+      }
+    }
   },
   methods: {
     handleDateChange() {
@@ -213,23 +213,22 @@ export default {
     save() {
       this.show = false;
 
-      var utcDate = Date.UTC(
-        new Date().getFullYear(),
-        new Date().getMonth(),
-        new Date().getDate()
-      );
+      var day = moment(this.date);
+
+      var utcDate = Date.UTC(day.year(), day.month(), day.date());
 
       var record = {
         record_date: utcDate,
         start_time: this.startTimeMin,
         end_time: this.endTimeMin,
-        duration: this.durationMin,
+        duration: this.durationMin
       };
       this.$log.debug(record);
-      submitSleepRec(record).then((response) => {
+      submitSleepRec(record).then(response => {
         bus.$emit("update-sleep-record");
+        bus.$emit("update-sleep-analysis");
       });
-    },
-  },
+    }
+  }
 };
 </script>
