@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"mirror/db"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
@@ -66,6 +67,28 @@ func NewDocument(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"code": 20000, "data": gin.H{"id": doc.Id}})
+}
+
+func DeleteDocument(c *gin.Context) {
+
+	docID := c.Param("docid")
+
+	id, err := strconv.Atoi(docID)
+	if err != nil {
+		log.Error("invalid doc id ", err)
+		c.JSON(http.StatusOK, gin.H{"code": 20000})
+		return
+	}
+
+	err = db.DeleteDocument(id)
+	if err != nil {
+		log.Error("delete doc fail ", err)
+		c.JSON(http.StatusOK, gin.H{"code": 20000})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"code": 20000})
+	return
 }
 
 func GetAllDocument(c *gin.Context) {

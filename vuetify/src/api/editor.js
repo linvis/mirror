@@ -24,6 +24,13 @@ export function saveDocument(data) {
   });
 }
 
+export function deleteDocument(data) {
+  return request({
+    url: "/editor/document/delete/" + data,
+    method: "post"
+  });
+}
+
 export function queryAllDocument(token) {
   return request({
     url: "/editor/document/queryall",

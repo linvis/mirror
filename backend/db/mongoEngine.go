@@ -16,7 +16,7 @@ var (
 func InitMongoDB() {
 
 	// Set client options
-	clientOptions := options.Client().ApplyURI("mongodb://localhost:27017")
+	clientOptions := options.Client().ApplyURI("mongodb://root:qwertyuiop@localhost:27017/?authSource=admin")
 
 	// Connect to MongoDB
 	client, err := mongo.Connect(context.TODO(), clientOptions)

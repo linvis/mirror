@@ -42,6 +42,14 @@ func NewDocument(doc *Document) error {
 	return err
 }
 
+func DeleteDocument(doc_id int) error {
+	var doc Document
+
+	_, err := x.ID(doc_id).Delete(&doc)
+
+	return err
+}
+
 func GetAllDocument(user_id int) (*[]Document, error) {
 	docs := &[]Document{}
 

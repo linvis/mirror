@@ -97,7 +97,7 @@
 <script>
 import { v4 as uuidv4 } from "uuid";
 import { bus } from "@/utils/bus";
-import { queryEditorCatalog } from "@/api/editor";
+import { queryEditorCatalog, deleteDocument } from "@/api/editor";
 export default {
   computed: {
     show: {
@@ -288,7 +288,12 @@ export default {
       const index = children.findIndex(d => d.id === item.id);
       children.splice(index, 1);
 
-      //   this.$store.dispatch("editor/updateCatalog", this.catalog);
+      this.$store.dispatch("editor/updateCatalog", this.catalog);
+
+      if (item.metadata.filetype === "md") {
+        console.log("fuck delete");
+        deleteDocument(item.id).then(response => {});
+      }
     },
     openNote(item) {
       this.$log.debug(item);
@@ -311,9 +316,6 @@ export default {
         // bus.$emit("show-editor", true);
         // bus.$emit("open-document", data);
       }
-    },
-    handleDrop(draggingNode, dropNode, dropType, ev) {
-      this.$store.dispatch("editor/submitCatalog", this.catalog);
     }
   }
 };

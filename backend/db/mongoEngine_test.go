@@ -5,8 +5,8 @@ import "testing"
 func TestInitMongoDB(t *testing.T) {
 	InitMongoDB()
 
-	res, _ := GetCatalog(3)
-	t.Log(res)
+	// res, _ := GetCatalog(3)
+	// t.Log(res)
 
 	// NewCatalog(Catalog{
 	// 	UserID:   3,
