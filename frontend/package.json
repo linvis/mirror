@@ -29,7 +29,7 @@
     "joplin-turndown-plugin-gfm": "^1.0.12",
     "js-cookie": "2.2.0",
     "katex": "^0.11.1",
-    "mermaid": "^8.4.8",
+    "mermaid": "^9.1.2",
     "moment": "^2.24.0",
     "normalize.css": "7.0.0",
     "nprogress": "0.2.0",
